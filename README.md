@@ -22,7 +22,7 @@ https://www.nextflow.io/docs/latest/install.html
 
 The STAR aligner is loaded by Nextflow. The module load command is in the file *bbi-scirna-analyze/nextflow.config*.
 
-### Load bbduk.sh
+### Install bbduk.sh
 
 See the BBMap installation instructions at
 
