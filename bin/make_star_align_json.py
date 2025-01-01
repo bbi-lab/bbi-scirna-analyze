@@ -1,0 +1,155 @@
+#!/usr/bin/env python3
+
+import sys
+import json
+import argparse
+import re
+
+#
+# Program version string.
+#
+program_version = '0.1.0'
+
+
+#
+# Read samplesheet json file.
+#
+def read_json(filename):
+  with open(filename, 'r') as fh:
+    json_data = json.load(fh)
+  return(json_data)
+
+
+#
+# Expand index list.
+# Example: 1-4,8-12
+# Return a list of distinct indices.
+regex_pattern = r'([0-9]+)([-]([0-9]+))?$'
+def expand_index_list(index_string):
+  index_list = []
+  for index_spec in index_string.split(','):
+    mobj = re.match(regex_pattern, index_spec)
+    if(mobj == None):
+      print('Error: expand_index_list: bad index specification: %s' % (index_spec))
+      sys.exit(-1)
+    index1 = int(mobj.group(1))
+    index2 = index1
+    if(mobj.group(2) != None):
+      index2 = int(mobj.group(3))
+    for one_index in range(index1, index2+1):
+      index_list.append(one_index)
+  return(list(set(index_list)))
+
+
+#
+# Get PCR data from samplesheet JSON file contents.
+#
+# json_data['sample_index_list']['lanes']
+# json_data['sample_index_list']['ranges']
+# json_data['sample_index_list']['p7_file']
+# json_data['sample_index_list']['p5_file']
+#
+def get_data_file_dict(json_data):
+  data_file_dict = {}
+  for sample_index_dict in json_data['sample_index_list']:
+    index_ranges = sample_index_dict['ranges'].split(':')
+    process_group = sample_index_dict['process_group']
+    sample_name = sample_index_dict['sample_id']
+    genome = sample_index_dict['genome']
+    p7_index_list = expand_index_list(index_ranges[1])
+    p5_index_list = expand_index_list(index_ranges[2])
+    lane_index_list = expand_index_list(sample_index_dict['lanes'])
+
+    if(not process_group in data_file_dict):
+      data_file_dict[process_group] = {}
+
+    for p7_index in p7_index_list:
+      for p5_index in p5_index_list:
+        pcr_pair = '%03d_%03d' % (int(p7_index), int(p5_index))
+        if(not pcr_pair in data_file_dict[process_group]):
+          data_file_dict[process_group][pcr_pair] = {}
+        if(not sample_name in data_file_dict[process_group][pcr_pair]):
+          data_file_dict[process_group][pcr_pair][sample_name] = {}
+          data_file_dict[process_group][pcr_pair][sample_name]['genome'] = genome
+          # Temporary memory management
+          if(genome == 'Barnyard'):
+            data_file_dict[process_group][pcr_pair][sample_name]['mem'] = '90'
+          else:
+            data_file_dict[process_group][pcr_pair][sample_name]['mem'] = '48'
+        for lane_index in lane_index_list:
+          data_file_dict[process_group][pcr_pair][sample_name][lane_index] = 1
+  return(data_file_dict)
+
+
+def read_star_genomes_file(file_path):
+  star_genomes_dict = {}
+  with open(file_path, 'r') as fp:
+    for line in fp:
+      line = line.strip()
+      parts = line.split()
+      genome_name = parts[0]
+      genome_path = parts[1]
+      genome_mem  = parts[2]
+      if(not genome_name in star_genomes_dict):
+        star_genomes_dict[genome_name] = {}
+      star_genomes_dict[genome_name]['genome_path'] = genome_path
+      star_genomes_dict[genome_name]['genome_mem']   = genome_mem
+  return(star_genomes_dict)
+    
+
+def make_data_file_json(data_file_dict, star_genomes_dict):
+  star_align_list = []
+  for process_group in data_file_dict.keys():
+    for pcr_pair in data_file_dict[process_group].keys():
+      for sample_name in data_file_dict[process_group][pcr_pair].keys():
+        merge_dict = {}
+        in_file = '%s-%03d_%s.merged.bam' % (sample_name, int(process_group), pcr_pair)
+
+#        genome = '%s/%s' % (genomes_dir, data_file_dict[process_group][pcr_pair][sample_name]['genome'])
+#        mem = data_file_dict[process_group][pcr_pair][sample_name]['mem']
+
+        genome_name = data_file_dict[process_group][pcr_pair][sample_name]['genome']
+        genome      = star_genomes_dict[genome_name]['genome_path']
+        mem         = star_genomes_dict[genome_name]['genome_mem']
+
+        merge_dict['in_file'] = in_file
+        merge_dict['genome'] = genome
+        merge_dict['mem'] = mem
+        star_align_list.append(merge_dict)
+
+  try:
+    filename_json = 'star_align.json'
+    fh = open(filename_json, 'w')
+    json.dump(star_align_list, fh, indent=2)
+  except:
+    print('Error: unable to write output file \"%s\"' % (filename_json), file=sys.stderr)
+    sys.exit(-1)
+
+
+if __name__ == '__main__':
+  parser = argparse.ArgumentParser(description='A program to make JSON file for setting STAR aligner runs.')
+  parser.add_argument('-i', '--input', required=True, default=None, help='Input JSON samplesheet filename (required string).')
+  parser.add_argument('-g', '--genomes_file', required=True, default=None, help='Path to file of STAR aligner genomes data. (required string).')
+  parser.add_argument('-o', '--output', required=False, default=None, help='Output JSON output filename (required string).')
+  parser.add_argument('-v', '--version', required=False, default=None, help='Write version string to stdout.')
+  args = parser.parse_args()
+
+  # Write versions.
+  if( args.version ):
+    print( 'Program version: %s' % ( program_version ) )
+    sys.exit( 0 )
+
+  #
+  # Read input samplesheet file.
+  #
+  json_data = read_json(args.input)
+#  print(json.dumps(json_data['sample_index_list'], indent=2))
+  data_file_dict = get_data_file_dict(json_data)
+
+  star_genomes_dict = read_star_genomes_file(args.genomes_file)
+#  print(json.dumps(data_file_dict, indent=2))
+
+  make_data_file_json(data_file_dict, star_genomes_dict)
+
+
+
