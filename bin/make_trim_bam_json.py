@@ -81,55 +81,30 @@ def get_data_file_dict(json_data):
   return(data_file_dict)
 
 
-def read_star_genomes_file(file_path):
-  star_genomes_dict = {}
-  with open(file_path, 'r') as fp:
-    for line in fp:
-      line = line.strip()
-      parts = line.split()
-      genome_name = parts[0]
-      genome_path = parts[1]
-      genome_mem  = parts[2]
-      if(not genome_name in star_genomes_dict):
-        star_genomes_dict[genome_name] = {}
-      star_genomes_dict[genome_name]['genome_path'] = genome_path
-      star_genomes_dict[genome_name]['genome_mem']   = genome_mem
-  return(star_genomes_dict)
-    
-
-def make_data_file_json(data_file_dict, star_genomes_dict):
-  star_align_list = []
+def make_data_file_json(data_file_dict):
+  trim_bam_list = []
   for process_group in data_file_dict.keys():
     for pcr_pair in data_file_dict[process_group].keys():
       for sample_name in data_file_dict[process_group][pcr_pair].keys():
         merge_dict = {}
-        in_file = '%s-%03d_%s.trimmed.bam' % (sample_name, int(process_group), pcr_pair)
-
-#        genome = '%s/%s' % (genomes_dir, data_file_dict[process_group][pcr_pair][sample_name]['genome'])
-#        mem = data_file_dict[process_group][pcr_pair][sample_name]['mem']
-
-        genome_name = data_file_dict[process_group][pcr_pair][sample_name]['genome']
-        genome      = star_genomes_dict[genome_name]['genome_path']
-        mem         = star_genomes_dict[genome_name]['genome_mem']
-
+        in_file = '%s-%03d_%s.merged.bam' % (sample_name, int(process_group), pcr_pair)
+        out_file = '%s-%03d_%s.trimmed.bam' % (sample_name, int(process_group), pcr_pair)
         merge_dict['in_file'] = in_file
-        merge_dict['genome'] = genome
-        merge_dict['mem'] = mem
-        star_align_list.append(merge_dict)
+        merge_dict['out_file'] = out_file
+        trim_bam_list.append(merge_dict)
 
   try:
-    filename_json = 'star_align.json'
+    filename_json = 'trim_bam.json'
     fh = open(filename_json, 'w')
-    json.dump(star_align_list, fh, indent=2)
+    json.dump(trim_bam_list, fh, indent=2)
   except:
     print('Error: unable to write output file \"%s\"' % (filename_json), file=sys.stderr)
     sys.exit(-1)
 
 
 if __name__ == '__main__':
-  parser = argparse.ArgumentParser(description='A program to make JSON file for setting STAR aligner runs.')
+  parser = argparse.ArgumentParser(description='A program to make JSON file for setting trim BAMs runs.')
   parser.add_argument('-i', '--input', required=True, default=None, help='Input JSON samplesheet filename (required string).')
-  parser.add_argument('-g', '--genomes_file', required=True, default=None, help='Path to file of STAR aligner genomes data. (required string).')
   parser.add_argument('-o', '--output', required=False, default=None, help='Output JSON output filename (required string).')
   parser.add_argument('-v', '--version', required=False, default=None, help='Write version string to stdout.')
   args = parser.parse_args()
@@ -143,13 +118,9 @@ if __name__ == '__main__':
   # Read input samplesheet file.
   #
   json_data = read_json(args.input)
-#  print(json.dumps(json_data['sample_index_list'], indent=2))
   data_file_dict = get_data_file_dict(json_data)
 
-  star_genomes_dict = read_star_genomes_file(args.genomes_file)
-#  print(json.dumps(data_file_dict, indent=2))
-
-  make_data_file_json(data_file_dict, star_genomes_dict)
+  make_data_file_json(data_file_dict)
 
 
 

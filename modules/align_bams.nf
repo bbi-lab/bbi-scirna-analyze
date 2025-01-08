@@ -24,7 +24,6 @@ process align_bams {
   STAR \
       --runThreadN ${align_cpus} \
       --genomeDir ${genome_dir} \
-      --clip3pAdapterSeq polyA \
       --soloCBmatchWLtype Exact \
       --soloType CB_UMI_Simple \
       --soloBarcodeMate 0 \
@@ -84,4 +83,8 @@ process align_bams {
         ${bam_in} \
       --readFilesCommand samtools view \
       --outFileNamePrefix "${out_dir}/"
+
+
+** added bbduk and removed STAR option
+      --clip3pAdapterSeq polyA \
 */

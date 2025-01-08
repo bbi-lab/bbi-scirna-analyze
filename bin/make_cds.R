@@ -1,6 +1,7 @@
 #!/usr/bin/env Rscript
 
 library(monocle3)
+library(ggplot2)
 
 parser = argparse::ArgumentParser(description='Script to make final cds per sample.')
 parser$add_argument('sample_dir', help='Sample dir')
@@ -34,5 +35,8 @@ if(ncol(counts(cds)) >= 51) {
   cds <- reduce_dimension(cds)
   cds <- cluster_cells(cds)
   saveRDS(cds, file=paste0(args$sample_dir, '_cds.rds'))
+  file_name <- paste0('umap.png')
+  ggp_obj <- suppressMessages(plot_cells(cds))
+  ggsave(filename=file_name, ggp_obj, device='png', width=5, height=5, dpi=600, units='in')
 #  save_monocle_objects(cds, directory_path=paste0(args$sample_dir))
 }

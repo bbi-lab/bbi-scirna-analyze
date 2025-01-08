@@ -86,7 +86,7 @@ def make_data_file_json(data_file_dict, bam_path):
         merge_dict.setdefault('in_file_list', in_file_list)
         lane_list = list(set(data_file_dict[process_group][sample_name]['lane_list']))
         for lane_index in lane_list:
-          in_file = '%s/%s-%03d_%s.bam' % (bam_path, sample_name, lane_index, pcr_pair)
+          in_file = '%s/%s-%03d_%s-L%03d.bam' % (bam_path, sample_name, lane_index, pcr_pair, lane_index)
           merge_dict['in_file_list'].append(in_file)
         bam_merge_list.append(merge_dict)
 

@@ -1,0 +1,4610 @@
+[
+  {
+    "in_file": "133.019-001_001_000.merged.bam",
+    "out_file": "133.019-001_001_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_001_000.merged.bam",
+    "out_file": "133.020-001_001_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_001_000.merged.bam",
+    "out_file": "133.021-001_001_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_001_000.merged.bam",
+    "out_file": "133.022-001_001_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_001_000.merged.bam",
+    "out_file": "BAT270-001_001_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_001_000.merged.bam",
+    "out_file": "133.023-001_001_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_001_000.merged.bam",
+    "out_file": "133.024-001_001_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_001_000.merged.bam",
+    "out_file": "133.025-001_001_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_001_000.merged.bam",
+    "out_file": "133.026-001_001_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_001_000.merged.bam",
+    "out_file": "Barnyard-001_001_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_001_000.merged.bam",
+    "out_file": "Sentinel-001_001_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_001_000.merged.bam",
+    "out_file": "Keyhole-001_001_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_002_000.merged.bam",
+    "out_file": "133.019-001_002_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_002_000.merged.bam",
+    "out_file": "133.020-001_002_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_002_000.merged.bam",
+    "out_file": "133.021-001_002_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_002_000.merged.bam",
+    "out_file": "133.022-001_002_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_002_000.merged.bam",
+    "out_file": "BAT270-001_002_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_002_000.merged.bam",
+    "out_file": "133.023-001_002_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_002_000.merged.bam",
+    "out_file": "133.024-001_002_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_002_000.merged.bam",
+    "out_file": "133.025-001_002_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_002_000.merged.bam",
+    "out_file": "133.026-001_002_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_002_000.merged.bam",
+    "out_file": "Barnyard-001_002_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_002_000.merged.bam",
+    "out_file": "Sentinel-001_002_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_002_000.merged.bam",
+    "out_file": "Keyhole-001_002_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_003_000.merged.bam",
+    "out_file": "133.019-001_003_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_003_000.merged.bam",
+    "out_file": "133.020-001_003_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_003_000.merged.bam",
+    "out_file": "133.021-001_003_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_003_000.merged.bam",
+    "out_file": "133.022-001_003_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_003_000.merged.bam",
+    "out_file": "BAT270-001_003_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_003_000.merged.bam",
+    "out_file": "133.023-001_003_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_003_000.merged.bam",
+    "out_file": "133.024-001_003_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_003_000.merged.bam",
+    "out_file": "133.025-001_003_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_003_000.merged.bam",
+    "out_file": "133.026-001_003_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_003_000.merged.bam",
+    "out_file": "Barnyard-001_003_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_003_000.merged.bam",
+    "out_file": "Sentinel-001_003_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_003_000.merged.bam",
+    "out_file": "Keyhole-001_003_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_004_000.merged.bam",
+    "out_file": "133.019-001_004_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_004_000.merged.bam",
+    "out_file": "133.020-001_004_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_004_000.merged.bam",
+    "out_file": "133.021-001_004_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_004_000.merged.bam",
+    "out_file": "133.022-001_004_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_004_000.merged.bam",
+    "out_file": "BAT270-001_004_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_004_000.merged.bam",
+    "out_file": "133.023-001_004_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_004_000.merged.bam",
+    "out_file": "133.024-001_004_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_004_000.merged.bam",
+    "out_file": "133.025-001_004_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_004_000.merged.bam",
+    "out_file": "133.026-001_004_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_004_000.merged.bam",
+    "out_file": "Barnyard-001_004_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_004_000.merged.bam",
+    "out_file": "Sentinel-001_004_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_004_000.merged.bam",
+    "out_file": "Keyhole-001_004_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_005_000.merged.bam",
+    "out_file": "133.019-001_005_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_005_000.merged.bam",
+    "out_file": "133.020-001_005_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_005_000.merged.bam",
+    "out_file": "133.021-001_005_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_005_000.merged.bam",
+    "out_file": "133.022-001_005_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_005_000.merged.bam",
+    "out_file": "BAT270-001_005_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_005_000.merged.bam",
+    "out_file": "133.023-001_005_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_005_000.merged.bam",
+    "out_file": "133.024-001_005_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_005_000.merged.bam",
+    "out_file": "133.025-001_005_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_005_000.merged.bam",
+    "out_file": "133.026-001_005_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_005_000.merged.bam",
+    "out_file": "Barnyard-001_005_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_005_000.merged.bam",
+    "out_file": "Sentinel-001_005_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_005_000.merged.bam",
+    "out_file": "Keyhole-001_005_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_006_000.merged.bam",
+    "out_file": "133.019-001_006_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_006_000.merged.bam",
+    "out_file": "133.020-001_006_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_006_000.merged.bam",
+    "out_file": "133.021-001_006_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_006_000.merged.bam",
+    "out_file": "133.022-001_006_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_006_000.merged.bam",
+    "out_file": "BAT270-001_006_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_006_000.merged.bam",
+    "out_file": "133.023-001_006_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_006_000.merged.bam",
+    "out_file": "133.024-001_006_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_006_000.merged.bam",
+    "out_file": "133.025-001_006_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_006_000.merged.bam",
+    "out_file": "133.026-001_006_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_006_000.merged.bam",
+    "out_file": "Barnyard-001_006_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_006_000.merged.bam",
+    "out_file": "Sentinel-001_006_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_006_000.merged.bam",
+    "out_file": "Keyhole-001_006_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_007_000.merged.bam",
+    "out_file": "133.019-001_007_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_007_000.merged.bam",
+    "out_file": "133.020-001_007_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_007_000.merged.bam",
+    "out_file": "133.021-001_007_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_007_000.merged.bam",
+    "out_file": "133.022-001_007_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_007_000.merged.bam",
+    "out_file": "BAT270-001_007_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_007_000.merged.bam",
+    "out_file": "133.023-001_007_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_007_000.merged.bam",
+    "out_file": "133.024-001_007_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_007_000.merged.bam",
+    "out_file": "133.025-001_007_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_007_000.merged.bam",
+    "out_file": "133.026-001_007_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_007_000.merged.bam",
+    "out_file": "Barnyard-001_007_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_007_000.merged.bam",
+    "out_file": "Sentinel-001_007_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_007_000.merged.bam",
+    "out_file": "Keyhole-001_007_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_008_000.merged.bam",
+    "out_file": "133.019-001_008_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_008_000.merged.bam",
+    "out_file": "133.020-001_008_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_008_000.merged.bam",
+    "out_file": "133.021-001_008_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_008_000.merged.bam",
+    "out_file": "133.022-001_008_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_008_000.merged.bam",
+    "out_file": "BAT270-001_008_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_008_000.merged.bam",
+    "out_file": "133.023-001_008_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_008_000.merged.bam",
+    "out_file": "133.024-001_008_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_008_000.merged.bam",
+    "out_file": "133.025-001_008_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_008_000.merged.bam",
+    "out_file": "133.026-001_008_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_008_000.merged.bam",
+    "out_file": "Barnyard-001_008_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_008_000.merged.bam",
+    "out_file": "Sentinel-001_008_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_008_000.merged.bam",
+    "out_file": "Keyhole-001_008_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_009_000.merged.bam",
+    "out_file": "133.019-001_009_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_009_000.merged.bam",
+    "out_file": "133.020-001_009_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_009_000.merged.bam",
+    "out_file": "133.021-001_009_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_009_000.merged.bam",
+    "out_file": "133.022-001_009_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_009_000.merged.bam",
+    "out_file": "BAT270-001_009_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_009_000.merged.bam",
+    "out_file": "133.023-001_009_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_009_000.merged.bam",
+    "out_file": "133.024-001_009_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_009_000.merged.bam",
+    "out_file": "133.025-001_009_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_009_000.merged.bam",
+    "out_file": "133.026-001_009_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_009_000.merged.bam",
+    "out_file": "Barnyard-001_009_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_009_000.merged.bam",
+    "out_file": "Sentinel-001_009_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_009_000.merged.bam",
+    "out_file": "Keyhole-001_009_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_010_000.merged.bam",
+    "out_file": "133.019-001_010_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_010_000.merged.bam",
+    "out_file": "133.020-001_010_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_010_000.merged.bam",
+    "out_file": "133.021-001_010_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_010_000.merged.bam",
+    "out_file": "133.022-001_010_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_010_000.merged.bam",
+    "out_file": "BAT270-001_010_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_010_000.merged.bam",
+    "out_file": "133.023-001_010_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_010_000.merged.bam",
+    "out_file": "133.024-001_010_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_010_000.merged.bam",
+    "out_file": "133.025-001_010_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_010_000.merged.bam",
+    "out_file": "133.026-001_010_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_010_000.merged.bam",
+    "out_file": "Barnyard-001_010_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_010_000.merged.bam",
+    "out_file": "Sentinel-001_010_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_010_000.merged.bam",
+    "out_file": "Keyhole-001_010_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_011_000.merged.bam",
+    "out_file": "133.019-001_011_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_011_000.merged.bam",
+    "out_file": "133.020-001_011_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_011_000.merged.bam",
+    "out_file": "133.021-001_011_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_011_000.merged.bam",
+    "out_file": "133.022-001_011_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_011_000.merged.bam",
+    "out_file": "BAT270-001_011_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_011_000.merged.bam",
+    "out_file": "133.023-001_011_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_011_000.merged.bam",
+    "out_file": "133.024-001_011_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_011_000.merged.bam",
+    "out_file": "133.025-001_011_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_011_000.merged.bam",
+    "out_file": "133.026-001_011_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_011_000.merged.bam",
+    "out_file": "Barnyard-001_011_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_011_000.merged.bam",
+    "out_file": "Sentinel-001_011_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_011_000.merged.bam",
+    "out_file": "Keyhole-001_011_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_012_000.merged.bam",
+    "out_file": "133.019-001_012_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_012_000.merged.bam",
+    "out_file": "133.020-001_012_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_012_000.merged.bam",
+    "out_file": "133.021-001_012_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_012_000.merged.bam",
+    "out_file": "133.022-001_012_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_012_000.merged.bam",
+    "out_file": "BAT270-001_012_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_012_000.merged.bam",
+    "out_file": "133.023-001_012_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_012_000.merged.bam",
+    "out_file": "133.024-001_012_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_012_000.merged.bam",
+    "out_file": "133.025-001_012_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_012_000.merged.bam",
+    "out_file": "133.026-001_012_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_012_000.merged.bam",
+    "out_file": "Barnyard-001_012_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_012_000.merged.bam",
+    "out_file": "Sentinel-001_012_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_012_000.merged.bam",
+    "out_file": "Keyhole-001_012_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_013_000.merged.bam",
+    "out_file": "133.019-001_013_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_013_000.merged.bam",
+    "out_file": "133.020-001_013_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_013_000.merged.bam",
+    "out_file": "133.021-001_013_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_013_000.merged.bam",
+    "out_file": "133.022-001_013_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_013_000.merged.bam",
+    "out_file": "BAT270-001_013_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_013_000.merged.bam",
+    "out_file": "133.023-001_013_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_013_000.merged.bam",
+    "out_file": "133.024-001_013_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_013_000.merged.bam",
+    "out_file": "133.025-001_013_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_013_000.merged.bam",
+    "out_file": "133.026-001_013_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_013_000.merged.bam",
+    "out_file": "Barnyard-001_013_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_013_000.merged.bam",
+    "out_file": "Sentinel-001_013_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_013_000.merged.bam",
+    "out_file": "Keyhole-001_013_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_014_000.merged.bam",
+    "out_file": "133.019-001_014_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_014_000.merged.bam",
+    "out_file": "133.020-001_014_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_014_000.merged.bam",
+    "out_file": "133.021-001_014_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_014_000.merged.bam",
+    "out_file": "133.022-001_014_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_014_000.merged.bam",
+    "out_file": "BAT270-001_014_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_014_000.merged.bam",
+    "out_file": "133.023-001_014_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_014_000.merged.bam",
+    "out_file": "133.024-001_014_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_014_000.merged.bam",
+    "out_file": "133.025-001_014_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_014_000.merged.bam",
+    "out_file": "133.026-001_014_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_014_000.merged.bam",
+    "out_file": "Barnyard-001_014_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_014_000.merged.bam",
+    "out_file": "Sentinel-001_014_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_014_000.merged.bam",
+    "out_file": "Keyhole-001_014_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_015_000.merged.bam",
+    "out_file": "133.019-001_015_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_015_000.merged.bam",
+    "out_file": "133.020-001_015_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_015_000.merged.bam",
+    "out_file": "133.021-001_015_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_015_000.merged.bam",
+    "out_file": "133.022-001_015_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_015_000.merged.bam",
+    "out_file": "BAT270-001_015_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_015_000.merged.bam",
+    "out_file": "133.023-001_015_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_015_000.merged.bam",
+    "out_file": "133.024-001_015_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_015_000.merged.bam",
+    "out_file": "133.025-001_015_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_015_000.merged.bam",
+    "out_file": "133.026-001_015_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_015_000.merged.bam",
+    "out_file": "Barnyard-001_015_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_015_000.merged.bam",
+    "out_file": "Sentinel-001_015_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_015_000.merged.bam",
+    "out_file": "Keyhole-001_015_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_016_000.merged.bam",
+    "out_file": "133.019-001_016_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_016_000.merged.bam",
+    "out_file": "133.020-001_016_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_016_000.merged.bam",
+    "out_file": "133.021-001_016_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_016_000.merged.bam",
+    "out_file": "133.022-001_016_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_016_000.merged.bam",
+    "out_file": "BAT270-001_016_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_016_000.merged.bam",
+    "out_file": "133.023-001_016_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_016_000.merged.bam",
+    "out_file": "133.024-001_016_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_016_000.merged.bam",
+    "out_file": "133.025-001_016_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_016_000.merged.bam",
+    "out_file": "133.026-001_016_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_016_000.merged.bam",
+    "out_file": "Barnyard-001_016_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_016_000.merged.bam",
+    "out_file": "Sentinel-001_016_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_016_000.merged.bam",
+    "out_file": "Keyhole-001_016_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_017_000.merged.bam",
+    "out_file": "133.019-001_017_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_017_000.merged.bam",
+    "out_file": "133.020-001_017_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_017_000.merged.bam",
+    "out_file": "133.021-001_017_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_017_000.merged.bam",
+    "out_file": "133.022-001_017_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_017_000.merged.bam",
+    "out_file": "BAT270-001_017_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_017_000.merged.bam",
+    "out_file": "133.023-001_017_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_017_000.merged.bam",
+    "out_file": "133.024-001_017_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_017_000.merged.bam",
+    "out_file": "133.025-001_017_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_017_000.merged.bam",
+    "out_file": "133.026-001_017_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_017_000.merged.bam",
+    "out_file": "Barnyard-001_017_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_017_000.merged.bam",
+    "out_file": "Sentinel-001_017_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_017_000.merged.bam",
+    "out_file": "Keyhole-001_017_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_018_000.merged.bam",
+    "out_file": "133.019-001_018_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_018_000.merged.bam",
+    "out_file": "133.020-001_018_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_018_000.merged.bam",
+    "out_file": "133.021-001_018_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_018_000.merged.bam",
+    "out_file": "133.022-001_018_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_018_000.merged.bam",
+    "out_file": "BAT270-001_018_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_018_000.merged.bam",
+    "out_file": "133.023-001_018_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_018_000.merged.bam",
+    "out_file": "133.024-001_018_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_018_000.merged.bam",
+    "out_file": "133.025-001_018_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_018_000.merged.bam",
+    "out_file": "133.026-001_018_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_018_000.merged.bam",
+    "out_file": "Barnyard-001_018_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_018_000.merged.bam",
+    "out_file": "Sentinel-001_018_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_018_000.merged.bam",
+    "out_file": "Keyhole-001_018_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_019_000.merged.bam",
+    "out_file": "133.019-001_019_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_019_000.merged.bam",
+    "out_file": "133.020-001_019_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_019_000.merged.bam",
+    "out_file": "133.021-001_019_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_019_000.merged.bam",
+    "out_file": "133.022-001_019_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_019_000.merged.bam",
+    "out_file": "BAT270-001_019_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_019_000.merged.bam",
+    "out_file": "133.023-001_019_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_019_000.merged.bam",
+    "out_file": "133.024-001_019_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_019_000.merged.bam",
+    "out_file": "133.025-001_019_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_019_000.merged.bam",
+    "out_file": "133.026-001_019_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_019_000.merged.bam",
+    "out_file": "Barnyard-001_019_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_019_000.merged.bam",
+    "out_file": "Sentinel-001_019_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_019_000.merged.bam",
+    "out_file": "Keyhole-001_019_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_020_000.merged.bam",
+    "out_file": "133.019-001_020_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_020_000.merged.bam",
+    "out_file": "133.020-001_020_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_020_000.merged.bam",
+    "out_file": "133.021-001_020_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_020_000.merged.bam",
+    "out_file": "133.022-001_020_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_020_000.merged.bam",
+    "out_file": "BAT270-001_020_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_020_000.merged.bam",
+    "out_file": "133.023-001_020_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_020_000.merged.bam",
+    "out_file": "133.024-001_020_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_020_000.merged.bam",
+    "out_file": "133.025-001_020_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_020_000.merged.bam",
+    "out_file": "133.026-001_020_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_020_000.merged.bam",
+    "out_file": "Barnyard-001_020_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_020_000.merged.bam",
+    "out_file": "Sentinel-001_020_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_020_000.merged.bam",
+    "out_file": "Keyhole-001_020_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_021_000.merged.bam",
+    "out_file": "133.019-001_021_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_021_000.merged.bam",
+    "out_file": "133.020-001_021_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_021_000.merged.bam",
+    "out_file": "133.021-001_021_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_021_000.merged.bam",
+    "out_file": "133.022-001_021_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_021_000.merged.bam",
+    "out_file": "BAT270-001_021_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_021_000.merged.bam",
+    "out_file": "133.023-001_021_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_021_000.merged.bam",
+    "out_file": "133.024-001_021_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_021_000.merged.bam",
+    "out_file": "133.025-001_021_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_021_000.merged.bam",
+    "out_file": "133.026-001_021_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_021_000.merged.bam",
+    "out_file": "Barnyard-001_021_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_021_000.merged.bam",
+    "out_file": "Sentinel-001_021_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_021_000.merged.bam",
+    "out_file": "Keyhole-001_021_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_022_000.merged.bam",
+    "out_file": "133.019-001_022_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_022_000.merged.bam",
+    "out_file": "133.020-001_022_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_022_000.merged.bam",
+    "out_file": "133.021-001_022_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_022_000.merged.bam",
+    "out_file": "133.022-001_022_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_022_000.merged.bam",
+    "out_file": "BAT270-001_022_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_022_000.merged.bam",
+    "out_file": "133.023-001_022_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_022_000.merged.bam",
+    "out_file": "133.024-001_022_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_022_000.merged.bam",
+    "out_file": "133.025-001_022_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_022_000.merged.bam",
+    "out_file": "133.026-001_022_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_022_000.merged.bam",
+    "out_file": "Barnyard-001_022_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_022_000.merged.bam",
+    "out_file": "Sentinel-001_022_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_022_000.merged.bam",
+    "out_file": "Keyhole-001_022_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_023_000.merged.bam",
+    "out_file": "133.019-001_023_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_023_000.merged.bam",
+    "out_file": "133.020-001_023_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_023_000.merged.bam",
+    "out_file": "133.021-001_023_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_023_000.merged.bam",
+    "out_file": "133.022-001_023_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_023_000.merged.bam",
+    "out_file": "BAT270-001_023_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_023_000.merged.bam",
+    "out_file": "133.023-001_023_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_023_000.merged.bam",
+    "out_file": "133.024-001_023_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_023_000.merged.bam",
+    "out_file": "133.025-001_023_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_023_000.merged.bam",
+    "out_file": "133.026-001_023_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_023_000.merged.bam",
+    "out_file": "Barnyard-001_023_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_023_000.merged.bam",
+    "out_file": "Sentinel-001_023_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_023_000.merged.bam",
+    "out_file": "Keyhole-001_023_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_024_000.merged.bam",
+    "out_file": "133.019-001_024_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_024_000.merged.bam",
+    "out_file": "133.020-001_024_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_024_000.merged.bam",
+    "out_file": "133.021-001_024_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_024_000.merged.bam",
+    "out_file": "133.022-001_024_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_024_000.merged.bam",
+    "out_file": "BAT270-001_024_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_024_000.merged.bam",
+    "out_file": "133.023-001_024_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_024_000.merged.bam",
+    "out_file": "133.024-001_024_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_024_000.merged.bam",
+    "out_file": "133.025-001_024_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_024_000.merged.bam",
+    "out_file": "133.026-001_024_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_024_000.merged.bam",
+    "out_file": "Barnyard-001_024_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_024_000.merged.bam",
+    "out_file": "Sentinel-001_024_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_024_000.merged.bam",
+    "out_file": "Keyhole-001_024_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_025_000.merged.bam",
+    "out_file": "133.019-001_025_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_025_000.merged.bam",
+    "out_file": "133.020-001_025_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_025_000.merged.bam",
+    "out_file": "133.021-001_025_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_025_000.merged.bam",
+    "out_file": "133.022-001_025_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_025_000.merged.bam",
+    "out_file": "BAT270-001_025_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_025_000.merged.bam",
+    "out_file": "133.023-001_025_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_025_000.merged.bam",
+    "out_file": "133.024-001_025_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_025_000.merged.bam",
+    "out_file": "133.025-001_025_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_025_000.merged.bam",
+    "out_file": "133.026-001_025_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_025_000.merged.bam",
+    "out_file": "Barnyard-001_025_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_025_000.merged.bam",
+    "out_file": "Sentinel-001_025_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_025_000.merged.bam",
+    "out_file": "Keyhole-001_025_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_026_000.merged.bam",
+    "out_file": "133.019-001_026_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_026_000.merged.bam",
+    "out_file": "133.020-001_026_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_026_000.merged.bam",
+    "out_file": "133.021-001_026_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_026_000.merged.bam",
+    "out_file": "133.022-001_026_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_026_000.merged.bam",
+    "out_file": "BAT270-001_026_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_026_000.merged.bam",
+    "out_file": "133.023-001_026_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_026_000.merged.bam",
+    "out_file": "133.024-001_026_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_026_000.merged.bam",
+    "out_file": "133.025-001_026_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_026_000.merged.bam",
+    "out_file": "133.026-001_026_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_026_000.merged.bam",
+    "out_file": "Barnyard-001_026_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_026_000.merged.bam",
+    "out_file": "Sentinel-001_026_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_026_000.merged.bam",
+    "out_file": "Keyhole-001_026_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_027_000.merged.bam",
+    "out_file": "133.019-001_027_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_027_000.merged.bam",
+    "out_file": "133.020-001_027_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_027_000.merged.bam",
+    "out_file": "133.021-001_027_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_027_000.merged.bam",
+    "out_file": "133.022-001_027_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_027_000.merged.bam",
+    "out_file": "BAT270-001_027_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_027_000.merged.bam",
+    "out_file": "133.023-001_027_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_027_000.merged.bam",
+    "out_file": "133.024-001_027_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_027_000.merged.bam",
+    "out_file": "133.025-001_027_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_027_000.merged.bam",
+    "out_file": "133.026-001_027_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_027_000.merged.bam",
+    "out_file": "Barnyard-001_027_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_027_000.merged.bam",
+    "out_file": "Sentinel-001_027_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_027_000.merged.bam",
+    "out_file": "Keyhole-001_027_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_028_000.merged.bam",
+    "out_file": "133.019-001_028_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_028_000.merged.bam",
+    "out_file": "133.020-001_028_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_028_000.merged.bam",
+    "out_file": "133.021-001_028_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_028_000.merged.bam",
+    "out_file": "133.022-001_028_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_028_000.merged.bam",
+    "out_file": "BAT270-001_028_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_028_000.merged.bam",
+    "out_file": "133.023-001_028_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_028_000.merged.bam",
+    "out_file": "133.024-001_028_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_028_000.merged.bam",
+    "out_file": "133.025-001_028_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_028_000.merged.bam",
+    "out_file": "133.026-001_028_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_028_000.merged.bam",
+    "out_file": "Barnyard-001_028_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_028_000.merged.bam",
+    "out_file": "Sentinel-001_028_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_028_000.merged.bam",
+    "out_file": "Keyhole-001_028_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_029_000.merged.bam",
+    "out_file": "133.019-001_029_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_029_000.merged.bam",
+    "out_file": "133.020-001_029_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_029_000.merged.bam",
+    "out_file": "133.021-001_029_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_029_000.merged.bam",
+    "out_file": "133.022-001_029_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_029_000.merged.bam",
+    "out_file": "BAT270-001_029_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_029_000.merged.bam",
+    "out_file": "133.023-001_029_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_029_000.merged.bam",
+    "out_file": "133.024-001_029_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_029_000.merged.bam",
+    "out_file": "133.025-001_029_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_029_000.merged.bam",
+    "out_file": "133.026-001_029_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_029_000.merged.bam",
+    "out_file": "Barnyard-001_029_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_029_000.merged.bam",
+    "out_file": "Sentinel-001_029_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_029_000.merged.bam",
+    "out_file": "Keyhole-001_029_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_030_000.merged.bam",
+    "out_file": "133.019-001_030_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_030_000.merged.bam",
+    "out_file": "133.020-001_030_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_030_000.merged.bam",
+    "out_file": "133.021-001_030_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_030_000.merged.bam",
+    "out_file": "133.022-001_030_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_030_000.merged.bam",
+    "out_file": "BAT270-001_030_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_030_000.merged.bam",
+    "out_file": "133.023-001_030_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_030_000.merged.bam",
+    "out_file": "133.024-001_030_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_030_000.merged.bam",
+    "out_file": "133.025-001_030_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_030_000.merged.bam",
+    "out_file": "133.026-001_030_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_030_000.merged.bam",
+    "out_file": "Barnyard-001_030_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_030_000.merged.bam",
+    "out_file": "Sentinel-001_030_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_030_000.merged.bam",
+    "out_file": "Keyhole-001_030_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_031_000.merged.bam",
+    "out_file": "133.019-001_031_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_031_000.merged.bam",
+    "out_file": "133.020-001_031_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_031_000.merged.bam",
+    "out_file": "133.021-001_031_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_031_000.merged.bam",
+    "out_file": "133.022-001_031_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_031_000.merged.bam",
+    "out_file": "BAT270-001_031_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_031_000.merged.bam",
+    "out_file": "133.023-001_031_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_031_000.merged.bam",
+    "out_file": "133.024-001_031_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_031_000.merged.bam",
+    "out_file": "133.025-001_031_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_031_000.merged.bam",
+    "out_file": "133.026-001_031_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_031_000.merged.bam",
+    "out_file": "Barnyard-001_031_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_031_000.merged.bam",
+    "out_file": "Sentinel-001_031_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_031_000.merged.bam",
+    "out_file": "Keyhole-001_031_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_032_000.merged.bam",
+    "out_file": "133.019-001_032_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_032_000.merged.bam",
+    "out_file": "133.020-001_032_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_032_000.merged.bam",
+    "out_file": "133.021-001_032_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_032_000.merged.bam",
+    "out_file": "133.022-001_032_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_032_000.merged.bam",
+    "out_file": "BAT270-001_032_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_032_000.merged.bam",
+    "out_file": "133.023-001_032_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_032_000.merged.bam",
+    "out_file": "133.024-001_032_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_032_000.merged.bam",
+    "out_file": "133.025-001_032_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_032_000.merged.bam",
+    "out_file": "133.026-001_032_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_032_000.merged.bam",
+    "out_file": "Barnyard-001_032_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_032_000.merged.bam",
+    "out_file": "Sentinel-001_032_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_032_000.merged.bam",
+    "out_file": "Keyhole-001_032_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_033_000.merged.bam",
+    "out_file": "133.019-001_033_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_033_000.merged.bam",
+    "out_file": "133.020-001_033_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_033_000.merged.bam",
+    "out_file": "133.021-001_033_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_033_000.merged.bam",
+    "out_file": "133.022-001_033_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_033_000.merged.bam",
+    "out_file": "BAT270-001_033_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_033_000.merged.bam",
+    "out_file": "133.023-001_033_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_033_000.merged.bam",
+    "out_file": "133.024-001_033_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_033_000.merged.bam",
+    "out_file": "133.025-001_033_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_033_000.merged.bam",
+    "out_file": "133.026-001_033_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_033_000.merged.bam",
+    "out_file": "Barnyard-001_033_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_033_000.merged.bam",
+    "out_file": "Sentinel-001_033_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_033_000.merged.bam",
+    "out_file": "Keyhole-001_033_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_034_000.merged.bam",
+    "out_file": "133.019-001_034_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_034_000.merged.bam",
+    "out_file": "133.020-001_034_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_034_000.merged.bam",
+    "out_file": "133.021-001_034_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_034_000.merged.bam",
+    "out_file": "133.022-001_034_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_034_000.merged.bam",
+    "out_file": "BAT270-001_034_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_034_000.merged.bam",
+    "out_file": "133.023-001_034_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_034_000.merged.bam",
+    "out_file": "133.024-001_034_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_034_000.merged.bam",
+    "out_file": "133.025-001_034_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_034_000.merged.bam",
+    "out_file": "133.026-001_034_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_034_000.merged.bam",
+    "out_file": "Barnyard-001_034_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_034_000.merged.bam",
+    "out_file": "Sentinel-001_034_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_034_000.merged.bam",
+    "out_file": "Keyhole-001_034_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_035_000.merged.bam",
+    "out_file": "133.019-001_035_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_035_000.merged.bam",
+    "out_file": "133.020-001_035_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_035_000.merged.bam",
+    "out_file": "133.021-001_035_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_035_000.merged.bam",
+    "out_file": "133.022-001_035_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_035_000.merged.bam",
+    "out_file": "BAT270-001_035_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_035_000.merged.bam",
+    "out_file": "133.023-001_035_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_035_000.merged.bam",
+    "out_file": "133.024-001_035_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_035_000.merged.bam",
+    "out_file": "133.025-001_035_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_035_000.merged.bam",
+    "out_file": "133.026-001_035_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_035_000.merged.bam",
+    "out_file": "Barnyard-001_035_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_035_000.merged.bam",
+    "out_file": "Sentinel-001_035_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_035_000.merged.bam",
+    "out_file": "Keyhole-001_035_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_036_000.merged.bam",
+    "out_file": "133.019-001_036_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_036_000.merged.bam",
+    "out_file": "133.020-001_036_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_036_000.merged.bam",
+    "out_file": "133.021-001_036_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_036_000.merged.bam",
+    "out_file": "133.022-001_036_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_036_000.merged.bam",
+    "out_file": "BAT270-001_036_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_036_000.merged.bam",
+    "out_file": "133.023-001_036_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_036_000.merged.bam",
+    "out_file": "133.024-001_036_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_036_000.merged.bam",
+    "out_file": "133.025-001_036_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_036_000.merged.bam",
+    "out_file": "133.026-001_036_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_036_000.merged.bam",
+    "out_file": "Barnyard-001_036_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_036_000.merged.bam",
+    "out_file": "Sentinel-001_036_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_036_000.merged.bam",
+    "out_file": "Keyhole-001_036_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_037_000.merged.bam",
+    "out_file": "133.019-001_037_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_037_000.merged.bam",
+    "out_file": "133.020-001_037_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_037_000.merged.bam",
+    "out_file": "133.021-001_037_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_037_000.merged.bam",
+    "out_file": "133.022-001_037_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_037_000.merged.bam",
+    "out_file": "BAT270-001_037_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_037_000.merged.bam",
+    "out_file": "133.023-001_037_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_037_000.merged.bam",
+    "out_file": "133.024-001_037_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_037_000.merged.bam",
+    "out_file": "133.025-001_037_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_037_000.merged.bam",
+    "out_file": "133.026-001_037_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_037_000.merged.bam",
+    "out_file": "Barnyard-001_037_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_037_000.merged.bam",
+    "out_file": "Sentinel-001_037_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_037_000.merged.bam",
+    "out_file": "Keyhole-001_037_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_038_000.merged.bam",
+    "out_file": "133.019-001_038_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_038_000.merged.bam",
+    "out_file": "133.020-001_038_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_038_000.merged.bam",
+    "out_file": "133.021-001_038_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_038_000.merged.bam",
+    "out_file": "133.022-001_038_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_038_000.merged.bam",
+    "out_file": "BAT270-001_038_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_038_000.merged.bam",
+    "out_file": "133.023-001_038_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_038_000.merged.bam",
+    "out_file": "133.024-001_038_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_038_000.merged.bam",
+    "out_file": "133.025-001_038_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_038_000.merged.bam",
+    "out_file": "133.026-001_038_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_038_000.merged.bam",
+    "out_file": "Barnyard-001_038_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_038_000.merged.bam",
+    "out_file": "Sentinel-001_038_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_038_000.merged.bam",
+    "out_file": "Keyhole-001_038_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_039_000.merged.bam",
+    "out_file": "133.019-001_039_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_039_000.merged.bam",
+    "out_file": "133.020-001_039_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_039_000.merged.bam",
+    "out_file": "133.021-001_039_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_039_000.merged.bam",
+    "out_file": "133.022-001_039_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_039_000.merged.bam",
+    "out_file": "BAT270-001_039_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_039_000.merged.bam",
+    "out_file": "133.023-001_039_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_039_000.merged.bam",
+    "out_file": "133.024-001_039_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_039_000.merged.bam",
+    "out_file": "133.025-001_039_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_039_000.merged.bam",
+    "out_file": "133.026-001_039_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_039_000.merged.bam",
+    "out_file": "Barnyard-001_039_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_039_000.merged.bam",
+    "out_file": "Sentinel-001_039_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_039_000.merged.bam",
+    "out_file": "Keyhole-001_039_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_040_000.merged.bam",
+    "out_file": "133.019-001_040_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_040_000.merged.bam",
+    "out_file": "133.020-001_040_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_040_000.merged.bam",
+    "out_file": "133.021-001_040_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_040_000.merged.bam",
+    "out_file": "133.022-001_040_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_040_000.merged.bam",
+    "out_file": "BAT270-001_040_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_040_000.merged.bam",
+    "out_file": "133.023-001_040_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_040_000.merged.bam",
+    "out_file": "133.024-001_040_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_040_000.merged.bam",
+    "out_file": "133.025-001_040_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_040_000.merged.bam",
+    "out_file": "133.026-001_040_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_040_000.merged.bam",
+    "out_file": "Barnyard-001_040_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_040_000.merged.bam",
+    "out_file": "Sentinel-001_040_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_040_000.merged.bam",
+    "out_file": "Keyhole-001_040_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_041_000.merged.bam",
+    "out_file": "133.019-001_041_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_041_000.merged.bam",
+    "out_file": "133.020-001_041_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_041_000.merged.bam",
+    "out_file": "133.021-001_041_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_041_000.merged.bam",
+    "out_file": "133.022-001_041_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_041_000.merged.bam",
+    "out_file": "BAT270-001_041_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_041_000.merged.bam",
+    "out_file": "133.023-001_041_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_041_000.merged.bam",
+    "out_file": "133.024-001_041_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_041_000.merged.bam",
+    "out_file": "133.025-001_041_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_041_000.merged.bam",
+    "out_file": "133.026-001_041_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_041_000.merged.bam",
+    "out_file": "Barnyard-001_041_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_041_000.merged.bam",
+    "out_file": "Sentinel-001_041_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_041_000.merged.bam",
+    "out_file": "Keyhole-001_041_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_042_000.merged.bam",
+    "out_file": "133.019-001_042_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_042_000.merged.bam",
+    "out_file": "133.020-001_042_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_042_000.merged.bam",
+    "out_file": "133.021-001_042_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_042_000.merged.bam",
+    "out_file": "133.022-001_042_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_042_000.merged.bam",
+    "out_file": "BAT270-001_042_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_042_000.merged.bam",
+    "out_file": "133.023-001_042_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_042_000.merged.bam",
+    "out_file": "133.024-001_042_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_042_000.merged.bam",
+    "out_file": "133.025-001_042_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_042_000.merged.bam",
+    "out_file": "133.026-001_042_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_042_000.merged.bam",
+    "out_file": "Barnyard-001_042_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_042_000.merged.bam",
+    "out_file": "Sentinel-001_042_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_042_000.merged.bam",
+    "out_file": "Keyhole-001_042_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_043_000.merged.bam",
+    "out_file": "133.019-001_043_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_043_000.merged.bam",
+    "out_file": "133.020-001_043_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_043_000.merged.bam",
+    "out_file": "133.021-001_043_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_043_000.merged.bam",
+    "out_file": "133.022-001_043_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_043_000.merged.bam",
+    "out_file": "BAT270-001_043_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_043_000.merged.bam",
+    "out_file": "133.023-001_043_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_043_000.merged.bam",
+    "out_file": "133.024-001_043_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_043_000.merged.bam",
+    "out_file": "133.025-001_043_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_043_000.merged.bam",
+    "out_file": "133.026-001_043_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_043_000.merged.bam",
+    "out_file": "Barnyard-001_043_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_043_000.merged.bam",
+    "out_file": "Sentinel-001_043_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_043_000.merged.bam",
+    "out_file": "Keyhole-001_043_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_044_000.merged.bam",
+    "out_file": "133.019-001_044_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_044_000.merged.bam",
+    "out_file": "133.020-001_044_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_044_000.merged.bam",
+    "out_file": "133.021-001_044_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_044_000.merged.bam",
+    "out_file": "133.022-001_044_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_044_000.merged.bam",
+    "out_file": "BAT270-001_044_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_044_000.merged.bam",
+    "out_file": "133.023-001_044_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_044_000.merged.bam",
+    "out_file": "133.024-001_044_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_044_000.merged.bam",
+    "out_file": "133.025-001_044_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_044_000.merged.bam",
+    "out_file": "133.026-001_044_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_044_000.merged.bam",
+    "out_file": "Barnyard-001_044_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_044_000.merged.bam",
+    "out_file": "Sentinel-001_044_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_044_000.merged.bam",
+    "out_file": "Keyhole-001_044_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_045_000.merged.bam",
+    "out_file": "133.019-001_045_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_045_000.merged.bam",
+    "out_file": "133.020-001_045_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_045_000.merged.bam",
+    "out_file": "133.021-001_045_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_045_000.merged.bam",
+    "out_file": "133.022-001_045_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_045_000.merged.bam",
+    "out_file": "BAT270-001_045_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_045_000.merged.bam",
+    "out_file": "133.023-001_045_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_045_000.merged.bam",
+    "out_file": "133.024-001_045_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_045_000.merged.bam",
+    "out_file": "133.025-001_045_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_045_000.merged.bam",
+    "out_file": "133.026-001_045_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_045_000.merged.bam",
+    "out_file": "Barnyard-001_045_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_045_000.merged.bam",
+    "out_file": "Sentinel-001_045_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_045_000.merged.bam",
+    "out_file": "Keyhole-001_045_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_046_000.merged.bam",
+    "out_file": "133.019-001_046_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_046_000.merged.bam",
+    "out_file": "133.020-001_046_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_046_000.merged.bam",
+    "out_file": "133.021-001_046_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_046_000.merged.bam",
+    "out_file": "133.022-001_046_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_046_000.merged.bam",
+    "out_file": "BAT270-001_046_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_046_000.merged.bam",
+    "out_file": "133.023-001_046_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_046_000.merged.bam",
+    "out_file": "133.024-001_046_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_046_000.merged.bam",
+    "out_file": "133.025-001_046_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_046_000.merged.bam",
+    "out_file": "133.026-001_046_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_046_000.merged.bam",
+    "out_file": "Barnyard-001_046_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_046_000.merged.bam",
+    "out_file": "Sentinel-001_046_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_046_000.merged.bam",
+    "out_file": "Keyhole-001_046_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_047_000.merged.bam",
+    "out_file": "133.019-001_047_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_047_000.merged.bam",
+    "out_file": "133.020-001_047_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_047_000.merged.bam",
+    "out_file": "133.021-001_047_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_047_000.merged.bam",
+    "out_file": "133.022-001_047_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_047_000.merged.bam",
+    "out_file": "BAT270-001_047_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_047_000.merged.bam",
+    "out_file": "133.023-001_047_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_047_000.merged.bam",
+    "out_file": "133.024-001_047_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_047_000.merged.bam",
+    "out_file": "133.025-001_047_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_047_000.merged.bam",
+    "out_file": "133.026-001_047_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_047_000.merged.bam",
+    "out_file": "Barnyard-001_047_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_047_000.merged.bam",
+    "out_file": "Sentinel-001_047_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_047_000.merged.bam",
+    "out_file": "Keyhole-001_047_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_048_000.merged.bam",
+    "out_file": "133.019-001_048_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_048_000.merged.bam",
+    "out_file": "133.020-001_048_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_048_000.merged.bam",
+    "out_file": "133.021-001_048_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_048_000.merged.bam",
+    "out_file": "133.022-001_048_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_048_000.merged.bam",
+    "out_file": "BAT270-001_048_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_048_000.merged.bam",
+    "out_file": "133.023-001_048_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_048_000.merged.bam",
+    "out_file": "133.024-001_048_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_048_000.merged.bam",
+    "out_file": "133.025-001_048_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_048_000.merged.bam",
+    "out_file": "133.026-001_048_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_048_000.merged.bam",
+    "out_file": "Barnyard-001_048_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_048_000.merged.bam",
+    "out_file": "Sentinel-001_048_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_048_000.merged.bam",
+    "out_file": "Keyhole-001_048_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_049_000.merged.bam",
+    "out_file": "133.019-001_049_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_049_000.merged.bam",
+    "out_file": "133.020-001_049_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_049_000.merged.bam",
+    "out_file": "133.021-001_049_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_049_000.merged.bam",
+    "out_file": "133.022-001_049_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_049_000.merged.bam",
+    "out_file": "BAT270-001_049_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_049_000.merged.bam",
+    "out_file": "133.023-001_049_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_049_000.merged.bam",
+    "out_file": "133.024-001_049_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_049_000.merged.bam",
+    "out_file": "133.025-001_049_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_049_000.merged.bam",
+    "out_file": "133.026-001_049_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_049_000.merged.bam",
+    "out_file": "Barnyard-001_049_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_049_000.merged.bam",
+    "out_file": "Sentinel-001_049_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_049_000.merged.bam",
+    "out_file": "Keyhole-001_049_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_050_000.merged.bam",
+    "out_file": "133.019-001_050_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_050_000.merged.bam",
+    "out_file": "133.020-001_050_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_050_000.merged.bam",
+    "out_file": "133.021-001_050_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_050_000.merged.bam",
+    "out_file": "133.022-001_050_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_050_000.merged.bam",
+    "out_file": "BAT270-001_050_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_050_000.merged.bam",
+    "out_file": "133.023-001_050_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_050_000.merged.bam",
+    "out_file": "133.024-001_050_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_050_000.merged.bam",
+    "out_file": "133.025-001_050_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_050_000.merged.bam",
+    "out_file": "133.026-001_050_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_050_000.merged.bam",
+    "out_file": "Barnyard-001_050_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_050_000.merged.bam",
+    "out_file": "Sentinel-001_050_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_050_000.merged.bam",
+    "out_file": "Keyhole-001_050_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_051_000.merged.bam",
+    "out_file": "133.019-001_051_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_051_000.merged.bam",
+    "out_file": "133.020-001_051_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_051_000.merged.bam",
+    "out_file": "133.021-001_051_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_051_000.merged.bam",
+    "out_file": "133.022-001_051_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_051_000.merged.bam",
+    "out_file": "BAT270-001_051_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_051_000.merged.bam",
+    "out_file": "133.023-001_051_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_051_000.merged.bam",
+    "out_file": "133.024-001_051_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_051_000.merged.bam",
+    "out_file": "133.025-001_051_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_051_000.merged.bam",
+    "out_file": "133.026-001_051_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_051_000.merged.bam",
+    "out_file": "Barnyard-001_051_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_051_000.merged.bam",
+    "out_file": "Sentinel-001_051_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_051_000.merged.bam",
+    "out_file": "Keyhole-001_051_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_052_000.merged.bam",
+    "out_file": "133.019-001_052_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_052_000.merged.bam",
+    "out_file": "133.020-001_052_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_052_000.merged.bam",
+    "out_file": "133.021-001_052_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_052_000.merged.bam",
+    "out_file": "133.022-001_052_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_052_000.merged.bam",
+    "out_file": "BAT270-001_052_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_052_000.merged.bam",
+    "out_file": "133.023-001_052_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_052_000.merged.bam",
+    "out_file": "133.024-001_052_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_052_000.merged.bam",
+    "out_file": "133.025-001_052_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_052_000.merged.bam",
+    "out_file": "133.026-001_052_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_052_000.merged.bam",
+    "out_file": "Barnyard-001_052_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_052_000.merged.bam",
+    "out_file": "Sentinel-001_052_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_052_000.merged.bam",
+    "out_file": "Keyhole-001_052_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_053_000.merged.bam",
+    "out_file": "133.019-001_053_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_053_000.merged.bam",
+    "out_file": "133.020-001_053_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_053_000.merged.bam",
+    "out_file": "133.021-001_053_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_053_000.merged.bam",
+    "out_file": "133.022-001_053_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_053_000.merged.bam",
+    "out_file": "BAT270-001_053_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_053_000.merged.bam",
+    "out_file": "133.023-001_053_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_053_000.merged.bam",
+    "out_file": "133.024-001_053_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_053_000.merged.bam",
+    "out_file": "133.025-001_053_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_053_000.merged.bam",
+    "out_file": "133.026-001_053_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_053_000.merged.bam",
+    "out_file": "Barnyard-001_053_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_053_000.merged.bam",
+    "out_file": "Sentinel-001_053_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_053_000.merged.bam",
+    "out_file": "Keyhole-001_053_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_054_000.merged.bam",
+    "out_file": "133.019-001_054_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_054_000.merged.bam",
+    "out_file": "133.020-001_054_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_054_000.merged.bam",
+    "out_file": "133.021-001_054_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_054_000.merged.bam",
+    "out_file": "133.022-001_054_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_054_000.merged.bam",
+    "out_file": "BAT270-001_054_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_054_000.merged.bam",
+    "out_file": "133.023-001_054_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_054_000.merged.bam",
+    "out_file": "133.024-001_054_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_054_000.merged.bam",
+    "out_file": "133.025-001_054_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_054_000.merged.bam",
+    "out_file": "133.026-001_054_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_054_000.merged.bam",
+    "out_file": "Barnyard-001_054_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_054_000.merged.bam",
+    "out_file": "Sentinel-001_054_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_054_000.merged.bam",
+    "out_file": "Keyhole-001_054_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_055_000.merged.bam",
+    "out_file": "133.019-001_055_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_055_000.merged.bam",
+    "out_file": "133.020-001_055_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_055_000.merged.bam",
+    "out_file": "133.021-001_055_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_055_000.merged.bam",
+    "out_file": "133.022-001_055_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_055_000.merged.bam",
+    "out_file": "BAT270-001_055_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_055_000.merged.bam",
+    "out_file": "133.023-001_055_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_055_000.merged.bam",
+    "out_file": "133.024-001_055_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_055_000.merged.bam",
+    "out_file": "133.025-001_055_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_055_000.merged.bam",
+    "out_file": "133.026-001_055_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_055_000.merged.bam",
+    "out_file": "Barnyard-001_055_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_055_000.merged.bam",
+    "out_file": "Sentinel-001_055_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_055_000.merged.bam",
+    "out_file": "Keyhole-001_055_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_056_000.merged.bam",
+    "out_file": "133.019-001_056_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_056_000.merged.bam",
+    "out_file": "133.020-001_056_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_056_000.merged.bam",
+    "out_file": "133.021-001_056_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_056_000.merged.bam",
+    "out_file": "133.022-001_056_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_056_000.merged.bam",
+    "out_file": "BAT270-001_056_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_056_000.merged.bam",
+    "out_file": "133.023-001_056_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_056_000.merged.bam",
+    "out_file": "133.024-001_056_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_056_000.merged.bam",
+    "out_file": "133.025-001_056_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_056_000.merged.bam",
+    "out_file": "133.026-001_056_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_056_000.merged.bam",
+    "out_file": "Barnyard-001_056_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_056_000.merged.bam",
+    "out_file": "Sentinel-001_056_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_056_000.merged.bam",
+    "out_file": "Keyhole-001_056_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_057_000.merged.bam",
+    "out_file": "133.019-001_057_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_057_000.merged.bam",
+    "out_file": "133.020-001_057_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_057_000.merged.bam",
+    "out_file": "133.021-001_057_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_057_000.merged.bam",
+    "out_file": "133.022-001_057_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_057_000.merged.bam",
+    "out_file": "BAT270-001_057_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_057_000.merged.bam",
+    "out_file": "133.023-001_057_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_057_000.merged.bam",
+    "out_file": "133.024-001_057_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_057_000.merged.bam",
+    "out_file": "133.025-001_057_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_057_000.merged.bam",
+    "out_file": "133.026-001_057_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_057_000.merged.bam",
+    "out_file": "Barnyard-001_057_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_057_000.merged.bam",
+    "out_file": "Sentinel-001_057_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_057_000.merged.bam",
+    "out_file": "Keyhole-001_057_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_058_000.merged.bam",
+    "out_file": "133.019-001_058_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_058_000.merged.bam",
+    "out_file": "133.020-001_058_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_058_000.merged.bam",
+    "out_file": "133.021-001_058_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_058_000.merged.bam",
+    "out_file": "133.022-001_058_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_058_000.merged.bam",
+    "out_file": "BAT270-001_058_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_058_000.merged.bam",
+    "out_file": "133.023-001_058_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_058_000.merged.bam",
+    "out_file": "133.024-001_058_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_058_000.merged.bam",
+    "out_file": "133.025-001_058_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_058_000.merged.bam",
+    "out_file": "133.026-001_058_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_058_000.merged.bam",
+    "out_file": "Barnyard-001_058_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_058_000.merged.bam",
+    "out_file": "Sentinel-001_058_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_058_000.merged.bam",
+    "out_file": "Keyhole-001_058_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_059_000.merged.bam",
+    "out_file": "133.019-001_059_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_059_000.merged.bam",
+    "out_file": "133.020-001_059_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_059_000.merged.bam",
+    "out_file": "133.021-001_059_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_059_000.merged.bam",
+    "out_file": "133.022-001_059_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_059_000.merged.bam",
+    "out_file": "BAT270-001_059_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_059_000.merged.bam",
+    "out_file": "133.023-001_059_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_059_000.merged.bam",
+    "out_file": "133.024-001_059_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_059_000.merged.bam",
+    "out_file": "133.025-001_059_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_059_000.merged.bam",
+    "out_file": "133.026-001_059_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_059_000.merged.bam",
+    "out_file": "Barnyard-001_059_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_059_000.merged.bam",
+    "out_file": "Sentinel-001_059_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_059_000.merged.bam",
+    "out_file": "Keyhole-001_059_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_060_000.merged.bam",
+    "out_file": "133.019-001_060_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_060_000.merged.bam",
+    "out_file": "133.020-001_060_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_060_000.merged.bam",
+    "out_file": "133.021-001_060_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_060_000.merged.bam",
+    "out_file": "133.022-001_060_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_060_000.merged.bam",
+    "out_file": "BAT270-001_060_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_060_000.merged.bam",
+    "out_file": "133.023-001_060_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_060_000.merged.bam",
+    "out_file": "133.024-001_060_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_060_000.merged.bam",
+    "out_file": "133.025-001_060_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_060_000.merged.bam",
+    "out_file": "133.026-001_060_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_060_000.merged.bam",
+    "out_file": "Barnyard-001_060_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_060_000.merged.bam",
+    "out_file": "Sentinel-001_060_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_060_000.merged.bam",
+    "out_file": "Keyhole-001_060_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_061_000.merged.bam",
+    "out_file": "133.019-001_061_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_061_000.merged.bam",
+    "out_file": "133.020-001_061_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_061_000.merged.bam",
+    "out_file": "133.021-001_061_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_061_000.merged.bam",
+    "out_file": "133.022-001_061_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_061_000.merged.bam",
+    "out_file": "BAT270-001_061_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_061_000.merged.bam",
+    "out_file": "133.023-001_061_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_061_000.merged.bam",
+    "out_file": "133.024-001_061_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_061_000.merged.bam",
+    "out_file": "133.025-001_061_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_061_000.merged.bam",
+    "out_file": "133.026-001_061_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_061_000.merged.bam",
+    "out_file": "Barnyard-001_061_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_061_000.merged.bam",
+    "out_file": "Sentinel-001_061_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_061_000.merged.bam",
+    "out_file": "Keyhole-001_061_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_062_000.merged.bam",
+    "out_file": "133.019-001_062_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_062_000.merged.bam",
+    "out_file": "133.020-001_062_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_062_000.merged.bam",
+    "out_file": "133.021-001_062_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_062_000.merged.bam",
+    "out_file": "133.022-001_062_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_062_000.merged.bam",
+    "out_file": "BAT270-001_062_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_062_000.merged.bam",
+    "out_file": "133.023-001_062_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_062_000.merged.bam",
+    "out_file": "133.024-001_062_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_062_000.merged.bam",
+    "out_file": "133.025-001_062_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_062_000.merged.bam",
+    "out_file": "133.026-001_062_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_062_000.merged.bam",
+    "out_file": "Barnyard-001_062_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_062_000.merged.bam",
+    "out_file": "Sentinel-001_062_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_062_000.merged.bam",
+    "out_file": "Keyhole-001_062_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_063_000.merged.bam",
+    "out_file": "133.019-001_063_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_063_000.merged.bam",
+    "out_file": "133.020-001_063_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_063_000.merged.bam",
+    "out_file": "133.021-001_063_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_063_000.merged.bam",
+    "out_file": "133.022-001_063_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_063_000.merged.bam",
+    "out_file": "BAT270-001_063_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_063_000.merged.bam",
+    "out_file": "133.023-001_063_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_063_000.merged.bam",
+    "out_file": "133.024-001_063_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_063_000.merged.bam",
+    "out_file": "133.025-001_063_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_063_000.merged.bam",
+    "out_file": "133.026-001_063_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_063_000.merged.bam",
+    "out_file": "Barnyard-001_063_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_063_000.merged.bam",
+    "out_file": "Sentinel-001_063_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_063_000.merged.bam",
+    "out_file": "Keyhole-001_063_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_064_000.merged.bam",
+    "out_file": "133.019-001_064_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_064_000.merged.bam",
+    "out_file": "133.020-001_064_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_064_000.merged.bam",
+    "out_file": "133.021-001_064_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_064_000.merged.bam",
+    "out_file": "133.022-001_064_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_064_000.merged.bam",
+    "out_file": "BAT270-001_064_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_064_000.merged.bam",
+    "out_file": "133.023-001_064_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_064_000.merged.bam",
+    "out_file": "133.024-001_064_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_064_000.merged.bam",
+    "out_file": "133.025-001_064_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_064_000.merged.bam",
+    "out_file": "133.026-001_064_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_064_000.merged.bam",
+    "out_file": "Barnyard-001_064_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_064_000.merged.bam",
+    "out_file": "Sentinel-001_064_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_064_000.merged.bam",
+    "out_file": "Keyhole-001_064_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_065_000.merged.bam",
+    "out_file": "133.019-001_065_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_065_000.merged.bam",
+    "out_file": "133.020-001_065_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_065_000.merged.bam",
+    "out_file": "133.021-001_065_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_065_000.merged.bam",
+    "out_file": "133.022-001_065_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_065_000.merged.bam",
+    "out_file": "BAT270-001_065_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_065_000.merged.bam",
+    "out_file": "133.023-001_065_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_065_000.merged.bam",
+    "out_file": "133.024-001_065_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_065_000.merged.bam",
+    "out_file": "133.025-001_065_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_065_000.merged.bam",
+    "out_file": "133.026-001_065_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_065_000.merged.bam",
+    "out_file": "Barnyard-001_065_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_065_000.merged.bam",
+    "out_file": "Sentinel-001_065_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_065_000.merged.bam",
+    "out_file": "Keyhole-001_065_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_066_000.merged.bam",
+    "out_file": "133.019-001_066_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_066_000.merged.bam",
+    "out_file": "133.020-001_066_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_066_000.merged.bam",
+    "out_file": "133.021-001_066_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_066_000.merged.bam",
+    "out_file": "133.022-001_066_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_066_000.merged.bam",
+    "out_file": "BAT270-001_066_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_066_000.merged.bam",
+    "out_file": "133.023-001_066_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_066_000.merged.bam",
+    "out_file": "133.024-001_066_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_066_000.merged.bam",
+    "out_file": "133.025-001_066_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_066_000.merged.bam",
+    "out_file": "133.026-001_066_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_066_000.merged.bam",
+    "out_file": "Barnyard-001_066_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_066_000.merged.bam",
+    "out_file": "Sentinel-001_066_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_066_000.merged.bam",
+    "out_file": "Keyhole-001_066_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_067_000.merged.bam",
+    "out_file": "133.019-001_067_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_067_000.merged.bam",
+    "out_file": "133.020-001_067_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_067_000.merged.bam",
+    "out_file": "133.021-001_067_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_067_000.merged.bam",
+    "out_file": "133.022-001_067_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_067_000.merged.bam",
+    "out_file": "BAT270-001_067_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_067_000.merged.bam",
+    "out_file": "133.023-001_067_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_067_000.merged.bam",
+    "out_file": "133.024-001_067_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_067_000.merged.bam",
+    "out_file": "133.025-001_067_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_067_000.merged.bam",
+    "out_file": "133.026-001_067_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_067_000.merged.bam",
+    "out_file": "Barnyard-001_067_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_067_000.merged.bam",
+    "out_file": "Sentinel-001_067_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_067_000.merged.bam",
+    "out_file": "Keyhole-001_067_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_068_000.merged.bam",
+    "out_file": "133.019-001_068_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_068_000.merged.bam",
+    "out_file": "133.020-001_068_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_068_000.merged.bam",
+    "out_file": "133.021-001_068_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_068_000.merged.bam",
+    "out_file": "133.022-001_068_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_068_000.merged.bam",
+    "out_file": "BAT270-001_068_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_068_000.merged.bam",
+    "out_file": "133.023-001_068_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_068_000.merged.bam",
+    "out_file": "133.024-001_068_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_068_000.merged.bam",
+    "out_file": "133.025-001_068_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_068_000.merged.bam",
+    "out_file": "133.026-001_068_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_068_000.merged.bam",
+    "out_file": "Barnyard-001_068_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_068_000.merged.bam",
+    "out_file": "Sentinel-001_068_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_068_000.merged.bam",
+    "out_file": "Keyhole-001_068_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_069_000.merged.bam",
+    "out_file": "133.019-001_069_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_069_000.merged.bam",
+    "out_file": "133.020-001_069_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_069_000.merged.bam",
+    "out_file": "133.021-001_069_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_069_000.merged.bam",
+    "out_file": "133.022-001_069_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_069_000.merged.bam",
+    "out_file": "BAT270-001_069_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_069_000.merged.bam",
+    "out_file": "133.023-001_069_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_069_000.merged.bam",
+    "out_file": "133.024-001_069_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_069_000.merged.bam",
+    "out_file": "133.025-001_069_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_069_000.merged.bam",
+    "out_file": "133.026-001_069_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_069_000.merged.bam",
+    "out_file": "Barnyard-001_069_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_069_000.merged.bam",
+    "out_file": "Sentinel-001_069_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_069_000.merged.bam",
+    "out_file": "Keyhole-001_069_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_070_000.merged.bam",
+    "out_file": "133.019-001_070_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_070_000.merged.bam",
+    "out_file": "133.020-001_070_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_070_000.merged.bam",
+    "out_file": "133.021-001_070_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_070_000.merged.bam",
+    "out_file": "133.022-001_070_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_070_000.merged.bam",
+    "out_file": "BAT270-001_070_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_070_000.merged.bam",
+    "out_file": "133.023-001_070_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_070_000.merged.bam",
+    "out_file": "133.024-001_070_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_070_000.merged.bam",
+    "out_file": "133.025-001_070_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_070_000.merged.bam",
+    "out_file": "133.026-001_070_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_070_000.merged.bam",
+    "out_file": "Barnyard-001_070_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_070_000.merged.bam",
+    "out_file": "Sentinel-001_070_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_070_000.merged.bam",
+    "out_file": "Keyhole-001_070_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_071_000.merged.bam",
+    "out_file": "133.019-001_071_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_071_000.merged.bam",
+    "out_file": "133.020-001_071_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_071_000.merged.bam",
+    "out_file": "133.021-001_071_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_071_000.merged.bam",
+    "out_file": "133.022-001_071_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_071_000.merged.bam",
+    "out_file": "BAT270-001_071_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_071_000.merged.bam",
+    "out_file": "133.023-001_071_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_071_000.merged.bam",
+    "out_file": "133.024-001_071_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_071_000.merged.bam",
+    "out_file": "133.025-001_071_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_071_000.merged.bam",
+    "out_file": "133.026-001_071_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_071_000.merged.bam",
+    "out_file": "Barnyard-001_071_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_071_000.merged.bam",
+    "out_file": "Sentinel-001_071_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_071_000.merged.bam",
+    "out_file": "Keyhole-001_071_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_072_000.merged.bam",
+    "out_file": "133.019-001_072_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_072_000.merged.bam",
+    "out_file": "133.020-001_072_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_072_000.merged.bam",
+    "out_file": "133.021-001_072_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_072_000.merged.bam",
+    "out_file": "133.022-001_072_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_072_000.merged.bam",
+    "out_file": "BAT270-001_072_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_072_000.merged.bam",
+    "out_file": "133.023-001_072_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_072_000.merged.bam",
+    "out_file": "133.024-001_072_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_072_000.merged.bam",
+    "out_file": "133.025-001_072_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_072_000.merged.bam",
+    "out_file": "133.026-001_072_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_072_000.merged.bam",
+    "out_file": "Barnyard-001_072_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_072_000.merged.bam",
+    "out_file": "Sentinel-001_072_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_072_000.merged.bam",
+    "out_file": "Keyhole-001_072_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_073_000.merged.bam",
+    "out_file": "133.019-001_073_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_073_000.merged.bam",
+    "out_file": "133.020-001_073_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_073_000.merged.bam",
+    "out_file": "133.021-001_073_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_073_000.merged.bam",
+    "out_file": "133.022-001_073_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_073_000.merged.bam",
+    "out_file": "BAT270-001_073_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_073_000.merged.bam",
+    "out_file": "133.023-001_073_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_073_000.merged.bam",
+    "out_file": "133.024-001_073_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_073_000.merged.bam",
+    "out_file": "133.025-001_073_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_073_000.merged.bam",
+    "out_file": "133.026-001_073_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_073_000.merged.bam",
+    "out_file": "Barnyard-001_073_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_073_000.merged.bam",
+    "out_file": "Sentinel-001_073_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_073_000.merged.bam",
+    "out_file": "Keyhole-001_073_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_074_000.merged.bam",
+    "out_file": "133.019-001_074_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_074_000.merged.bam",
+    "out_file": "133.020-001_074_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_074_000.merged.bam",
+    "out_file": "133.021-001_074_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_074_000.merged.bam",
+    "out_file": "133.022-001_074_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_074_000.merged.bam",
+    "out_file": "BAT270-001_074_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_074_000.merged.bam",
+    "out_file": "133.023-001_074_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_074_000.merged.bam",
+    "out_file": "133.024-001_074_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_074_000.merged.bam",
+    "out_file": "133.025-001_074_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_074_000.merged.bam",
+    "out_file": "133.026-001_074_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_074_000.merged.bam",
+    "out_file": "Barnyard-001_074_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_074_000.merged.bam",
+    "out_file": "Sentinel-001_074_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_074_000.merged.bam",
+    "out_file": "Keyhole-001_074_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_075_000.merged.bam",
+    "out_file": "133.019-001_075_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_075_000.merged.bam",
+    "out_file": "133.020-001_075_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_075_000.merged.bam",
+    "out_file": "133.021-001_075_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_075_000.merged.bam",
+    "out_file": "133.022-001_075_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_075_000.merged.bam",
+    "out_file": "BAT270-001_075_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_075_000.merged.bam",
+    "out_file": "133.023-001_075_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_075_000.merged.bam",
+    "out_file": "133.024-001_075_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_075_000.merged.bam",
+    "out_file": "133.025-001_075_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_075_000.merged.bam",
+    "out_file": "133.026-001_075_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_075_000.merged.bam",
+    "out_file": "Barnyard-001_075_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_075_000.merged.bam",
+    "out_file": "Sentinel-001_075_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_075_000.merged.bam",
+    "out_file": "Keyhole-001_075_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_076_000.merged.bam",
+    "out_file": "133.019-001_076_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_076_000.merged.bam",
+    "out_file": "133.020-001_076_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_076_000.merged.bam",
+    "out_file": "133.021-001_076_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_076_000.merged.bam",
+    "out_file": "133.022-001_076_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_076_000.merged.bam",
+    "out_file": "BAT270-001_076_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_076_000.merged.bam",
+    "out_file": "133.023-001_076_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_076_000.merged.bam",
+    "out_file": "133.024-001_076_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_076_000.merged.bam",
+    "out_file": "133.025-001_076_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_076_000.merged.bam",
+    "out_file": "133.026-001_076_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_076_000.merged.bam",
+    "out_file": "Barnyard-001_076_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_076_000.merged.bam",
+    "out_file": "Sentinel-001_076_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_076_000.merged.bam",
+    "out_file": "Keyhole-001_076_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_077_000.merged.bam",
+    "out_file": "133.019-001_077_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_077_000.merged.bam",
+    "out_file": "133.020-001_077_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_077_000.merged.bam",
+    "out_file": "133.021-001_077_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_077_000.merged.bam",
+    "out_file": "133.022-001_077_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_077_000.merged.bam",
+    "out_file": "BAT270-001_077_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_077_000.merged.bam",
+    "out_file": "133.023-001_077_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_077_000.merged.bam",
+    "out_file": "133.024-001_077_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_077_000.merged.bam",
+    "out_file": "133.025-001_077_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_077_000.merged.bam",
+    "out_file": "133.026-001_077_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_077_000.merged.bam",
+    "out_file": "Barnyard-001_077_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_077_000.merged.bam",
+    "out_file": "Sentinel-001_077_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_077_000.merged.bam",
+    "out_file": "Keyhole-001_077_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_078_000.merged.bam",
+    "out_file": "133.019-001_078_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_078_000.merged.bam",
+    "out_file": "133.020-001_078_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_078_000.merged.bam",
+    "out_file": "133.021-001_078_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_078_000.merged.bam",
+    "out_file": "133.022-001_078_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_078_000.merged.bam",
+    "out_file": "BAT270-001_078_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_078_000.merged.bam",
+    "out_file": "133.023-001_078_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_078_000.merged.bam",
+    "out_file": "133.024-001_078_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_078_000.merged.bam",
+    "out_file": "133.025-001_078_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_078_000.merged.bam",
+    "out_file": "133.026-001_078_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_078_000.merged.bam",
+    "out_file": "Barnyard-001_078_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_078_000.merged.bam",
+    "out_file": "Sentinel-001_078_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_078_000.merged.bam",
+    "out_file": "Keyhole-001_078_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_079_000.merged.bam",
+    "out_file": "133.019-001_079_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_079_000.merged.bam",
+    "out_file": "133.020-001_079_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_079_000.merged.bam",
+    "out_file": "133.021-001_079_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_079_000.merged.bam",
+    "out_file": "133.022-001_079_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_079_000.merged.bam",
+    "out_file": "BAT270-001_079_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_079_000.merged.bam",
+    "out_file": "133.023-001_079_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_079_000.merged.bam",
+    "out_file": "133.024-001_079_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_079_000.merged.bam",
+    "out_file": "133.025-001_079_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_079_000.merged.bam",
+    "out_file": "133.026-001_079_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_079_000.merged.bam",
+    "out_file": "Barnyard-001_079_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_079_000.merged.bam",
+    "out_file": "Sentinel-001_079_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_079_000.merged.bam",
+    "out_file": "Keyhole-001_079_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_080_000.merged.bam",
+    "out_file": "133.019-001_080_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_080_000.merged.bam",
+    "out_file": "133.020-001_080_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_080_000.merged.bam",
+    "out_file": "133.021-001_080_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_080_000.merged.bam",
+    "out_file": "133.022-001_080_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_080_000.merged.bam",
+    "out_file": "BAT270-001_080_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_080_000.merged.bam",
+    "out_file": "133.023-001_080_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_080_000.merged.bam",
+    "out_file": "133.024-001_080_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_080_000.merged.bam",
+    "out_file": "133.025-001_080_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_080_000.merged.bam",
+    "out_file": "133.026-001_080_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_080_000.merged.bam",
+    "out_file": "Barnyard-001_080_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_080_000.merged.bam",
+    "out_file": "Sentinel-001_080_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_080_000.merged.bam",
+    "out_file": "Keyhole-001_080_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_081_000.merged.bam",
+    "out_file": "133.019-001_081_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_081_000.merged.bam",
+    "out_file": "133.020-001_081_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_081_000.merged.bam",
+    "out_file": "133.021-001_081_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_081_000.merged.bam",
+    "out_file": "133.022-001_081_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_081_000.merged.bam",
+    "out_file": "BAT270-001_081_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_081_000.merged.bam",
+    "out_file": "133.023-001_081_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_081_000.merged.bam",
+    "out_file": "133.024-001_081_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_081_000.merged.bam",
+    "out_file": "133.025-001_081_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_081_000.merged.bam",
+    "out_file": "133.026-001_081_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_081_000.merged.bam",
+    "out_file": "Barnyard-001_081_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_081_000.merged.bam",
+    "out_file": "Sentinel-001_081_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_081_000.merged.bam",
+    "out_file": "Keyhole-001_081_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_082_000.merged.bam",
+    "out_file": "133.019-001_082_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_082_000.merged.bam",
+    "out_file": "133.020-001_082_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_082_000.merged.bam",
+    "out_file": "133.021-001_082_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_082_000.merged.bam",
+    "out_file": "133.022-001_082_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_082_000.merged.bam",
+    "out_file": "BAT270-001_082_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_082_000.merged.bam",
+    "out_file": "133.023-001_082_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_082_000.merged.bam",
+    "out_file": "133.024-001_082_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_082_000.merged.bam",
+    "out_file": "133.025-001_082_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_082_000.merged.bam",
+    "out_file": "133.026-001_082_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_082_000.merged.bam",
+    "out_file": "Barnyard-001_082_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_082_000.merged.bam",
+    "out_file": "Sentinel-001_082_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_082_000.merged.bam",
+    "out_file": "Keyhole-001_082_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_083_000.merged.bam",
+    "out_file": "133.019-001_083_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_083_000.merged.bam",
+    "out_file": "133.020-001_083_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_083_000.merged.bam",
+    "out_file": "133.021-001_083_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_083_000.merged.bam",
+    "out_file": "133.022-001_083_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_083_000.merged.bam",
+    "out_file": "BAT270-001_083_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_083_000.merged.bam",
+    "out_file": "133.023-001_083_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_083_000.merged.bam",
+    "out_file": "133.024-001_083_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_083_000.merged.bam",
+    "out_file": "133.025-001_083_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_083_000.merged.bam",
+    "out_file": "133.026-001_083_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_083_000.merged.bam",
+    "out_file": "Barnyard-001_083_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_083_000.merged.bam",
+    "out_file": "Sentinel-001_083_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_083_000.merged.bam",
+    "out_file": "Keyhole-001_083_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_084_000.merged.bam",
+    "out_file": "133.019-001_084_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_084_000.merged.bam",
+    "out_file": "133.020-001_084_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_084_000.merged.bam",
+    "out_file": "133.021-001_084_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_084_000.merged.bam",
+    "out_file": "133.022-001_084_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_084_000.merged.bam",
+    "out_file": "BAT270-001_084_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_084_000.merged.bam",
+    "out_file": "133.023-001_084_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_084_000.merged.bam",
+    "out_file": "133.024-001_084_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_084_000.merged.bam",
+    "out_file": "133.025-001_084_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_084_000.merged.bam",
+    "out_file": "133.026-001_084_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_084_000.merged.bam",
+    "out_file": "Barnyard-001_084_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_084_000.merged.bam",
+    "out_file": "Sentinel-001_084_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_084_000.merged.bam",
+    "out_file": "Keyhole-001_084_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_085_000.merged.bam",
+    "out_file": "133.019-001_085_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_085_000.merged.bam",
+    "out_file": "133.020-001_085_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_085_000.merged.bam",
+    "out_file": "133.021-001_085_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_085_000.merged.bam",
+    "out_file": "133.022-001_085_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_085_000.merged.bam",
+    "out_file": "BAT270-001_085_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_085_000.merged.bam",
+    "out_file": "133.023-001_085_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_085_000.merged.bam",
+    "out_file": "133.024-001_085_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_085_000.merged.bam",
+    "out_file": "133.025-001_085_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_085_000.merged.bam",
+    "out_file": "133.026-001_085_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_085_000.merged.bam",
+    "out_file": "Barnyard-001_085_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_085_000.merged.bam",
+    "out_file": "Sentinel-001_085_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_085_000.merged.bam",
+    "out_file": "Keyhole-001_085_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_086_000.merged.bam",
+    "out_file": "133.019-001_086_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_086_000.merged.bam",
+    "out_file": "133.020-001_086_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_086_000.merged.bam",
+    "out_file": "133.021-001_086_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_086_000.merged.bam",
+    "out_file": "133.022-001_086_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_086_000.merged.bam",
+    "out_file": "BAT270-001_086_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_086_000.merged.bam",
+    "out_file": "133.023-001_086_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_086_000.merged.bam",
+    "out_file": "133.024-001_086_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_086_000.merged.bam",
+    "out_file": "133.025-001_086_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_086_000.merged.bam",
+    "out_file": "133.026-001_086_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_086_000.merged.bam",
+    "out_file": "Barnyard-001_086_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_086_000.merged.bam",
+    "out_file": "Sentinel-001_086_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_086_000.merged.bam",
+    "out_file": "Keyhole-001_086_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_087_000.merged.bam",
+    "out_file": "133.019-001_087_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_087_000.merged.bam",
+    "out_file": "133.020-001_087_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_087_000.merged.bam",
+    "out_file": "133.021-001_087_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_087_000.merged.bam",
+    "out_file": "133.022-001_087_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_087_000.merged.bam",
+    "out_file": "BAT270-001_087_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_087_000.merged.bam",
+    "out_file": "133.023-001_087_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_087_000.merged.bam",
+    "out_file": "133.024-001_087_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_087_000.merged.bam",
+    "out_file": "133.025-001_087_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_087_000.merged.bam",
+    "out_file": "133.026-001_087_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_087_000.merged.bam",
+    "out_file": "Barnyard-001_087_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_087_000.merged.bam",
+    "out_file": "Sentinel-001_087_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_087_000.merged.bam",
+    "out_file": "Keyhole-001_087_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_088_000.merged.bam",
+    "out_file": "133.019-001_088_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_088_000.merged.bam",
+    "out_file": "133.020-001_088_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_088_000.merged.bam",
+    "out_file": "133.021-001_088_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_088_000.merged.bam",
+    "out_file": "133.022-001_088_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_088_000.merged.bam",
+    "out_file": "BAT270-001_088_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_088_000.merged.bam",
+    "out_file": "133.023-001_088_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_088_000.merged.bam",
+    "out_file": "133.024-001_088_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_088_000.merged.bam",
+    "out_file": "133.025-001_088_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_088_000.merged.bam",
+    "out_file": "133.026-001_088_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_088_000.merged.bam",
+    "out_file": "Barnyard-001_088_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_088_000.merged.bam",
+    "out_file": "Sentinel-001_088_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_088_000.merged.bam",
+    "out_file": "Keyhole-001_088_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_089_000.merged.bam",
+    "out_file": "133.019-001_089_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_089_000.merged.bam",
+    "out_file": "133.020-001_089_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_089_000.merged.bam",
+    "out_file": "133.021-001_089_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_089_000.merged.bam",
+    "out_file": "133.022-001_089_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_089_000.merged.bam",
+    "out_file": "BAT270-001_089_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_089_000.merged.bam",
+    "out_file": "133.023-001_089_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_089_000.merged.bam",
+    "out_file": "133.024-001_089_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_089_000.merged.bam",
+    "out_file": "133.025-001_089_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_089_000.merged.bam",
+    "out_file": "133.026-001_089_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_089_000.merged.bam",
+    "out_file": "Barnyard-001_089_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_089_000.merged.bam",
+    "out_file": "Sentinel-001_089_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_089_000.merged.bam",
+    "out_file": "Keyhole-001_089_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_090_000.merged.bam",
+    "out_file": "133.019-001_090_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_090_000.merged.bam",
+    "out_file": "133.020-001_090_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_090_000.merged.bam",
+    "out_file": "133.021-001_090_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_090_000.merged.bam",
+    "out_file": "133.022-001_090_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_090_000.merged.bam",
+    "out_file": "BAT270-001_090_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_090_000.merged.bam",
+    "out_file": "133.023-001_090_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_090_000.merged.bam",
+    "out_file": "133.024-001_090_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_090_000.merged.bam",
+    "out_file": "133.025-001_090_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_090_000.merged.bam",
+    "out_file": "133.026-001_090_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_090_000.merged.bam",
+    "out_file": "Barnyard-001_090_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_090_000.merged.bam",
+    "out_file": "Sentinel-001_090_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_090_000.merged.bam",
+    "out_file": "Keyhole-001_090_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_091_000.merged.bam",
+    "out_file": "133.019-001_091_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_091_000.merged.bam",
+    "out_file": "133.020-001_091_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_091_000.merged.bam",
+    "out_file": "133.021-001_091_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_091_000.merged.bam",
+    "out_file": "133.022-001_091_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_091_000.merged.bam",
+    "out_file": "BAT270-001_091_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_091_000.merged.bam",
+    "out_file": "133.023-001_091_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_091_000.merged.bam",
+    "out_file": "133.024-001_091_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_091_000.merged.bam",
+    "out_file": "133.025-001_091_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_091_000.merged.bam",
+    "out_file": "133.026-001_091_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_091_000.merged.bam",
+    "out_file": "Barnyard-001_091_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_091_000.merged.bam",
+    "out_file": "Sentinel-001_091_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_091_000.merged.bam",
+    "out_file": "Keyhole-001_091_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_092_000.merged.bam",
+    "out_file": "133.019-001_092_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_092_000.merged.bam",
+    "out_file": "133.020-001_092_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_092_000.merged.bam",
+    "out_file": "133.021-001_092_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_092_000.merged.bam",
+    "out_file": "133.022-001_092_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_092_000.merged.bam",
+    "out_file": "BAT270-001_092_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_092_000.merged.bam",
+    "out_file": "133.023-001_092_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_092_000.merged.bam",
+    "out_file": "133.024-001_092_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_092_000.merged.bam",
+    "out_file": "133.025-001_092_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_092_000.merged.bam",
+    "out_file": "133.026-001_092_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_092_000.merged.bam",
+    "out_file": "Barnyard-001_092_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_092_000.merged.bam",
+    "out_file": "Sentinel-001_092_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_092_000.merged.bam",
+    "out_file": "Keyhole-001_092_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_093_000.merged.bam",
+    "out_file": "133.019-001_093_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_093_000.merged.bam",
+    "out_file": "133.020-001_093_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_093_000.merged.bam",
+    "out_file": "133.021-001_093_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_093_000.merged.bam",
+    "out_file": "133.022-001_093_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_093_000.merged.bam",
+    "out_file": "BAT270-001_093_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_093_000.merged.bam",
+    "out_file": "133.023-001_093_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_093_000.merged.bam",
+    "out_file": "133.024-001_093_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_093_000.merged.bam",
+    "out_file": "133.025-001_093_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_093_000.merged.bam",
+    "out_file": "133.026-001_093_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_093_000.merged.bam",
+    "out_file": "Barnyard-001_093_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_093_000.merged.bam",
+    "out_file": "Sentinel-001_093_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_093_000.merged.bam",
+    "out_file": "Keyhole-001_093_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_094_000.merged.bam",
+    "out_file": "133.019-001_094_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_094_000.merged.bam",
+    "out_file": "133.020-001_094_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_094_000.merged.bam",
+    "out_file": "133.021-001_094_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_094_000.merged.bam",
+    "out_file": "133.022-001_094_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_094_000.merged.bam",
+    "out_file": "BAT270-001_094_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_094_000.merged.bam",
+    "out_file": "133.023-001_094_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_094_000.merged.bam",
+    "out_file": "133.024-001_094_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_094_000.merged.bam",
+    "out_file": "133.025-001_094_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_094_000.merged.bam",
+    "out_file": "133.026-001_094_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_094_000.merged.bam",
+    "out_file": "Barnyard-001_094_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_094_000.merged.bam",
+    "out_file": "Sentinel-001_094_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_094_000.merged.bam",
+    "out_file": "Keyhole-001_094_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_095_000.merged.bam",
+    "out_file": "133.019-001_095_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_095_000.merged.bam",
+    "out_file": "133.020-001_095_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_095_000.merged.bam",
+    "out_file": "133.021-001_095_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_095_000.merged.bam",
+    "out_file": "133.022-001_095_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_095_000.merged.bam",
+    "out_file": "BAT270-001_095_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_095_000.merged.bam",
+    "out_file": "133.023-001_095_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_095_000.merged.bam",
+    "out_file": "133.024-001_095_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_095_000.merged.bam",
+    "out_file": "133.025-001_095_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_095_000.merged.bam",
+    "out_file": "133.026-001_095_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_095_000.merged.bam",
+    "out_file": "Barnyard-001_095_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_095_000.merged.bam",
+    "out_file": "Sentinel-001_095_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_095_000.merged.bam",
+    "out_file": "Keyhole-001_095_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.019-001_096_000.merged.bam",
+    "out_file": "133.019-001_096_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.020-001_096_000.merged.bam",
+    "out_file": "133.020-001_096_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.021-001_096_000.merged.bam",
+    "out_file": "133.021-001_096_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.022-001_096_000.merged.bam",
+    "out_file": "133.022-001_096_000.trimmed.bam"
+  },
+  {
+    "in_file": "BAT270-001_096_000.merged.bam",
+    "out_file": "BAT270-001_096_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.023-001_096_000.merged.bam",
+    "out_file": "133.023-001_096_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.024-001_096_000.merged.bam",
+    "out_file": "133.024-001_096_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.025-001_096_000.merged.bam",
+    "out_file": "133.025-001_096_000.trimmed.bam"
+  },
+  {
+    "in_file": "133.026-001_096_000.merged.bam",
+    "out_file": "133.026-001_096_000.trimmed.bam"
+  },
+  {
+    "in_file": "Barnyard-001_096_000.merged.bam",
+    "out_file": "Barnyard-001_096_000.trimmed.bam"
+  },
+  {
+    "in_file": "Sentinel-001_096_000.merged.bam",
+    "out_file": "Sentinel-001_096_000.trimmed.bam"
+  },
+  {
+    "in_file": "Keyhole-001_096_000.merged.bam",
+    "out_file": "Keyhole-001_096_000.trimmed.bam"
+  }
+]

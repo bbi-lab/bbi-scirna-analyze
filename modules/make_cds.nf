@@ -4,6 +4,7 @@ process make_cds {
   errorStrategy 'ignore'
 
   publishDir path: "${analyze_out}/${sample_dir}", pattern: "*.rds", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_dir}", pattern: "*.png", mode: 'copy'
 
   input:
   path(count_matrix)
@@ -14,6 +15,7 @@ process make_cds {
 
   output:
   path("*.rds")
+  path("*.png")
 
   script:
   """

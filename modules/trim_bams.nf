@@ -1,0 +1,30 @@
+
+
+process trim_bams {
+  input:
+  tuple path(bam_in), val(out_file)
+
+  output:
+  path("*.trimmed.bam")
+
+
+  """
+  BBDUK=${task.ext.bbduk_path}
+
+  \${BBDUK} -Xmx16g in=${bam_in} out=stdout.bam \
+  ref='/net/gs/vol1/home/bge/git/bbi-scirna-analyze/bin/illumina_adapters.fa' \
+  ktrim=r \
+  k=16 \
+  rcomp=f \
+  trimclip=t \
+  | \${BBDUK} -Xmx16g in=stdin.bam out=${out_file} \
+  literal="AAAAAAAA" \
+  ktrim=r \
+  k=8 \
+  rcomp=f \
+  maskmiddle=f \
+  trimclip=t \
+  minlength=20
+  """
+}
+
