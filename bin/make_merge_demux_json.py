@@ -63,14 +63,14 @@ def get_data_file_dict(json_data):
       data_file_dict[process_group] = {}
     if(not sample_name in data_file_dict[process_group]):
        data_file_dict[process_group][sample_name] = {}
-       data_file_dict[process_group][sample_name]['pcr_pair_list'] = []
-       data_file_dict[process_group][sample_name]['lane_list'] = []
+       data_file_dict[process_group][sample_name]['pcr_pair_dict'] = {}
+       data_file_dict[process_group][sample_name]['lane_dict'] = {}
     for p7_index in p7_index_list:
       for p5_index in p5_index_list:
         pcr_pair = '%03d_%03d' % (int(p7_index), int(p5_index))
-        data_file_dict[process_group][sample_name]['pcr_pair_list'].append(pcr_pair)
+        data_file_dict[process_group][sample_name]['pcr_pair_dict'][pcr_pair] = 1
     for lane_index in lane_index_list:
-      data_file_dict[process_group][sample_name]['lane_list'].append(int(lane_index))
+      data_file_dict[process_group][sample_name]['lane_dict'][int(lane_index)] = 1
   return(data_file_dict)
 
 
@@ -78,14 +78,13 @@ def make_data_file_json(data_file_dict, bam_path):
   bam_merge_list = []
   for process_group in data_file_dict.keys():
     for sample_name in data_file_dict[process_group].keys():
-      for pcr_pair in data_file_dict[process_group][sample_name]['pcr_pair_list']:
+      for pcr_pair in data_file_dict[process_group][sample_name]['pcr_pair_dict'].keys():
         merge_dict = {}
         out_filename = '%s-%03d_%s.merged.bam' % (sample_name, int(process_group), pcr_pair)
         merge_dict.setdefault('out_file', out_filename)
         in_file_list = []
         merge_dict.setdefault('in_file_list', in_file_list)
-        lane_list = list(set(data_file_dict[process_group][sample_name]['lane_list']))
-        for lane_index in lane_list:
+        for lane_index in data_file_dict[process_group][sample_name]['lane_dict'].keys():
           in_file = '%s/%s-%03d_%s-L%03d.bam' % (bam_path, sample_name, lane_index, pcr_pair, lane_index)
           merge_dict['in_file_list'].append(in_file)
         bam_merge_list.append(merge_dict)

@@ -1,12 +1,17 @@
 align_cpus = params.align_cpus < 8 ? params.align_cpus : 8
 
-
 process align_bams {
   memory { mem.toInteger() / align_cpus + 'GB' }
   cpus align_cpus
+
+/*
+  mem_free = mem / align_cpus + 'GB'
+  clusterOptions "-l mfree=${mem_free} -pe serial ${align_cpus} -l cpuid_level=22"
+*/
+
   input:
   tuple path(bam_in), val(genome_dir), val(mem), val(out_dir)
-
+  
   output:
   path(out_dir)
 

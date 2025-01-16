@@ -33,7 +33,7 @@ include { make_star_align_json } from './modules/make_star_align_json.nf'
 include { align_bams } from './modules/align_bams.nf'
 include { make_merge_align_json } from './modules/make_merge_align_json.nf'
 include { merge_align } from './modules/merge_align.nf'
-include { make_copy_matrices_json } from './modules/make_copy_matrices_json.nf'
+// include { make_copy_matrices_json } from './modules/make_copy_matrices_json.nf'
 include { cat_matrices } from './modules/cat_matrices.nf'
 include { make_cds } from './modules/make_cds.nf'
 
