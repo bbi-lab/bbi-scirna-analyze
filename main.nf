@@ -141,7 +141,7 @@ workflow {
   **      sets up the channel used by the align_bams
   **      process.
   **   o  the make_star_align_json process takes the
-  **      merge_demux.out.collect() value channel in
+  **      merge_demux.out.collect().size() value channel in
   **      order to stall the run of the
   **      make_star_align_json process until the
   **      merge_demux process finishes AND, subsequently,
@@ -161,7 +161,7 @@ workflow {
   /*
   ** Set up and run bbduk.sh read trimming.
   */
-  make_trim_bam_json(samplesheet_file, merge_demux.out.collect())
+  make_trim_bam_json(samplesheet_file, merge_demux.out.collect().size())
   make_trim_bam_json.out.splitJson().map{trim_bam_function(it)}.set{trim_bam_channel_in}
   trim_bams(trim_bam_channel_in)
 
@@ -175,8 +175,8 @@ workflow {
     }
   }
 
-  make_star_align_json(samplesheet_file, "${star_genomes_file}", trim_bams.out.collect())
-//  make_star_align_json(samplesheet_file, "${star_genomes_file}", merge_demux.out.collect())
+  make_star_align_json(samplesheet_file, "${star_genomes_file}", trim_bams.out.collect().size())
+//  make_star_align_json(samplesheet_file, "${star_genomes_file}", merge_demux.out.collect().size())
   make_star_align_json.out.splitJson().map{align_bam_function(it)}.set{align_bam_channel_in}
   align_bams(align_bam_channel_in)
 
@@ -192,7 +192,7 @@ workflow {
     }
   }
 
-  make_merge_align_json(samplesheet_file, align_bams.out.collect())
+  make_merge_align_json(samplesheet_file, align_bams.out.collect().size())
   make_merge_align_json.out.splitJson().map{merge_align_function(it)}.set{merge_align_channel_in}
   merge_align(merge_align_channel_in)
 

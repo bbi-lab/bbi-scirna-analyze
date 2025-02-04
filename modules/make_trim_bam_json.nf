@@ -1,7 +1,7 @@
 process make_trim_bam_json {
   input:
   path(samplesheet_file)
-  path(dummy)
+  val(dummy)
 
   output:
   path("trim_bam.json")

@@ -1,6 +1,8 @@
 def analyze_out = params.output_dir + '/analyze_out' 
 
 process cat_matrices {
+//  errorStrategy 'ignore'
+
   publishDir path: "${analyze_out}/${sample_dir}", pattern: "*.raw.cells.tsv", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_dir}", pattern: "*.raw.features.tsv", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_dir}", pattern: "*.raw.matrix.mtx", mode: 'copy'
