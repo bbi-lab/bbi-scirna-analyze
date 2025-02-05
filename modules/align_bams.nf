@@ -1,6 +1,8 @@
 align_cpus = params.align_cpus < 8 ? params.align_cpus : 8
 
 process align_bams {
+  errorStrategy 'retry'
+  maxRetries 2
 
   clusterOptions { '-l m_mem_free=' + mem.toInteger() / align_cpus + 'G -pe serial ' + align_cpus + ' -l cpuid_level=22' }
 
@@ -20,7 +22,7 @@ process align_bams {
 
   script:
   """
-  STAR \
+  /net/gs/vol1/home/bge/STAR \
       --runThreadN ${align_cpus} \
       --genomeDir ${genome_dir} \
       --soloCBmatchWLtype Exact \
@@ -50,6 +52,41 @@ process align_bams {
       --outFileNamePrefix "${out_dir}/"
   """
 }
+
+
+/*
+**
+** Good parameters using the flawed STAR version.
+**
+  STAR \
+      --runThreadN ${align_cpus} \
+      --genomeDir ${genome_dir} \
+      --soloCBmatchWLtype Exact \
+      --soloType CB_UMI_Simple \
+      --soloBarcodeMate 0 \
+      --soloCBstart 1 \
+      --soloCBlen   28 \
+      --soloUMIstart 29 \
+      --soloUMIlen 8 \
+      --soloCBwhitelist None \
+      --outSAMtype BAM SortedByCoordinate \
+      --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM \
+      --outSJtype None \
+      --outSAMmultNmax 1 \
+      --outSAMstrandField intronMotif \
+      --soloUMIdedup Exact \
+      --soloCellReadStats Standard \
+      --soloStrand Forward \
+      --soloFeatures GeneFull_Ex50pAS \
+      --soloMultiMappers PropUnique \
+      --soloInputSAMattrBarcodeSeq sS \
+      --soloInputSAMattrBarcodeQual sQ \
+      --readFilesType SAM SE \
+      --readFilesIn \
+        ${bam_in} \
+      --readFilesCommand samtools view \
+      --outFileNamePrefix "${out_dir}/"
+*/
 
 
 /*

@@ -16,6 +16,12 @@ star_genomes_file = "${params.bin_dir}/star_genomes.txt"
 ** A naive effort to store global values.
 */
 params.object_map = [:]
+
+/*
+** For the maps below, the keys are filenames
+** and the values are absolute paths to the
+** files given by the key.
+*/
 params.object_map.merge_bam_map = [:]
 params.object_map.trim_bam_map = [:]
 params.object_map.merge_align_bam_map = [:]
@@ -85,6 +91,14 @@ def merge_align_function(item) {
   for( in_dir in item['in_dir_list']) {
     def dir_base_name = in_dir.toString().tokenize('/').last()
     file_path = params.object_map.merge_align_bam_map[dir_base_name] + '/Aligned.sortedByCoord.out.bam'
+    /*
+    ** If the file/value does not exist in
+    ** params.object_map.merge_bam_map,
+    ** skip this pipeline entry.
+    */
+    if(file_path == null) {
+      continue
+    }
     in_dir_list.add(file_path)
   }
   return([sample_dir, out_file, in_dir_list])

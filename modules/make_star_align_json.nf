@@ -2,7 +2,7 @@ process make_star_align_json {
   input:
   path(samplesheet_file)
   val(star_genomes_file)
-  path(dummy)
+  val(dummy)
 
   output:
   path("star_align.json")

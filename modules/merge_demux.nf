@@ -1,4 +1,7 @@
 process merge_demux {
+  errorStrategy 'retry'
+  maxRetries 2
+
   input:
   tuple val('out_file'), path('files')
 
