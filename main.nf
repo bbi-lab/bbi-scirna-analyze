@@ -33,13 +33,13 @@ params.object_map.merge_align_bam_map = [:]
 */
 include { make_merge_demux_json } from './modules/make_merge_demux_json.nf'
 include { merge_demux } from './modules/merge_demux.nf'
-include { make_trim_bam_json } from './modules/make_trim_bam_json.nf'
+include { make_trim_bam_json; trim_bam_function } from './modules/make_trim_bam_json.nf'
 include { trim_bams } from './modules/trim_bams.nf'
-include { make_star_align_json } from './modules/make_star_align_json.nf'
+include { make_star_align_json; align_bam_function } from './modules/make_star_align_json.nf'
 include { align_bams } from './modules/align_bams.nf'
-include { make_merge_align_json } from './modules/make_merge_align_json.nf'
+include { make_merge_align_json; merge_align_function } from './modules/make_merge_align_json.nf'
 include { merge_align } from './modules/merge_align.nf'
-// include { make_copy_matrices_json } from './modules/make_copy_matrices_json.nf'
+// include { make_copy_matrices_json; copy_matrices_function } from './modules/make_copy_matrices_json.nf'
 include { cat_matrices } from './modules/cat_matrices.nf'
 include { make_cds } from './modules/make_cds.nf'
 
@@ -63,59 +63,6 @@ def merge_demux_closure = {
           [out_name, in_file_list]
 }
 
-
-def trim_bam_function(item) {
-  def in_file = item['in_file']
-  def file_path = params.object_map.merge_bam_map[in_file]
-  def out_file = item['out_file']
-
-  return([file_path, out_file])
-}
-
-
-def align_bam_function(item) {
-  def in_file = item['in_file']
-  def file_path = params.object_map.trim_bam_map[in_file]
-  def genome  = item['genome']
-  def mem     = item['mem']
-  def out_dir = in_file.take(in_file.lastIndexOf('.'))
-
-  return([file_path, genome, mem, out_dir])
-}
-
-
-def merge_align_function(item) {
-  def sample_dir = item['sample_dir']
-  def out_file = item['out_file']
-  def in_dir_list = []
-  for( in_dir in item['in_dir_list']) {
-    def dir_base_name = in_dir.toString().tokenize('/').last()
-    file_path = params.object_map.merge_align_bam_map[dir_base_name] + '/Aligned.sortedByCoord.out.bam'
-    /*
-    ** If the file/value does not exist in
-    ** params.object_map.merge_bam_map,
-    ** skip this pipeline entry.
-    */
-    if(file_path == null) {
-      continue
-    }
-    in_dir_list.add(file_path)
-  }
-  return([sample_dir, out_file, in_dir_list])
-}
-
-
-/*
-def copy_matrices_function(item) {
-  def in_file_list = []
-  for( in_dir in item['in_dir_list']) {
-    def dir_base_name = in_dir.toString().tokenize('/').last()
-    file_path = params.object_map.merge_align_bam_map[dir_base_name] + '/Solo.out/GeneFull_Ex50pAS/raw/matrix.mtx'
-    in_file_list.add(file_path)
-  }
-  return(in_file_list)
-}
-*/
 
 
 /*
