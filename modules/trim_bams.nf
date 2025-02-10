@@ -2,7 +2,7 @@
 
 process trim_bams {
   errorStrategy 'retry'
-  maxRetries 3
+  maxRetries 2
 
   input:
   tuple path(bam_in), val(out_file)

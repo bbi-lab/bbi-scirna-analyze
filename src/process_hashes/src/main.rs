@@ -5,7 +5,7 @@ static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
 use std::path::Path;
 use std::fs::File;
-use std::io::{Read, Write, BufWriter};
+use std::io::{Write, BufWriter};
 use std::str;
 use std::collections::{HashMap, HashSet};
 use std::collections::hash_map::Entry;
@@ -13,20 +13,76 @@ use std::collections::hash_map::Entry;
 use process_hashes::barcode_utils;
 extern crate clap;
 use clap::{Arg, Command};
-use seq_io::fastq::{Reader, Record};
+use rust_htslib::bam::{Read, Reader};
 use sprs::CsMat;
-use detect_compression;
 use regex::Regex;
 use itertools::Itertools;
 
 
-fn process_fastq_file<R: Read>(hash_edit_distance: usize, hash_whitelist: &Vec<HashMap<String, String>>, cells: &mut HashSet<String>, hash_counts: &mut Vec<u64>, hashdict: &mut HashMap<String, HashMap<String, HashMap<String, u64>>>, fastq_reader: &mut Reader<R>, num_hash: &mut u64, hash_lookup: &HashMap<String, String>) -> Result<(), Box<dyn std::error::Error>> {
+/*
+** Define command line arguments.
+*/
+fn set_cl_options() -> Result<clap::Command, Box<dyn std::error::Error>> {
+  let cl_options = Command::new("process_hashes")
+        .version(env!("CARGO_PKG_VERSION"))
+        .about("Finds hash sequence reads in BAM file.")
+        .arg(Arg::new("sample_name")  // required=true, no default
+                  .required(true)
+                  .short('n')
+                  .long("sample_name")
+                  .help("Sample name."))
+        .arg(Arg::new("hash_sheet")   // required=true, no default
+                  .required(true)
+                  .short('s')
+                  .long("hash_sheet")
+                  .help("Path to hash sample sheet."))
+        .arg(Arg::new("bam")   // required=true
+                  .required(true)
+                  .num_args(1..)
+                  .value_delimiter(' ')
+                  .value_terminator("--")
+                  .short('b')
+                  .long("bam")
+                  .help("Input bam filenames separated by spaces."))
+        .arg(Arg::new("hash_edit_distance")  // required=false, default=1
+                  .required(false)
+                  .default_value("1")
+                  .short('d')
+                  .long("hash_edit_distance")
+                  .value_parser(clap::value_parser!(usize))
+                  .help("Allowed edit distance for hashes."))
+        .arg(Arg::new("number_bam_threads")   //required=false
+                  .required(false)
+                  .short('t')
+                  .long("ncpu")
+                  .number_of_values(1)
+                  .default_value("1")
+                  .value_parser(clap::value_parser!(usize))
+                  .help("Number of threads to use for reading BAM file."))
+        .arg(Arg::new("key")   //required=true
+                  .required(true)
+                  .short('k')
+                  .long("key")
+                  .help("Key for output file name."));
+    Ok(cl_options)
+}
+
+
+fn process_bam_file(hash_edit_distance: usize,
+                    hash_whitelist: &Vec<HashMap<String, String>>,
+                    cells: &mut HashSet<String>,
+                    hash_counts: &mut Vec<u64>,
+                    hashdict: &mut HashMap<String, HashMap<String, HashMap<String, u64>>>,
+                    bam_reader: &mut Reader,
+                    num_hash: &mut u64,
+                    hash_lookup: &HashMap<String, String>) -> Result<(), Box<dyn std::error::Error>> {
 
   /*
   ** Loop through input reads.
   */
   let mut header: &str;
   let mut seq: &str;
+  let mut record = rust_htslib::bam::Record::new();
   let mut hashbc: &str;
   let mut hashval: &String = &"none".to_string();
   let mut polya: &str;
@@ -37,11 +93,12 @@ fn process_fastq_file<R: Read>(hash_edit_distance: usize, hash_whitelist: &Vec<H
   let mut is_hash: bool;
   let mut i_edit_distance: usize = 0;
 
-  while let Some(result) = fastq_reader.next() {
+  while let Some(result) = bam_reader.read(&mut record) {
+    result.expect("Error: unable to parse BAM record");
 
-    let record = result.expect("bad status reading fastq file");
-    header = std::str::from_utf8(record.head()).expect("bad status getting fastq read header");
-    seq = std::str::from_utf8(record.seq()).expect("bad status getting fastq read sequence");
+    header = std::str::from_utf8(record.qname()).expect("bad status getting bam read header");
+    let bseq = record.seq().as_bytes();
+    seq = std::str::from_utf8(&bseq).expect("bad status getting bam read sequence");
 
     /*
     ** Is this a hash read?
@@ -255,10 +312,6 @@ fn write_matrix(key: &String, row_names: Vec<String>, col_names: Vec<String>, sm
 }
 
 
-/*
-** This appears to be an intermediate file for the original pipeline and
-** is no longer needed.
-**
 fn write_hash_combined(hashdict: &HashMap<String, HashMap<String, HashMap<String, u64>>>, hash_lookup: &HashMap<String, String>,sample_name: &String, key: &String) -> Result<(), std::io::Error> {
   let file_name = format!("{}_hash_combined", *key);
   let path = Path::new(&file_name);
@@ -268,6 +321,7 @@ fn write_hash_combined(hashdict: &HashMap<String, HashMap<String, HashMap<String
   for hash_seq in hashdict.keys() {
     for cell_name in hashdict[hash_seq].keys() {
       for umi_seq in hashdict[hash_seq][cell_name].keys() {
+//        let _ = writeln!(writer, "{}\t{}\t{}\t{}", *sample_name, cell_name, umi_seq, hash_lookup[hash_seq]);
         let _ = writeln!(writer, "{}\t{}\t{}\t{}\t{}", *sample_name, cell_name, umi_seq, hash_lookup[hash_seq], hashdict[hash_seq][cell_name][umi_seq]);
       }
     }
@@ -278,7 +332,7 @@ fn write_hash_combined(hashdict: &HashMap<String, HashMap<String, HashMap<String
 
   Ok(())
 }
-*/
+
 
 fn make_per_cell_statistics(cells: &HashSet<String>, hashdict: &HashMap<String, HashMap<String, HashMap<String, u64>>>) -> Result<HashMap<String, Vec<u64>>, std::io::Error> {
 
@@ -465,11 +519,11 @@ fn dump_nested_maps(map: &mut HashMap<String, HashMap<String, HashMap<String, us
 }
 
 
-/// Find RNA-seq hash reads in a fastq file and write counts as a Matrix Market file.
+/// Find RNA-seq hash reads in a bam file and write counts as a Matrix Market file.
 ///
 /// Arguments:
 ///- -s hash sheet file in TSV format where the columns are *barcode_name*  *barcode_sequence*
-///- -f fastq file names separated by spaces or '-' for stdin. The files may be gzip compressed.
+///- -b bam file names separated by spaces or '-' for stdin. The files may be gzip compressed.
 ///- -d hash edit distance allows for n discrepancies. n=1 by default.
 ///- -k output file root name
 ///
@@ -477,55 +531,22 @@ fn dump_nested_maps(map: &mut HashMap<String, HashMap<String, HashMap<String, us
 ///
 /// Nothing.
 ///
-/// Reading fastq files rather than from stdin appears to be substantially faster.
-///
 fn main() {
   /*
-  ** Get command line arguments.
+  ** Process command line options.
   */
-  let clarg = Command::new("process_hashes")
-        .version("0.1.0")
-        .about("Finds hash sequence reads in fastq file.")
-        .arg(Arg::new("sample_name")  // required=true, no default
-                  .required(true)
-                  .short('n')
-                  .long("sample_name")
-                  .help("Sample name."))
-        .arg(Arg::new("hash_sheet")   // required=true, no default
-                  .required(true)
-                  .short('s')
-                  .long("hash_sheet")
-                  .help("Path to hash sample sheet."))
-        .arg(Arg::new("fastq")   // required=true
-                  .required(true)
-                  .num_args(1..)
-                  .value_delimiter(' ')
-                  .value_terminator("--")
-                  .short('f')
-                  .long("fastq")
-                  .help("Input fastq filenames separated by spaces or '-' for stdin."))
-        .arg(Arg::new("hash_edit_distance")  // required=false, default=1
-                  .required(false)
-                  .default_value("1")
-                  .short('d')
-                  .long("hash_edit_distance")
-                  .value_parser(clap::value_parser!(usize))
-                  .help("Allowed edit distance for hashes."))
-        .arg(Arg::new("key")   //required=true
-                  .required(true)
-                  .short('k')
-                  .long("key")
-                  .help("Key for file name for output file."))
-        .get_matches();
+  let cl_options = set_cl_options().unwrap();
+  let cl_arg = cl_options.get_matches();
 
   /*
   ** Gather command like argument values for convenience.
   */
-  let sample_name: String = clarg.get_one::<String>("sample_name").unwrap().to_string();
-  let hash_sheet: String = clarg.get_one::<String>("hash_sheet").unwrap().to_string();
-  let fastq_filenames: Vec<_> = clarg.get_many::<String>("fastq").unwrap().collect();
-  let hash_edit_distance: usize = *clarg.get_one::<usize>("hash_edit_distance").unwrap();
-  let key: String = clarg.get_one::<String>("key").unwrap().to_string();
+  let sample_name: String = cl_arg.get_one::<String>("sample_name").unwrap().to_string();
+  let hash_sheet: String = cl_arg.get_one::<String>("hash_sheet").unwrap().to_string();
+  let bam_filenames: Vec<_> = cl_arg.get_many::<String>("bam").unwrap().collect();
+  let hash_edit_distance: usize = *cl_arg.get_one::<usize>("hash_edit_distance").unwrap();
+  let key: String = cl_arg.get_one::<String>("key").unwrap().to_string();
+  let num_threads: usize = cl_arg.get_one::<usize>("number_bam_threads").unwrap().clone();
 
   /*
   ** Set up hash whitelist map.
@@ -570,20 +591,13 @@ fn main() {
 
   /*
   ** Set up file handle and reader from either stdin or specified file, and
-  ** process the fastq file(s).
+  ** process the bam file(s).
   */
-  if(fastq_filenames[0] == "-") {
-    let reader = Box::new(std::io::stdin());
-    let mut fastq_reader = Reader::new(reader);
-    let _ = process_fastq_file(hash_edit_distance, &hash_whitelist, &mut cells, &mut hash_counts, &mut hashdict, &mut fastq_reader, &mut num_hash, &hash_lookup);
+  for bam_filename in bam_filenames {
+    let mut bam_reader = rust_htslib::bam::Reader::from_path(&bam_filename).expect("Error: unable to open BAM file");
+    bam_reader.set_threads(num_threads).expect("Error: unable to set number of threads for BAM file reading");
+    let _ = process_bam_file(hash_edit_distance, &hash_whitelist, &mut cells, &mut hash_counts, &mut hashdict, &mut bam_reader, &mut num_hash, &hash_lookup);
   }
-  else {
-    for fastq_filename in fastq_filenames {
-      let reader = Box::new(detect_compression::DetectReader::open(fastq_filename).unwrap());
-      let mut fastq_reader = Reader::new(reader);
-      let _ = process_fastq_file(hash_edit_distance, &hash_whitelist, &mut cells, &mut hash_counts, &mut hashdict, &mut fastq_reader, &mut num_hash, &hash_lookup);
-    }
-  };
 
   // dump_nested_maps(&mut hashdict);
 
@@ -601,7 +615,6 @@ fn main() {
 
   /*
   ** Write hash combined file.
-  **
   let _ = write_hash_combined(&hashdict, &hash_lookup, &sample_name, &key).expect("bad status: write_hash_combined");
   */
 

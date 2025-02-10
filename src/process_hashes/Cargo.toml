@@ -10,6 +10,7 @@ detect-compression = "0.1.2"
 itertools = "0.13.0"
 mimalloc = "0.1.43"
 regex = "1.10.6"
+rust-htslib = "0.49.0"
 serde = { version = "1", features = ["derive"] }
 seq_io = "0.3.2"
 sprs = "0.11.1"

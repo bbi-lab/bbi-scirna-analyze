@@ -2,9 +2,7 @@ def analyze_out = params.output_dir + '/analyze_out'
 
 process cat_matrices {
   errorStrategy 'retry'
-  maxRetries 3
-
-//  errorStrategy 'ignore'
+  maxRetries 2
 
   publishDir path: "${analyze_out}/${sample_dir}", pattern: "*.raw.cells.tsv", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_dir}", pattern: "*.raw.features.tsv", mode: 'copy'
