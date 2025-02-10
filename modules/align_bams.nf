@@ -2,6 +2,9 @@ align_cpus = params.align_cpus < 8 ? params.align_cpus : 8
 
 process align_bams {
 //  errorStrategy 'ignore'
+  errorStrategy 'retry'
+  maxRetries 3
+
 
   clusterOptions { '-l m_mem_free=' + mem.toInteger() / align_cpus + 'G -pe serial ' + align_cpus + ' -l cpuid_level=22' }
 

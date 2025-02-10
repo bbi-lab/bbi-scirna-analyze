@@ -1,6 +1,9 @@
 def analyze_out = params.output_dir + '/analyze_out' 
 
 process merge_align {
+  errorStrategy 'retry'
+  maxRetries 3
+
 //  errorStrategy 'ignore'
 
   publishDir path: "${analyze_out}/${sample_dir}", pattern: "*.aligned.bam", mode: 'copy'

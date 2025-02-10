@@ -1,7 +1,7 @@
 process make_merge_align_json {
   input:
   path(samplesheet_file)
-  val(dummy)
+  path(dummy)
 
   output:
   path("merge_align.json")
