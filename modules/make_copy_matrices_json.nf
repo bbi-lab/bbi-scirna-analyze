@@ -13,7 +13,7 @@ process make_copy_matrices_json {
 
   input:
   path(samplesheet_file)
-  path(dummy)
+  val(dummy)
 
   output:
   path("copy_matrices.json")

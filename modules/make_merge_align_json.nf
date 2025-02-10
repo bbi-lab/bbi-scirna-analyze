@@ -22,7 +22,7 @@ def merge_align_function(item) {
 process make_merge_align_json {
   input:
   path(samplesheet_file)
-  path(dummy)
+  val(dummy)
 
   output:
   path("merge_align.json")
