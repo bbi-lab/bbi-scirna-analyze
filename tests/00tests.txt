@@ -1,0 +1,23 @@
+process groups: 1
+samples: 1
+pcr_pairs: 
+
+process_groups      samples      lanes      pcr_pairs     notes
+1                   1            1          1             1 lane run
+1                   1            1          4             1 lane run; 2 rows with different pcr pairs
+
+1                   1            4          4             4 lane run; 1 lane loaded
+1                   1            4          4             4 lane run; 4 lanes loaded
+
+1                   2            4          4             4 lane run; 1 lane loaded
+1                   2            4          4             4 lane run; 4 lanes loaded
+
+1                   2            4          4             4 lane run; different pcr_pairs in different lanes
+
+
+2                   4            4          8             4 lane run; 2 samples in each process group; 1 sample in each of the process groups has the same name; samples distinguished by pcr_pairs (not lanes)
+
+2                   4            4          8             4 lane run; 2 samples in each process group; 1 sample in each of the process groups has the same name; samples distinguished by lanes (not pcr_pairs)
+
+2                   4            4          8             4 lane run; 2 samples in each process group; 1 sample in each of the process groups has the same name; samples distinguished by pcr_pairs and lanes
+
