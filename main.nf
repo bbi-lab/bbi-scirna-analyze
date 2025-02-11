@@ -64,7 +64,6 @@ def merge_demux_closure = {
 }
 
 
-
 /*
 ** Run pipeline.
 */
@@ -78,37 +77,44 @@ workflow {
 
   /*
   ** Here are some convolutions in order to pass
-  ** the paths of merged bam files to the align
+  ** the paths of merged bam files to the trim
   ** bams process. The merged bam files are in the
   ** work directory so the paths are not known
   ** until Nextflow runs the merge_demux process.
   **
   ** Notes:
+  **   o  in summary, there are three 'actors' in this
+  **      story: (a) the .subscribe() operator below,
+  **      (b) the trim_bam_function(), and (c) the
+  **      .collect() operator. In addition, the
+  **      global variable params.object_map.merge_bam_map
+  **      transfers values from the .subscribe() operator
+  **      to the trim_bam_function().
   **   o  the following .subscribe() operator makes
   **      a Java associative array (map) that maps a
-  **      merged bam filename to its path in the work
+  **      bam filename to its path in the work
   **      directory. This runs after the merge_demux
   **      process finishes. The associative array is
   **      stored in the global variable called
   **      params.object_map.merge_bam_map.
-  **   o  the function align_bam_function(item) uses
+  **   o  the function trim_bam_function(item) uses
   **      the associative array to make a channel that
   **      has an output for each element in the list
   **      of merged bam files that is in the JSON file
-  **      made by make_star_align_json. The .splitJson()
+  **      made by make_trim_bam_json. The .splitJson()
   **      operator takes the JSON file contents and
   **      populates this channel. The following .map()
-  **      operator calles align_bam_function() and
-  **      sets up the channel used by the align_bams
+  **      operator calls trim_bam_function() and
+  **      sets up the channel used by the trim_bams
   **      process.
-  **   o  the make_star_align_json process takes the
+  **   o  the make_trim_bam_json process takes the
   **      merge_demux.out.collect() value channel in
   **      order to stall the run of the
-  **      make_star_align_json process until the
+  **      make_trim_bam_json process until the
   **      merge_demux process finishes AND, subsequently,
   **      the required associative array is assembled
   **      from the output channel of the
-  **      make_star_align_json process.
+  **      make_trim_bam_json process.
   **   o  I would like to use a 'cleaner' way to do this
   **      but I cannot think of one at this time.
   */      
