@@ -10,6 +10,10 @@ import re
 #
 program_version = '0.1.0'
 
+#
+# Gather files and memory usage information for running the
+# STARsolo aligner.
+#
 
 #
 # Read samplesheet json file.
@@ -96,14 +100,9 @@ def make_data_file_json(data_file_dict, star_genomes_dict):
       for sample_name in data_file_dict[process_group][pcr_pair].keys():
         merge_dict = {}
         in_file = '%s-%03d_%s.trimmed.bam' % (sample_name, int(process_group), pcr_pair)
-
-#        genome = '%s/%s' % (genomes_dir, data_file_dict[process_group][pcr_pair][sample_name]['genome'])
-#        mem = data_file_dict[process_group][pcr_pair][sample_name]['mem']
-
         genome_name = data_file_dict[process_group][pcr_pair][sample_name]['genome']
         genome      = star_genomes_dict[genome_name]['genome_path']
         mem         = star_genomes_dict[genome_name]['genome_mem']
-
         merge_dict['in_file'] = in_file
         merge_dict['genome'] = genome
         merge_dict['mem'] = mem

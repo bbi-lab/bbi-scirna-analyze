@@ -10,7 +10,6 @@ import re
 #
 program_version = '0.1.0'
 
-
 #
 # Prepare a lists of untrimmed BAM files that belong to
 # a combination of sample+process group. The list is
@@ -56,7 +55,7 @@ def make_sample_hash_dict(json_data):
   sample_hash_dict = {}
   for sample_index_dict in json_data['sample_index_list']:
     process_group = sample_index_dict['process_group']
-    sample_name = sample_index_dict['sample_id']`
+    sample_name = sample_index_dict['sample_id']
     hash_file = sample_index_dict['hash_file']
     if(sample_hash_dict.get(process_group) == None):
       sample_hash_dict[process_group] = {}
@@ -68,7 +67,7 @@ def make_sample_hash_dict(json_data):
   for process_group in sample_hash_dict.keys():
     for sample_name in sample_hash_dict[process_group].keys():
       hash_file_list = sample_hash_dict[process_group][sample_name]
-      if(not all(x==myList[0] for x in hash_file_list)):
+      if(not all(x==hash_file_list[0] for x in hash_file_list)):
         print('Error: inconsistent hash_file_names for sample \'%s\'' % (sample_name), file=sys.stderr)
         sys.exit(-1)
 
@@ -106,7 +105,7 @@ def get_data_file_dict(json_data, sample_hash_dict):
     #
     if(sample_hash_dict.get(process_group) != None
        and sample_hash_dict[process_group].get(sample_name) != None
-       and len(sample_hash_dict[process_group][sample_name]) > 0):
+       and len(sample_hash_dict[process_group][sample_name][0]) > 0):
 
       if(not process_group in data_file_dict):
         data_file_dict[process_group] = {}
@@ -124,12 +123,12 @@ def get_data_file_dict(json_data, sample_hash_dict):
   return(data_file_dict)
 
 
-def make_data_file_json(data_file_dict, sample_hash_dict)):
+def make_data_file_json(data_file_dict, sample_hash_dict):
   hash_bam_list = []
   for process_group in data_file_dict.keys():
     for sample_name in data_file_dict[process_group].keys():
       merge_dict = {}
-      merge_dict['base_name'] = '%s-%03' % (sample_name, int(process_group))
+      merge_dict['base_name'] = '%s-%03d' % (sample_name, int(process_group))
       merge_dict['hash_file'] = sample_hash_dict[process_group][sample_name][0]
       in_file_list = []
       merge_dict['in_file_list'] = in_file_list

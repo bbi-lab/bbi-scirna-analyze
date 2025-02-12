@@ -10,6 +10,10 @@ import re
 #
 program_version = '0.1.0'
 
+#
+# Gather input BAM files and output filenames for running
+# the bbduk adaptor trimming program.
+#
 
 #
 # Read samplesheet json file.

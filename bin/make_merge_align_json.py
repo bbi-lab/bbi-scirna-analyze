@@ -10,6 +10,11 @@ import re
 #
 program_version = '0.1.0'
 
+#
+# Merge the pcr_pair-specific BAM files that belong to a
+# combination of sample+process_group. As a result, the
+# output file contains the reads for sample_name+process_group.
+#
 
 #
 # Read samplesheet json file.
