@@ -119,7 +119,6 @@ def get_data_file_dict(json_data, sample_hash_dict):
           if(not pcr_pair in data_file_dict[process_group][sample_name]):
             data_file_dict[process_group][sample_name][pcr_pair] = {}
           data_file_dict[process_group][sample_name][pcr_pair] = 1
-
   return(data_file_dict)
 
 
@@ -127,16 +126,19 @@ def make_data_file_json(data_file_dict, sample_hash_dict):
   hash_bam_list = []
   for process_group in data_file_dict.keys():
     for sample_name in data_file_dict[process_group].keys():
-      merge_dict = {}
-      merge_dict['base_name'] = '%s-%03d' % (sample_name, int(process_group))
-      merge_dict['hash_file'] = sample_hash_dict[process_group][sample_name][0]
-      in_file_list = []
-      merge_dict['in_file_list'] = in_file_list
-      for pcr_pair in data_file_dict[process_group][sample_name].keys():
+      if(sample_hash_dict.get(process_group) != None
+        and sample_hash_dict[process_group].get(sample_name) != None
+        and len(sample_hash_dict[process_group][sample_name][0]) > 0):
+
+        merge_dict = {}
+        merge_dict['base_name'] = '%s-%03d' % (sample_name, int(process_group))
+        merge_dict['hash_file'] = sample_hash_dict[process_group][sample_name][0]
+        in_file_list = []
+        merge_dict['in_file_list'] = in_file_list
         for pcr_pair in data_file_dict[process_group][sample_name].keys():
           in_file = '%s-%03d_%s.merged.bam' % (sample_name, int(process_group), pcr_pair)
           merge_dict['in_file_list'].append(in_file)
-      hash_bam_list.append(merge_dict)
+        hash_bam_list.append(merge_dict)
 
   try:
     filename_json = 'process_hashes.json'
