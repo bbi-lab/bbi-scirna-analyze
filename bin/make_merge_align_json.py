@@ -85,10 +85,10 @@ def make_data_file_json(data_file_dict):
       sample_dir = '%s-%03d' % (sample_name, int(process_group))
       merge_dict['sample_dir'] = sample_dir
       out_filename = '%s-%03d.aligned.bam' % (sample_name, int(process_group))
-      merge_dict.setdefault('out_file', out_filename)
+      merge_dict['out_file'] = out_filename
+      in_dir_list = []
+      merge_dict['in_dir_list'] = in_dir_list
       for pcr_pair in data_file_dict[process_group][sample_name].keys():
-        in_dir_list = []
-        merge_dict.setdefault('in_dir_list', in_dir_list)
         in_dir = '%s-%03d_%s.trimmed' % (sample_name, int(process_group), pcr_pair)
         merge_dict['in_dir_list'].append(in_dir)
       bam_merge_list.append(merge_dict)

@@ -58,7 +58,6 @@ def get_data_file_dict(json_data):
     genome = sample_index_dict['genome']
     p7_index_list = expand_index_list(index_ranges[1])
     p5_index_list = expand_index_list(index_ranges[2])
-    lane_index_list = expand_index_list(sample_index_dict['lanes'])
 
     if(not process_group in data_file_dict):
       data_file_dict[process_group] = {}
@@ -71,13 +70,6 @@ def get_data_file_dict(json_data):
         if(not sample_name in data_file_dict[process_group][pcr_pair]):
           data_file_dict[process_group][pcr_pair][sample_name] = {}
           data_file_dict[process_group][pcr_pair][sample_name]['genome'] = genome
-          # Temporary memory management
-          if(genome == 'Barnyard'):
-            data_file_dict[process_group][pcr_pair][sample_name]['mem'] = '90'
-          else:
-            data_file_dict[process_group][pcr_pair][sample_name]['mem'] = '48'
-        for lane_index in lane_index_list:
-          data_file_dict[process_group][pcr_pair][sample_name][lane_index] = 1
   return(data_file_dict)
 
 

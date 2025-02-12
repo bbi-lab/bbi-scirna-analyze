@@ -10,6 +10,11 @@ import re
 #
 program_version = '0.1.1'
 
+#
+# Merge the lane-specific BAM files that belong to a combination
+# of sample+process_group+pcr_pair. As a result, the output file
+# contains the reads for sample_name, process_group, and pcr_pair.
+#
 
 #
 # Read samplesheet json file.
@@ -49,8 +54,20 @@ def expand_index_list(index_string):
 # json_data['sample_index_list']['p7_file']
 # json_data['sample_index_list']['p5_file']
 #
+# A sample in a process group can be spread across
+# multiple lanes and PCR pairs and so can be in more
+# than one entry in the sample_index_list. Therefore
+# the entries for the sample+process group must be
+# collected into a single entry in the output JSON
+# file. The lanes and pcr pairs are gathered together
+# for the sample+process group, regardless of whether
+# the lane and pcr pairs appear together in any of
+# the sample_index_list entries. This seems reasonable
+# because we want to be able to restrict processing to
+# specific pcr pairs (within a sample+process group)
+# while giving p7 and p5 indices as ranges or lists.
+#
 def get_data_file_dict(json_data):
-  print('get data file dict: start')
   data_file_dict = {}
   for sample_index_dict in json_data['sample_index_list']:
     index_ranges = sample_index_dict['ranges'].split(':')
@@ -74,6 +91,11 @@ def get_data_file_dict(json_data):
   return(data_file_dict)
 
 
+#
+# Merge the lane-specific BAM files that belong to a combination
+# of sample+process_group+pcr_pair. As a result, the output file
+# contains the reads for sample_name, process_group, and pcr_pair.
+#
 def make_data_file_json(data_file_dict, bam_path):
   bam_merge_list = []
   for process_group in data_file_dict.keys():
@@ -81,9 +103,9 @@ def make_data_file_json(data_file_dict, bam_path):
       for pcr_pair in data_file_dict[process_group][sample_name]['pcr_pair_dict'].keys():
         merge_dict = {}
         out_filename = '%s-%03d_%s.merged.bam' % (sample_name, int(process_group), pcr_pair)
-        merge_dict.setdefault('out_file', out_filename)
+        merge_dict['out_file'] = out_filename
         in_file_list = []
-        merge_dict.setdefault('in_file_list', in_file_list)
+        merge_dict['in_file_list'] = in_file_list
         for lane_index in data_file_dict[process_group][sample_name]['lane_dict'].keys():
           in_file = '%s/%s-%03d_%s-L%03d.bam' % (bam_path, sample_name, lane_index, pcr_pair, lane_index)
           merge_dict['in_file_list'].append(in_file)
