@@ -21,3 +21,20 @@ process_groups      samples      lanes      pcr_pairs     notes
 
 2                   4            4          8             4 lane run; 2 samples in each process group; 1 sample in each of the process groups has the same name; samples distinguished by pcr_pairs and lanes
 
+
+number      process_groups      samples      lanes      rt_wells      p7_wells      p5_wells      hash_file      notes
+00          1                   1            1          2             2             2             -              1 row
+
+01          1                   1            1          2             2             2             -              2 rows split by p5_wells
+
+02          1                   1            4          2             2             2             -              2 rows split by p5_wells and lanes
+
+03          2                   1            4          2             2             2             -              2 rows split by process_group, p5_wells, and lanes
+
+04          2                   2            4          2             2             4             -              4 rows split by process_group, p5_wells, and lanes in more complex arrangement
+
+05          2                   2            4          2             2             4             yes            4 rows split by process_group, p5_wells, and lanes in more complex arrangement with one hash sample
+
+06          2                   2            4          2             2             4             yes            4 rows split by process_group, p5_wells, and lanes in more complex arrangement with two hash samples and two hash files
+
+
