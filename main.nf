@@ -23,6 +23,7 @@ params.object_map = [:]
 ** files given by the key.
 */
 params.object_map.merge_bam_map = [:]
+params.object_map.process_hashes_map = [:]
 params.object_map.trim_bam_map = [:]
 params.object_map.merge_align_bam_map = [:]
 
@@ -33,6 +34,8 @@ params.object_map.merge_align_bam_map = [:]
 */
 include { make_merge_demux_json } from './modules/make_merge_demux_json.nf'
 include { merge_demux } from './modules/merge_demux.nf'
+include { make_process_hashes_json; process_hashes_function } from './modules/make_process_hashes_json.nf'
+include { process_hashes } from './modules/process_hashes.nf'
 include { make_trim_bam_json; trim_bam_function } from './modules/make_trim_bam_json.nf'
 include { trim_bams } from './modules/trim_bams.nf'
 include { make_star_align_json; align_bam_function } from './modules/make_star_align_json.nf'
@@ -124,6 +127,20 @@ workflow {
       params.object_map.merge_bam_map[file_base_name] = path
     }
   }
+
+  merge_demux.out.subscribe onNext: {
+    path -> {
+      def file_base_name = path.toString().tokenize('/').last()
+      params.object_map.process_hashes_map[file_base_name] = path
+    }
+  }
+
+  /*
+  ** Check for hash read runs: set up JSON file.
+  */
+  make_process_hashes_json(samplesheet_file, merge_demux.out.collect())
+  make_process_hashes_json.out.splitJson().filter{it.size() > 0}.map{process_hashes_function(it)}.set{process_hashes_channel_in}
+  process_hashes(process_hashes_channel_in)
 
   /*
   ** Set up and run bbduk.sh read trimming.

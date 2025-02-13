@@ -2,3 +2,5 @@ Human /net/bbi/vol1/data/bge/bbi/tests/bclconvert/starsolo_indices/Human 60
 Mouse /net/bbi/vol1/data/bge/bbi/tests/bclconvert/starsolo_indices/Mouse 47
 Barnyard /net/bbi/vol1/data/bge/bbi/tests/bclconvert/starsolo_indices/Barnyard 90
 Macaque /net/bbi/vol1/data/bge/bbi/tests/bclconvert/starsolo_indices/Macaque 48
+Zebrafish /net/bbi/vol1/data/bge/bbi/tests/bclconvert/starsolo_indices/Zebrafish 32
+Fishbowl_seahub /net/bbi/vol1/data/bge/bbi/tests/bclconvert/starsolo_indices/Fishbowl_seahub 70
