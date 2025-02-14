@@ -131,7 +131,7 @@ def make_data_file_json(data_file_dict, sample_hash_dict):
         and len(sample_hash_dict[process_group][sample_name][0]) > 0):
 
         merge_dict = {}
-        merge_dict['base_name'] = '%s-%03d' % (sample_name, int(process_group))
+        merge_dict['sample_name'] = '%s-%03d' % (sample_name, int(process_group))
         merge_dict['hash_file'] = sample_hash_dict[process_group][sample_name][0]
         in_file_list = []
         merge_dict['in_file_list'] = in_file_list
