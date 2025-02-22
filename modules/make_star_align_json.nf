@@ -9,6 +9,9 @@ process make_star_align_json {
 
   script:
   """
+  # bash watch for errors
+  set -ueo pipefail
+
   $workflow.projectDir/bin/make_star_align_json.py -i $samplesheet_file -g $star_genomes_file
   """
 }

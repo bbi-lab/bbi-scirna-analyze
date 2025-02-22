@@ -4,12 +4,13 @@ library(data.table)
 library(tidyverse)
 
 parser = argparse::ArgumentParser(description='Script to calculate the total hash read duplication rate.')
-parser$add_argument('sample_name', help='Sample dir')
-parser$add_argument('hash_dup', help='File of umi count matrix.')
+parser$add_argument('sample_name', help='Sample name.')
+parser$add_argument('hash_dup_per_cell', help='hash_dup_per_cell input file.')
+parser$add_argument('hash_dup', help='hash_dup value.')
 
 args = parser$parse_args()
 
-dup = fread(paste0(args$sample_name, "_hash_dup_per_cell.txt"), header = FALSE,
+dup = fread(args$hash_dup_per_cell, header = FALSE,
             data.table = F,
             col.names = c("Expt", "Cell", "V4", "V5", "V6"))
 

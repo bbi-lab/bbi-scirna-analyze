@@ -7,6 +7,10 @@ import groovy.json.JsonSlurper
 params.bin_dir = workflow.projectDir + '/bin'
 params.align_cpus = 4
 params.umi_cutoff = 100
+params.hash_umi_cutoff = 5
+params.hash_ratio = false
+params.hash_dup = false //Default is false. Other options are "p5" or "pcr_plate".
+
 
 demux_out = "${params.output_dir}/demux_out"
 star_genomes_file = "${params.bin_dir}/star_genomes.txt"
@@ -35,14 +39,16 @@ params.object_map.merge_align_bam_map = [:]
 include { make_merge_demux_json } from './modules/make_merge_demux_json.nf'
 include { merge_demux } from './modules/merge_demux.nf'
 include { make_process_hashes_json } from './modules/make_process_hashes_json.nf'
-include { process_hashes; process_hashes_function } from './modules/process_hashes.nf'
+include { process_hashes; process_hashes_function; hash_umi_knee_plot; calc_tot_hash_dup; assign_hash } from './modules/process_hashes.nf'
 include { make_trim_bam_json } from './modules/make_trim_bam_json.nf'
 include { trim_bams; trim_bam_function } from './modules/trim_bams.nf'
 include { make_star_align_json } from './modules/make_star_align_json.nf'
 include { align_bams; align_bam_function } from './modules/align_bams.nf'
 include { make_merge_align_json } from './modules/make_merge_align_json.nf'
 include { merge_align; merge_align_function } from './modules/merge_align.nf'
-include { cat_matrices } from './modules/cat_matrices.nf'
+include { merge_starsolo; merge_starsolo_function } from './modules/merge_starsolo.nf'
+include { split_starsolo } from './modules/split_starsolo.nf'
+include { cat_matrices; cat_matrices_function } from './modules/cat_matrices.nf'
 include { make_cds } from './modules/make_cds.nf'
 
 
@@ -135,11 +141,13 @@ workflow {
   }
 
   /*
-  ** Check for hash read runs: set up JSON file.
+  ** Check for hash read runs: set up JSON file, process reads, and make make output.
   */
   make_process_hashes_json(samplesheet_file, merge_demux.out.collect())
   make_process_hashes_json.out.splitJson().filter{it.size() > 0}.map{process_hashes_function(it)}.set{process_hashes_channel_in}
   process_hashes(process_hashes_channel_in)
+  hash_umi_knee_plot(process_hashes.out.hash_umis_per_cell)
+  calc_tot_hash_dup(process_hashes.out.hash_dup_per_cell)
 
   /*
   ** Set up and run bbduk.sh read trimming.
@@ -180,25 +188,41 @@ workflow {
   merge_align(merge_align_channel_in)
 
   /*
+  ** Set up and merge STARsolo results.
+  ** Notes:
+  **   o  reuse the make_merge_align_json JSON file because
+  **      the JSON file refers to the STARsolo output directory
+  **      where all of the STARsolo results are stored.
+  */
+  make_merge_align_json.out.splitJson().map{merge_starsolo_function(it)}.set{merge_starsolo_channel_in}
+  merge_starsolo(merge_starsolo_channel_in)
+
+  /*
+  ** Split out selected columns from CellReads.stats.
+  */
+  split_starsolo(merge_starsolo.out)
+
+  /*
   ** Concatenate MM counts matrices.
   **
   */
-  cat_matrices(merge_align_channel_in)
+  make_merge_align_json.out.splitJson().map{cat_matrices_function(it)}.set{cat_matrices_channel_in}
+  cat_matrices(cat_matrices_channel_in)
 
   /*
   ** Make CDS objects.
   **   Inputs:
-  **    path(count_matrix) 
-  **    path(feature_tsv) 
-  **    path(cell_tsv) 
-  **    val(sample_dir) 
+  **    tuple val(sample_name), path(cells), path(features), path(matrix)
   **    val(out_file)
   */
-  make_cds(cat_matrices.out.matrix,
-           cat_matrices.out.features,
-           cat_matrices.out.cells,
-           cat_matrices.out.sample_dir,
-           'counts_raw')
+  make_cds( cat_matrices.out.raw_matrix, 'counts_raw')
+
+  /*
+  ** Assign hashes to cells and update cds.
+  */
+  assign_hash_channel_in = process_hashes.out.hash_matrix.join(split_starsolo.out.umis_per_cell_barcode).join( make_cds.out.cds)
+  assign_hash(assign_hash_channel_in)
+
 }
 
 

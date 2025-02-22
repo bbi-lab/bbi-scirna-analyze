@@ -98,7 +98,7 @@ cds <- readRDS(args$cds)
 # Extract meta info from cell name 
 df <- as.data.frame(colData(cds))
 meta_types <-  meta_types <- c("P5_barcode", "P7_barcode", "RT_barcode", "Ligation_barcode")
-meta<- separate(df, cell, into=meta_types, sep="_", remove=FALSE)
+meta<- separate(df, wells, into=meta_types, sep="_", remove=FALSE)
 
 # Fill in barcode information in cds object from meta object 
 for (m in meta_types) {

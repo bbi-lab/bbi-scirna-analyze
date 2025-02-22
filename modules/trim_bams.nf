@@ -19,6 +19,9 @@ process trim_bams {
 
 
   """
+  # bash watch for errors
+  set -ueo pipefail
+
   BBDUK=${task.ext.bbduk_path}
 
   \${BBDUK} -Xmx16g in=${bam_in} out=stdout.bam \

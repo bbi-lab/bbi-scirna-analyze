@@ -3,27 +3,28 @@ def analyze_out = params.output_dir + '/analyze_out'
 process make_cds {
   errorStrategy 'ignore'
 
-  publishDir path: "${analyze_out}/${sample_dir}", pattern: "*.rds", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_dir}", pattern: "*.png", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.rds", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.png", mode: 'copy'
 
   input:
-  path(count_matrix)
-  path(feature_tsv)
-  path(cell_tsv)
-  val(sample_dir)
+  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells)
   val(out_file)
 
   output:
-  path("*.rds")
-  path("*.png")
+  tuple val(sample_name), path("*.rds"), emit: cds
+  tuple val(sample_name), path("*.png"), emit: png
 
   script:
   """
+  # bash watch for errors
+  set -ueo pipefail
+
   make_cds.R \
-  ${sample_dir} \
+  ${sample_name} \
   ${count_matrix} \
   ${feature_tsv} \
   ${cell_tsv} \
+  ${barcode_to_wells} \
   ${params.umi_cutoff}
   """
 }

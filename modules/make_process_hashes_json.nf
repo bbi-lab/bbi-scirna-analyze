@@ -8,6 +8,9 @@ process make_process_hashes_json {
 
   script:
   """
+  # bash watch for errors
+  set -ueo pipefail
+
   $workflow.projectDir/bin/make_process_hashes_json.py -i $samplesheet_file
   """
 }

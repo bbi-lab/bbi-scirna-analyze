@@ -11,7 +11,7 @@ def process_hashes_function(item) {
     }
     in_path_list.add(file_path)
   }
-  return([in_path_list, hash_file, sample_name])
+  return([sample_name, in_path_list, hash_file])
 }
 
 
@@ -31,14 +31,12 @@ process process_hashes {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash.log", mode: 'copy'
 
   input:
-  tuple path(bam_in), val(hash_file), val(sample_name)
+  tuple val(sample_name), path(bam_in), val(hash_file)
 
   output:
   tuple val(sample_name), path("*_hash_umis_per_cell.txt"), emit: hash_umis_per_cell
   tuple val(sample_name), path("*_hash_dup_per_cell.txt"), emit: hash_dup_per_cell
-  path("*.hashumis.mtx")
-  path("*.hashumis_hashes.txt")
-  path("*.hashumis_cells.txt")
+  tuple val(sample_name), path("*.hashumis.mtx"), path("*.hashumis_cells.txt"), path("*.hashumis_hashes.txt"), emit: hash_matrix
   path("*_hash_reads_per_cell.txt")
   path("*_hash_assigned_table.txt")
   path("*_hash.log")
@@ -49,12 +47,101 @@ process process_hashes {
   */
 
   """
+  # bash watch for errors
+  set -ueo pipefail
+
   process_hashes -n ${sample_name} -k ${sample_name} -s ${hash_file} -b ${bam_in} -t 2
   """
 }
 
 
 process hash_umi_knee_plot {
+  errorStrategy 'retry'
+  maxRetries 2
 
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_knee_plot.png", mode: 'copy'
 
+  input:
+  tuple val(sample_name), path(hash_umis_per_cell)
+
+  output:
+  path("*_hash_knee_plot.png")
+
+  script:
+  """
+  # bash watch for errors
+  set -ueo pipefail
+
+  knee_plot.R ${hash_umis_per_cell} ${sample_name}
+  """
 }
+
+
+process calc_tot_hash_dup {
+  errorStrategy 'retry'
+  maxRetries 2
+
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_total_hash_dup_rate.csv", mode: 'copy'
+
+  input:
+  tuple val(sample_name), path(hash_dup_per_cell)
+
+  output:
+  path("*_total_hash_dup_rate.csv"), optional: true
+
+  script:
+  """
+  # bash watch for errors
+  set -ueo pipefail
+
+  if [ ${params.hash_dup} != 'false' ]
+  then
+    calc_tot_hash_dup.R ${sample_name} ${hash_dup_per_cell} ${params.hash_dup} 
+  fi
+  """
+}
+
+
+process assign_hash {
+  errorStrategy 'retry'
+  maxRetries 2
+
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_table.csv", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_cds.RDS", mode: 'copy'
+
+  input:
+  tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(umis_per_cell_barcode), path(rds)
+
+  output:
+  path("*hash_table.csv")
+  tuple val(sample_name), path("*hash_cds.RDS")
+
+  script:
+  """
+  # bash watch for errors
+  set -ueo pipefail
+
+  mkdir tmp_dir
+  mv ${rds} tmp_dir
+
+  #
+  # Convert the well-based cell names to encoded barcode-based names,
+  # and pass the converted cell names to assign_hash.R.
+  #
+  well_to_barcode.py -i ${hashumis_cells_txt} -o hashumis_cells.tmp1
+  awk '{print \$2}' hashumis_cells.tmp1 > hashumis_cells.tmp2
+
+  assign_hash.R \
+    ${sample_name} \
+    ${hashumis_mtx} \
+    hashumis_cells.tmp2 \
+    ${hashumis_hashes_txt} \
+    tmp_dir/${rds} \
+    ${umis_per_cell_barcode} \
+    ${params.hash_umi_cutoff} \
+    ${params.hash_ratio}
+
+  rm hashumis_cells.tmp1 hashumis_cells.tmp2
+  """
+}
+

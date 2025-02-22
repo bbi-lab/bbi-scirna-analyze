@@ -8,7 +8,7 @@ suppressPackageStartupMessages({
 
 
 parser = argparse::ArgumentParser(description='Script to generate knee plot for hash umis.')
-parser$add_argument('hash_umi', help='File with cds.')
+parser$add_argument('hash_umi', help='File of hash_umis_per_cell.')
 parser$add_argument('sample_name', help='Sample name')
 args = parser$parse_args()
 

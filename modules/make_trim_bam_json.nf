@@ -8,6 +8,9 @@ process make_trim_bam_json {
 
   script:
   """
+  # bash watch for errors
+  set -ueo pipefail
+
   $workflow.projectDir/bin/make_trim_bam_json.py -i $samplesheet_file
   """
 }

@@ -35,6 +35,9 @@ process merge_align {
 
   script:
   """
+  # bash watch for errors
+  set -ueo pipefail
+
   file_list=`ls file*`
   for file in \$file_list
   do

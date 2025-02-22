@@ -8,6 +8,7 @@ parser$add_argument('sample_dir', help='Sample dir')
 parser$add_argument('matrix', help='File of umi count matrix.')
 parser$add_argument('gene_data', help='File of gene data.')
 parser$add_argument('cell_data', help='File of cell data.')
+parser$add_argument('barcodes_to_wells', help='File of encoded barcode indices and wells.')
 parser$add_argument('umi_cutoff', help='UMI cutoff to count as a cell.')
 # parser$add_argument('gene_bed', help='Bed file of gene info.')
 # parser$add_argument('empty_drops', help='RDS file from emptyDrops.')
@@ -26,6 +27,12 @@ cds <- load_mm_data(mat_path=args$matrix,
                     umi_cutoff=umi_cutoff,
                     sep="")
 #                    feature_metadata_column_names=c('gene_short_name'), sep="")
+
+#
+# Add barcode well string to colData(cds).
+#
+wells <- read.table(args$barcodes_to_wells, sep='\t', row.names=1)
+colData(cds)['wells'] <- wells[row.names(colData(cds)),1]
 
 cds <- cds[,Matrix::colSums(counts(cds)) != 0]
 cds <- estimate_size_factors(cds)
