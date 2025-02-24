@@ -14,7 +14,7 @@ parser$add_argument('hash_matrix', help='File of hash umi count matrix')
 parser$add_argument('cell_list', help='File with list of cell names with hash umis')
 parser$add_argument('hash_list', help='File with list of hash names')
 parser$add_argument('cds', help='cds object in RDS format')
-parser$add_argument('umis_per_cell', help='File with list of umis per cell barcode')
+parser$add_argument('umis_per_cell', help='File with list of umis per cell barcode (all cells -- used to calculate background hash umis)')
 parser$add_argument('hash_umi_cutoff', type='integer', help='min number of hash umis to determine top to second best ratio')
 parser$add_argument('hash_ratio', help='min top to second best hash ratio. Default is false and not filtered')
 args = parser$parse_args()
@@ -137,7 +137,8 @@ hash_mtx = t(hash_mtx)
 rna_umis = fread(args$umis_per_cell,
                  header = F, data.table = F, col.names = c("cell", "n.umi"))
 
-# Filter for umis that are less than specified cutoff 
+# Filter for rna umis that are less than specified cutoff to find 'cells' used
+# to calculate background hash umis.
 # Determine background cell hashes to find top_to_second_best_ratio
 background_cell_hashes =
   rna_umis$cell[rna_umis$n.umi < args$hash_umi_cutoff] %>%
