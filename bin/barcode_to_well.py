@@ -25,6 +25,11 @@ import argparse
 #                                       p5_index_encoded);
 
 
+#
+# max_index is the maximum well index possible in the
+# samplesheet/barcode files. So if there are 16 RT utiter
+# plates, the maximum well index is 96 * 16.
+#
 max_index = 96 * 16
 
 
@@ -84,7 +89,8 @@ def make_barcode_decoder(max_index):
   p7_well_dict =  {}
   p5_well_dict =  {}
 
-  for index in range(1, max_index + 1):
+  # Include index 0, which represents no barcode: e.g., p5.
+  for index in range(0, max_index + 1):
     base4_index = base_convert(index, 4)
     encoded4_digit_list = []
     for j in base4_index:
@@ -122,6 +128,16 @@ if __name__ == '__main__':
       lig_code = barcode[7:14]
       p7_code = barcode[14:21]
       p5_code = barcode[21:]
+
+      if(not rt_code in rt_well_dict):
+        print('Error: barcode_to_well.py: rt well index not found in dictionary.\nYou may need to increase the value of max_index in this program.')
+      if(not lig_code in lig_well_dict):
+        print('Error: barcode_to_well.py: lig well index not found in dictionary.\nYou may need to increase the value of max_index in this program.')
+      if(not p7_code in p7_well_dict):
+        print('Error: barcode_to_well.py: p7 well index not found in dictionary.\nYou may need to increase the value of max_index in this program.')
+      if(not p5_code in p5_well_dict):
+        print('Error: barcode_to_well.py: p5 well index not found in dictionary.\nYou may need to increase the value of max_index in this program.')
+
       print('%s\t%s_%s_%s_%s' % (barcode, p5_well_dict[p5_code], p7_well_dict[p7_code], rt_well_dict[rt_code], lig_well_dict[lig_code]), file=ofh)
 
   ofh.close()
