@@ -1,5 +1,20 @@
 #!/usr/bin/env python3
 
+#
+# Program: distill.align_demux_json.py
+# Purpose: read a json file made by make_merge_align_json.py and
+#          check for inconsistent and duplicated filenames, and
+#          write a summary of the pcr pair information
+#          inferred from the filenames to stdout. This summary is meant to
+#          be compared to the output of the distill.samplesheet_json.py
+#          (enable the correct print statement in distill.samplesheet_json.py).
+#          The outputs of this program and distill.samplesheet_json.py
+#          must be sorted, for example,
+#
+#            distill.merge_align_json.py -i merge_align.json | sort -k 1,1 > distill.merge_align_json.py.sorted.out
+#
+
+
 import sys
 import json
 import argparse
@@ -141,23 +156,26 @@ if __name__ == '__main__':
 # ]
 
   sample_name_full_dict = {}
+  in_dir_count_dict = {}
+  out_file_count_dict = {}
 
-  i = 0
   json_data = read_json(args.input)
   for json_item in json_data:
-    i = i + 1
-#    if(i > 10):
-#      break
 
     sample_name_j = json_item['sample_name']
     out_file = json_item['out_file']
     in_dir_list = json_item['in_dir_list']
+
+    out_file_count_dict[out_file]  = out_file_count_dict.setdefault(out_file, 0)
+    out_file_count_dict[out_file] += 1
 
     sample_name_o = out_file.replace('.aligned.bam', '')
     if(sample_name_o != sample_name_j):
       print('Error: distill.merge_align_json.py: inconsistent sample names \'%s\' != \'%s\'' % (sample_name_o, sample_name_j))
 
     for in_dir in in_dir_list:
+      in_dir_count_dict[in_dir] = in_dir_count_dict.setdefault(in_dir, 0)
+      in_dir_count_dict[in_dir] += 1
 
       in_dir_parts = in_dir.split('_')
       sample_name_i = in_dir_parts[0]
@@ -176,8 +194,22 @@ if __name__ == '__main__':
       sample_name_full_dict[sample_name_j][1].add(int(p5_i))
 
 
-  for sample_name in sample_name_full_dict.keys():
+  #
+  # Check for input/output filenames that occur more than once.
+  #
+  for dir_name in in_dir_count_dict:
+    if(in_dir_count_dict[dir_name] != 1):
+      print('More than one occurrence (%d) of input dirname \'%s\'' % (in_dir_count_dict[dir_name], dir_name), file=sys.stderr)
 
+  for file_name in out_file_count_dict:
+    if(out_file_count_dict[file_name] != 1):
+      print('More than one occurrence (%d) of output filename \'%s\'' % (out_file_count_dict[file_name], file_name), file=sys.stderr)
+
+  #
+  # Write distilled index/well information by sample_name+process_group
+  #
+
+  for sample_name in sample_name_full_dict.keys():
     sample_name_full_item = sample_name_full_dict[sample_name]
     p7_string = make_index_string(list(sample_name_full_item[0]))
     p5_string = make_index_string(list(sample_name_full_item[1]))

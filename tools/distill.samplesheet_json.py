@@ -1,5 +1,21 @@
 #!/usr/bin/env python3
 
+# Program: distill.samplesheet_json.py
+# Purpose: read a samplesheet.json file and write a summary
+#          of rt, pcr pair, and lane information to stdout.
+# Notes:
+#   o  the output is used to check the samplesheet.json file
+#      and to check the output of the programs
+#        o  distill.merge_demux_json.py
+#        o  distill.merge_align_json.py
+#   o  in order to check the output of the two programs, you
+#      must sort the output of distill.samplesheet_json.py,
+#      for example,
+#
+#        distill.samplesheet_json.py -i samplesheet.json | sort -i 1,1 > distill.samplesheet_json.py.sorted.out
+#
+
+
 import sys
 import argparse
 import json
@@ -149,6 +165,7 @@ def index_string_to_well_string( index_string, across_row_first, show_plate ):
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program to summarize samplesheet.json pcr indices by sample, lane, and process_group.')
   parser.add_argument('-i', '--input', required=True, default=None, help='Input JSON samplesheet filename (required string).')
+  parser.add_argument('-f', '--format', required=True, default=None, help='Output \'format\'. (required string: \'full\', \'demux\', or \'align\').')
   args = parser.parse_args()
 
   json_data = read_json(args.input)
@@ -157,11 +174,8 @@ if __name__ == '__main__':
 
   sample_index_list = json_data['sample_index_list']
   
-  i = 0
   for sample_index_item in sample_index_list:
-    i = i + 1
-#    if(i > 10):
-#      break
+
     index_ranges = sample_index_item['ranges'].split(':')
     sample_name = sample_index_item['sample_id']
     process_group = sample_index_item['process_group']
@@ -174,9 +188,6 @@ if __name__ == '__main__':
     p7_index_list   = expand_index_list(p7_index_string)
     p5_index_list   = expand_index_list(p5_index_string)
     lane_index_list = expand_index_list(lane_index_string)
-
-#    print(sample_index_item)
-#    print('%s  %s  %s  %s' % ('%s-%03d' % (sample_name, int(process_group)), p7_index_string, p5_index_string, lane_index_string))
 
     sample_name_full = '%s-%03d' % (sample_name, int(process_group))
     if(not sample_name_full in sample_name_full_dict):
@@ -191,8 +202,6 @@ if __name__ == '__main__':
     sample_name_full_dict[sample_name_full][2].update(p5_index_list)
     sample_name_full_dict[sample_name_full][3].update(lane_index_list)
 
-#  print(sample_name_full_dict)
-
   for sample_name_full in sample_name_full_dict.keys():
     sample_name_full_item = sample_name_full_dict[sample_name_full]
     rt_string = make_index_string(list(sample_name_full_item[0]))
@@ -200,17 +209,18 @@ if __name__ == '__main__':
     p5_string = make_index_string(list(sample_name_full_item[2]))
     lane_string = make_index_string(list(sample_name_full_item[3]))
 
-# Includes rt well information.
-#    print('%s  %s  %s  %s  %s  |  %s  %s  %s' % (sample_name_full, rt_string, p7_string, p5_string, lane_string, index_string_to_well_string(rt_string, True, True), index_string_to_well_string(p7_string, True, False), index_string_to_well_string(p5_string, False, False)))
+    if(args.format == 'full'):
+      # Includes rt well information.
+      print('%s  %s  %s  %s  %s  |  %s  %s  %s' % (sample_name_full, rt_string, p7_string, p5_string, lane_string, index_string_to_well_string(rt_string, True, True), index_string_to_well_string(p7_string, True, False), index_string_to_well_string(p5_string, False, False)))
 
-# Includes p7, p5, and lane information for comparing to the output of the distill.merge_demux_json.py script. The output must be sorted by the first field.
-#    print('%s  %s  %s  %s  |  %s  %s' % (sample_name_full, p7_string, p5_string, lane_string, index_string_to_well_string(p7_string, True, False), index_string_to_well_string(p5_string, False, False)))
+    elif(args.format == 'demux'):
+      # Includes p7, p5, and lane information for comparing to the output of the distill.merge_demux_json.py script. The output must be sorted by the first field.
+      print('%s  %s  %s  %s  |  %s  %s' % (sample_name_full, p7_string, p5_string, lane_string, index_string_to_well_string(p7_string, True, False), index_string_to_well_string(p5_string, False, False)))
 
-# Includes p7 and p5 information for comparing to the output of the distill.merge_align_json.py. The output must be sorted by the first field.
-#    print('%s  %s  %s  |  %s  %s' % (sample_name_full, p7_string, p5_string, index_string_to_well_string(p7_string, True, False), index_string_to_well_string(p5_string, False, False)))
+    elif(args.format == 'align'):
+      # Includes p7 and p5 information for comparing to the output of the distill.merge_align_json.py. The output must be sorted by the first field.
+      print('%s  %s  %s  |  %s  %s' % (sample_name_full, p7_string, p5_string, index_string_to_well_string(p7_string, True, False), index_string_to_well_string(p5_string, False, False)))
 
-#
-# notes:
-#   o  gather all sample_name+process_group items together into a single string
-#   o  possibly have more than one output type: for merge_demux and for merge_align
-#
+    else:
+      print('Error: unrecognized format command line parameter.', file=sys.stderr)
+      sys.exit(-1)
