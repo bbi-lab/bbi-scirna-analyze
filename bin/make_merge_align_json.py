@@ -87,8 +87,8 @@ def make_data_file_json(data_file_dict):
   for process_group in data_file_dict.keys():
     for sample_name in data_file_dict[process_group].keys():
       merge_dict = {}
-      sample_dir = '%s-%03d' % (sample_name, int(process_group))
-      merge_dict['sample_dir'] = sample_dir
+      qualified_sample_name = '%s-%03d' % (sample_name, int(process_group))
+      merge_dict['sample_name'] = qualified_sample_name
       out_filename = '%s-%03d.aligned.bam' % (sample_name, int(process_group))
       merge_dict['out_file'] = out_filename
       in_dir_list = []

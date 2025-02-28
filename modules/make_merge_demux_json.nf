@@ -8,6 +8,9 @@ process make_merge_demux_json {
 
   script:
   """
+  # bash watch for errors
+  set -ueo pipefail
+
   $workflow.projectDir/bin/make_merge_demux_json.py -i $samplesheet_file -p $bam_path
   """
 }

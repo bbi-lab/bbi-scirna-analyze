@@ -20,6 +20,9 @@ process make_copy_matrices_json {
 
   script:
   """
+  # bash watch for errors
+  set -ueo pipefail
+
   $workflow.projectDir/bin/make_copy_matrices_json.py -i $samplesheet_file
   """
 }

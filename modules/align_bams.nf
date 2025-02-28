@@ -1,4 +1,17 @@
+def align_bam_function(item) {
+  def sample_name = item['sample_name']
+  def in_file = item['in_file']
+  def file_path = params.object_map.trim_bam_map[in_file]
+  def genome  = item['genome']
+  def mem     = item['mem']
+  def out_dir = in_file.take(in_file.lastIndexOf('.'))
+
+  return([sample_name, file_path, genome, mem, out_dir])
+}
+
+
 align_cpus = params.align_cpus < 8 ? params.align_cpus : 8
+def analyze_out = params.output_dir + '/analyze_out'
 
 process align_bams {
   errorStrategy 'retry'
@@ -6,11 +19,15 @@ process align_bams {
 
   clusterOptions { '-l m_mem_free=' + mem.toInteger() / align_cpus + 'G -pe serial ' + align_cpus + ' -l cpuid_level=22' }
 
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*trimmed", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "CellReads.stats", mode: 'copy'
+
   input:
-  tuple path(bam_in), val(genome_dir), val(mem), val(out_dir)
+  tuple val(sample_name), path(bam_in), val(genome_dir), val(mem), val(out_dir)
   
   output:
   path(out_dir)
+  //path(out_dir/Solo.out/GeneFull_Ex50pAS/CellReads.stats)
 
 /*
 **  notes:
@@ -22,6 +39,9 @@ process align_bams {
 
   script:
   """
+  # bash watch for errors
+  set -ueo pipefail
+
   /net/gs/vol1/home/bge/STAR \
       --runThreadN ${align_cpus} \
       --genomeDir ${genome_dir} \
