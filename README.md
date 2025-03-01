@@ -35,15 +35,14 @@ cargo build --release
 cp target/release/process_hashes ../../bin
 ```
 
-I recommend that you build *process_hashes* on a newer cluster node, for exampl
-e, s020 on the Shendure cluster.
+I recommend that you build *process_hashes* on a newer cluster node, for example, s020 on the Shendure cluster.
 
 
 ### Load the STAR aligner on the Genome Sciences cluster
 
-The STAR aligner is loaded by Nextflow. The module load command is in the file *bbi-scirna-analyze/nextflow.config*.
+The STAR aligner is loaded by Nextflow. The module load command is in the *bbi-scirna-analyze/nextflow.config* file.
 
-I found that the most recent STAR aligned, STAR 2.7.11b, can fail with a segmentation fault when run on input files with only a few reads. You can fix this problem by cloning the STAR git repository and editing the source-code file called *STAR-2.7.11b/source/serviceFuns.cpp* to add the lines
+I found that the most recent STAR aligner, STAR 2.7.11b, can fail with a segmentation fault when it runs on an input file with very few reads. You can fix this problem by cloning the STAR git repository and editing the source code file called *STAR-2.7.11b/source/serviceFuns.cpp* to add the lines
 
 ```
     if (N==0)
