@@ -49,7 +49,7 @@ I found that the most recent STAR aligner, STAR 2.7.11b, can fail with a segment
         return -1;
 ```
 
-at line 300 of *serviceFuns.cpp*, so that the start of the edited function looks like
+at line 300 so that the start of the edited function looks like
 
 ```
 template <class argType>
