@@ -42,7 +42,9 @@ process align_bams {
   # bash watch for errors
   set -ueo pipefail
 
-  /net/gs/vol1/home/bge/STAR \
+  STAR_ALIGNER=${task.ext.star_path}
+
+  \${STAR_ALIGNER} \
       --runThreadN ${align_cpus} \
       --genomeDir ${genome_dir} \
       --soloCBmatchWLtype Exact \
