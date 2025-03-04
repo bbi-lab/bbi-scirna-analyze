@@ -86,6 +86,9 @@ make
 
 in the *STAR-2.7.11b/source* directory. Copy the resulting *STAR* executable file to the *bbi-scirna-analyze/bin* directory.
 
+Notes:
+- the STAR compilation failed when the samtools/1.19 module was loaded. I believe that the linker was using the samtools htslib rather than the STAR htslib.
+
 ### Install bbduk.sh
 
 See the BBMap installation instructions at
