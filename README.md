@@ -44,8 +44,7 @@ cargo build --release
 cp target/release/process_hashes ../../bin
 ```
 
-I recommend that you build *process_hashes* on a newer cluster node, for exampl
-e, s020 on the Shendure cluster.
+I recommend that you build *process_hashes* on a newer cluster node, for example, s020 on the Shendure cluster.
 
 ### *STAR* aligner program
 
@@ -62,7 +61,7 @@ I found that the most recent *STAR* aligner version, *STAR 2.7.11b*, can fail wi
         return -1;
 ```
 
-at line 300 of *serviceFuns.cpp*, so that the start of the edited function looks like
+at line 300 so that the start of the edited function looks like
 
 ```
 template <class argType>
