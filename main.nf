@@ -220,7 +220,7 @@ workflow {
   /*
   ** Assign hashes to cells and update cds.
   */
-  assign_hash_channel_in = process_hashes.out.hash_matrix.join(split_starsolo.out.umis_per_cell_barcode).join( make_cds.out.cds)
+  assign_hash_channel_in = process_hashes.out.hash_matrix.join(split_starsolo.out.counts_per_cell).join( make_cds.out.cds)
   assign_hash(assign_hash_channel_in)
 
 }

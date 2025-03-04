@@ -4,13 +4,13 @@ process split_starsolo {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "umis_per_cell_barcode.txt", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "counts_per_cell.txt", mode: 'copy'
 
   input:
   tuple val(sample_name), path(file)
 
   output:
-  tuple val(sample_name), path("umis_per_cell_barcode.txt"), emit: umis_per_cell_barcode
+  tuple val(sample_name), path("counts_per_cell.txt"), emit: counts_per_cell
 
   script:
   """

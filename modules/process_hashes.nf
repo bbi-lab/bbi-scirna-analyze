@@ -110,7 +110,7 @@ process assign_hash {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_cds.RDS", mode: 'copy'
 
   input:
-  tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(umis_per_cell_barcode), path(rds)
+  tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(counts_per_cell), path(rds)
 
   output:
   path("*hash_table.csv")
@@ -137,7 +137,7 @@ process assign_hash {
     hashumis_cells.tmp2 \
     ${hashumis_hashes_txt} \
     tmp_dir/${rds} \
-    ${umis_per_cell_barcode} \
+    ${counts_per_cell} \
     ${params.hash_umi_cutoff} \
     ${params.hash_ratio}
 

@@ -134,14 +134,21 @@ colnames(hash_mtx) = cell_list
 hash_mtx = t(hash_mtx)
 
 # Grab sci umis 
-rna_umis = fread(args$umis_per_cell,
-                 header = F, data.table = F, col.names = c("cell", "n.umi"))
+counts_per_cell = fread(args$umis_per_cell,
+                        header = TRUE, data.table = F,
+                        col.names = c("cell",
+                                      "read_total_count",
+                                      "umi_count",
+                                      "exonic_read_count",
+                                      "intronic_read_count",
+                                      "mito_read_count"))
+rna_umis <- counts_per_cell[,c('cell', 'umi_count')]
 
 # Filter for rna umis that are less than specified cutoff to find 'cells' used
 # to calculate background hash umis.
 # Determine background cell hashes to find top_to_second_best_ratio
 background_cell_hashes =
-  rna_umis$cell[rna_umis$n.umi < args$hash_umi_cutoff] %>%
+  rna_umis$cell[rna_umis$umi_count < args$hash_umi_cutoff] %>%
   as.character()
 
 # Assign number of hash umis to each cell, pvals, qvals, top_to_second_best_ratio, and the top oligo

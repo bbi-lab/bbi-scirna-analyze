@@ -17,9 +17,16 @@ def process_file(in_filename, sample_name):
 
   pobj = re.compile(r'^CBnotInPasslist')
 
-  out_filename = 'umis_per_cell_barcode.txt'
+  out_filename = 'counts_per_cell.txt'
   ofh_umi_unique = open(file=out_filename, mode='w')
-  csv_writer = csv.writer(ofh_umi_unique, delimiter='\t')
+  csv_writer = csv.writer(ofh_umi_unique, delimiter='\t', lineterminator='\n')
+
+  cbIndex = None
+  cbMatchIndex = None
+  nUMIuniqueIndex = None
+  exonicIndex = None
+  intronicIndex = None
+  mitoIndex = None
 
   with open(file=in_filename, mode='r', newline='') as ifh:
     csv_reader = csv.reader(ifh, delimiter='\t')
@@ -32,7 +39,11 @@ def process_file(in_filename, sample_name):
     intronicIndex = None
     mitoIndex = None
     for i, item in enumerate(header_row):
-      if(item == 'nUMIunique'):
+      if(item == 'CB'):
+        cbIndex = i
+      elif(item == 'cbMatch'):
+        cbMatchIndex = i
+      elif(item == 'nUMIunique'):
         nUMIuniqueIndex = i
       elif(item == 'exonic'):
         exonicIndex = i
@@ -41,10 +52,24 @@ def process_file(in_filename, sample_name):
       elif(item == 'mito'):
         mitoIndex = i
 
+    if(cbIndex == None or
+       cbMatchIndex == None or
+       nUMIuniqueIndex == None or
+       exonicIndex == None or
+       intronicIndex == None or
+       mitoIndex == None):
+      print('Error: missing at least one column in the list \'cbIndex\', \'cbMatchIndex\', \'nUMIuniqueIndex\', \'exonicIndex\', \'intronicIndex\', \'mitoIndex\'', file=sys.stderr)
+      sys.exit(-1)
+
+
+    # Write header row.
+    csv_writer.writerow(['cell', 'cbMatch', 'nUMIunique', 'exonic', 'intronic', 'mito'])
+
+    # Write data rows.
     for row in csv_reader:
       if(pobj.match(row[0]) != None):
         continue
-      csv_writer.writerow([row[0], row[nUMIuniqueIndex]])
+      csv_writer.writerow([row[cbIndex], row[cbMatchIndex], row[nUMIuniqueIndex], row[exonicIndex], row[intronicIndex], row[mitoIndex]])
 
   ofh_umi_unique.close()
 
