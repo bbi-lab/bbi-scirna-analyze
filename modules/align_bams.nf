@@ -44,6 +44,8 @@ process align_bams {
 
   STAR_ALIGNER=${task.ext.star_path}
 
+  # emptyDrops_CR parameters: nExpectedCells maxPercentile maxMinRatio indMin indMax umiMin umiMinFracMedian candMaxN FDR simN
+
   \${STAR_ALIGNER} \
       --runThreadN ${align_cpus} \
       --genomeDir ${genome_dir} \
@@ -71,6 +73,7 @@ process align_bams {
       --readFilesIn \
         ${bam_in} \
       --readFilesCommand samtools view \
+      --soloCellFilter EmptyDrops_CR 3000 0.99 10 45000 90000 60 0.01 20000 0.01 10000 \
       --outFileNamePrefix "${out_dir}/"
   """
 }
