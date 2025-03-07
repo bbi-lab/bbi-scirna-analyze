@@ -146,8 +146,8 @@ workflow {
   make_process_hashes_json(samplesheet_file, merge_demux.out.collect())
   make_process_hashes_json.out.splitJson().filter{it.size() > 0}.map{process_hashes_function(it)}.set{process_hashes_channel_in}
   process_hashes(process_hashes_channel_in)
-  hash_umi_knee_plot(process_hashes.out.hash_umis_per_cell)
-  calc_tot_hash_dup(process_hashes.out.hash_dup_per_cell)
+//  hash_umi_knee_plot(process_hashes.out.hash_umis_per_cell)
+//  calc_tot_hash_dup(process_hashes.out.hash_dup_per_cell)
 
   /*
   ** Set up and run bbduk.sh read trimming.
@@ -219,9 +219,9 @@ workflow {
 
   /*
   ** Assign hashes to cells and update cds.
-  */
   assign_hash_channel_in = process_hashes.out.hash_matrix.join(split_starsolo.out.counts_per_cell).join( make_cds.out.cds)
   assign_hash(assign_hash_channel_in)
+  */
 
 }
 
