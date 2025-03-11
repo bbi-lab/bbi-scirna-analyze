@@ -69,14 +69,14 @@ process cat_hashes {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash.log", mode: 'copy'
 
   input:
-  tuple val(sample_name), path("??_hashumis.mtx")
-  tuple val(sample_name), path("??_hashumis_cells.txt")
-  tuple val(sample_name), path("??_hashumis_hashes.txt")
-  tuple val(sample_name), path("??_hash_umis_per_cell_txt")
-  tuple val(sample_name), path("??_hash_dup_per_cell_txt")
-  tuple val(sample_name), path("??_hash_reads_per_cell_txt")
-  tuple val(sample_name), path("??_hash_assigned_table_txt")
-  tuple val(sample_name), path("??_hash_log")
+  tuple val(sample_name), path("???_hashumis.mtx")
+  tuple val(sample_name), path("???_hashumis_cells.txt")
+  tuple val(sample_name), path("???_hashumis_hashes.txt")
+  tuple val(sample_name), path("???_hash_umis_per_cell_txt")
+  tuple val(sample_name), path("???_hash_dup_per_cell_txt")
+  tuple val(sample_name), path("???_hash_reads_per_cell_txt")
+  tuple val(sample_name), path("???_hash_assigned_table_txt")
+  tuple val(sample_name), path("???_hash_log")
 
   output:
   tuple val(sample_name), path("*_hash_umis_per_cell.txt"), emit: hash_umis_per_cell
