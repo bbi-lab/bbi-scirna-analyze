@@ -24,7 +24,7 @@ process align_bams {
 
   input:
   tuple val(sample_name), path(bam_in), val(genome_dir), val(mem), val(out_dir)
-  
+
   output:
   path(out_dir)
   //path(out_dir/Solo.out/GeneFull_Ex50pAS/CellReads.stats)

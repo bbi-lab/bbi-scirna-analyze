@@ -64,7 +64,7 @@ process cat_matrices {
     in_file_list="\${in_file_list} \${file_path}"
   done
 
-  cat_sparse_matrix.py -o ${out_file} -i \${in_file_list}
+  cat_sparse_matrix.py -n 'star' -o ${out_file} -i \${in_file_list}
 
   barcode_to_well.py -i ${out_file}.cells.tsv -o ${out_file}.cells.barcode_to_wells.tsv
 

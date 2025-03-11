@@ -26,25 +26,19 @@ process process_hashes {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.hashumis.mtx", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.hashumis_hashes.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.hashumis_cells.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_reads_per_cell.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_umis_per_cell.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_dup_per_cell.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_assigned_table.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash.log", mode: 'copy'
-
   input:
   tuple val(sample_name), val(hash_file), path(bam_in), val(out_root)
 
   output:
+  tuple val(sample_name), path("*.hashumis.mtx"), emit: hash_matrix
+  tuple val(sample_name), path("*.hashumis_cells.txt"), emit: hash_cells
+  tuple val(sample_name),  path("*.hashumis_hashes.txt"), emit: hash_hashes
   tuple val(sample_name), path("*_hash_umis_per_cell.txt"), emit: hash_umis_per_cell
   tuple val(sample_name), path("*_hash_dup_per_cell.txt"), emit: hash_dup_per_cell
-  tuple val(sample_name), path("*.hashumis.mtx"), path("*.hashumis_cells.txt"), path("*.hashumis_hashes.txt"), emit: hash_matrix
-  path("*_hash_reads_per_cell.txt")
-  path("*_hash_assigned_table.txt")
-  path("*_hash.log")
+  tuple val(sample_name), path("*_hash_reads_per_cell.txt"), emit: hash_reads_per_cell
+  tuple val(sample_name), path("*_hash_assigned_table.txt"), emit: hash_assigned_table
+  tuple val(sample_name), path("*_hash.log"), emit: hash_log
+
 
   /*
   ** Notes:
@@ -56,6 +50,54 @@ process process_hashes {
   set -ueo pipefail
 
   process_hashes -n ${sample_name} -k ${out_root} -s ${hash_file} -b ${bam_in} -t 2
+  """
+}
+
+
+process cat_hashes {
+  errorStrategy 'retry'
+  maxRetries 2
+
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.hashumis.mtx", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.hashumis_hashes.txt", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.hashumis_cells.txt", mode: 'copy'
+
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_assigned_table.txt", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_dup_per_cell.txt", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_reads_per_cell.txt", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_umis_per_cell.txt", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash.log", mode: 'copy'
+
+  input:
+  tuple val(sample_name), path("??_hashumis.mtx")
+  tuple val(sample_name), path("??_hashumis_cells.txt")
+  tuple val(sample_name), path("??_hashumis_hashes.txt")
+  tuple val(sample_name), path("??_hash_umis_per_cell_txt")
+  tuple val(sample_name), path("??_hash_dup_per_cell_txt")
+  tuple val(sample_name), path("??_hash_reads_per_cell_txt")
+  tuple val(sample_name), path("??_hash_assigned_table_txt")
+  tuple val(sample_name), path("??_hash_log")
+
+  output:
+  tuple val(sample_name), path("*_hash_umis_per_cell.txt"), emit: hash_umis_per_cell
+  tuple val(sample_name), path("*_hash_dup_per_cell.txt"), emit: hash_dup_per_cell
+  tuple val(sample_name), path("*.hashumis.mtx"), path("*.hashumis_cells.txt"), path("*.hashumis_hashes.txt"), emit: hash_matrix
+  path("*_hash.log")
+  path("*_hash_assigned_table.txt")
+  path("*_hash_reads_per_cell.txt")
+
+  script:
+  """
+  cat_sparse_matrix.py -i *_hashumis.mtx -o "${sample_name}" -n hashes
+  mv ${sample_name}.matrix.mtx ${sample_name}.hashumis.mtx
+  mv ${sample_name}.cells.tsv ${sample_name}.hashumis_cells.txt
+  mv ${sample_name}.features.tsv ${sample_name}.hashumis_hashes.txt
+
+  cat *_hash_assigned_table_txt > ${sample_name}_hash_assigned_table.txt
+  cat *_hash_dup_per_cell_txt > ${sample_name}_hash_dup_per_cell.txt
+  cat *_hash_reads_per_cell_txt > ${sample_name}_hash_reads_per_cell.txt
+  cat *_umis_per_cell_txt > ${sample_name}_hash_umis_per_cell.txt
+  cat *_hash_log > ${sample_name}_hash.log
   """
 }
 
