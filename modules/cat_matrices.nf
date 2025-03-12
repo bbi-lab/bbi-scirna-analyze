@@ -30,6 +30,7 @@ process cat_matrices {
   publishDir path: "${analyze_out}/${sample_file}", pattern: "*.raw.features.tsv", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_file}", pattern: "*.raw.matrix.mtx", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_file}", pattern: "*.raw.cells.barcode_to_wells.tsv", mode: 'copy'
+
 /*
   publishDir path: "${analyze_out}/${sample_file}", pattern: "*.filtered.cells.tsv", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_file}", pattern: "*.filtered.features.tsv", mode: 'copy'

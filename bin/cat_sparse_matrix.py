@@ -15,12 +15,13 @@
 # 8912 1 1
 #
 # Notes:
-#   o  reading the files appears to require the most
-#      time.
-#   o  for the files in a Nextseq run, processing files
-#      appears to require only seconds once the input
-#      files are in the cache. However, I may be wrong.
+#   o  all input matrix files must have exactly the
+#      same row names and in the same order
+#   o  all column names must be distinct
+#   o  all matrices must be in COO format and have
+#      integer values
 #
+
 
 import sys
 import hashlib
@@ -136,6 +137,10 @@ def matrix_concatenation(matrix_name_list, matrix_dimension_list, matrix_names_t
 #  print('%', file=ofh)
   print('%d %d %d' % (matrix_dimension_list[0][0], sum_col, sum_elem), file=ofh)
 
+  #
+  # It makes sense to process the comments and counts line
+  # outside the main loop, when there is time to work on it.
+  #
   cum_barcode_count = 0
   for ifile, matrix_name in enumerate(matrix_name_list):
     in_matrix_name = '%s%s' % (matrix_name, matrix_file_suffix)
@@ -152,6 +157,9 @@ def matrix_concatenation(matrix_name_list, matrix_dimension_list, matrix_names_t
         print('%s %d %s' % (toks[0], int(toks[1]) + cum_barcode_count, toks[2]), file=ofh)
     cum_barcode_count += matrix_dimension_list[ifile][1]
 
+  #
+  # Copy cell names to a file.
+  #
   cells_file_suffix = matrix_name_dict[matrix_names_type]['cells']
   out_barcodes_name = '%s.cells.tsv' % (out_rootname)
   try:
@@ -171,6 +179,23 @@ def matrix_concatenation(matrix_name_list, matrix_dimension_list, matrix_names_t
       print('Error: inconsistent cell name count in file \'%s\'' % (in_barcodes_name), file=sys.stderr)
       sys.exit(-1)
 
+  ofh.close()
+
+  #
+  # Check for duplicate cell names.
+  #
+  with open(out_barcodes_name, 'r') as ifh:
+    cell_name_set = set()
+    for line in ifh:
+      cell_name = line.strip()
+      if(cell_name in cell_name_set):
+        print('Error: duplicate cell names in count matrix.', file=sys.stderr)
+        sys.exit(-1)
+      cell_name_set.add(cell_name)
+
+  #
+  # Copy features to a file.
+  #
   features_file_suffix = matrix_name_dict[matrix_names_type]['features']
   out_features_name = '%s.features.tsv' % (out_rootname)
   try:
@@ -179,10 +204,20 @@ def matrix_concatenation(matrix_name_list, matrix_dimension_list, matrix_names_t
     print('Error: unable to open output file \'%s\'' % (out_features_name), sys.stderr)
     sys.exit(-1)
 
+  num_feature = 0
   in_features_name = '%s%s' % (matrix_name, features_file_suffix)
   with open(in_features_name, 'r') as ifh:
     for line in ifh:
       print('%s' % (line.strip()), file=ofh)
+      num_feature += 1
+
+  #
+  # Check that the number of features is the same
+  # as the number of matrix rows.
+  #
+  if(num_feature != matrix_dimension_list[0][0]):
+    print('Error: number of row names != number of matrix rows.')
+    sys.exit(-1)
 
 
 if __name__ == '__main__':
