@@ -1,9 +1,10 @@
 def trim_bam_function(item) {
+  def sample_name = item['sample_name']
   def in_file = item['in_file']
   def file_path = params.object_map.merge_bam_map[in_file]
   def out_file = item['out_file']
 
-  return([file_path, out_file])
+  return([sample_name, file_path, out_file])
 }
 
 
@@ -12,7 +13,7 @@ process trim_bams {
   maxRetries 2
 
   input:
-  tuple path(bam_in), val(out_file)
+  tuple val(sample_name), path(bam_in), val(out_file)
 
   output:
   path("*.trimmed.bam")

@@ -3,7 +3,7 @@ process merge_demux {
   maxRetries 2
 
   input:
-  tuple val('out_file'), path('files')
+  tuple val('sample_name'), val('out_file'), path('files')
 
   output:
   path("*.merged.bam")

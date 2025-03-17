@@ -2,7 +2,7 @@
 
 import sys
 import argparse
-
+import re
 
 #
 # Read a file of base 4 well index barcode strings and
@@ -102,11 +102,10 @@ def make_well_encoder(max_index):
     (ipl, swell) = index_to_well(index, True)
     lig_barcode_dict['LIG%d' % (index)] = encoded4_index
 
-    if(index <= 96):
-      (ipl, swell) = index_to_well(index-1, True)
-      p7_barcode_dict[swell] = encoded4_index
-      (ipl, swell) = index_to_well(index-1, False)
-      p5_barcode_dict[swell] = encoded4_index
+    (ipl, swell) = index_to_well(index-1, True)
+    p7_barcode_dict['P%02d-%s' % (ipl+1, swell)] = encoded4_index
+    (ipl, swell) = index_to_well(index-1, False)
+    p5_barcode_dict['P%02d-%s' % (ipl+1, swell)] = encoded4_index
 
   return((rt_barcode_dict, lig_barcode_dict, p7_barcode_dict, p5_barcode_dict))
 
@@ -130,6 +129,14 @@ if __name__ == '__main__':
       p7_well = wells_parts[1]
       p5_well = wells_parts[0]
 
+      #
+      # Allow for PCR well strings that don't have the plate #.
+      #
+      if(re.match(r'[A-H][0-9]+$', p7_well) != None):
+        p7_well = 'P01-%s' % (p7_well)
+      if(re.match(r'[A-H][0-9]+$', p5_well) != None):
+        p5_well = 'P01-%s' % (p5_well)
+      
       if(not rt_well in rt_barcode_dict):
         print('Error: well_to_barcode.py: rt well index not found in dictionary.\nYou may need to increase the value of max_index in this program.')
       if(not lig_well in lig_barcode_dict):

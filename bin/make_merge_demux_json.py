@@ -103,6 +103,7 @@ def make_data_file_json(data_file_dict, bam_path):
       for pcr_pair in data_file_dict[process_group][sample_name]['pcr_pair_dict'].keys():
         merge_dict = {}
         out_filename = '%s-%03d_%s.merged.bam' % (sample_name, int(process_group), pcr_pair)
+        merge_dict['sample_name'] = '%s-%03d' % (sample_name, int(process_group))
         merge_dict['out_file'] = out_filename
         in_file_list = []
         merge_dict['in_file_list'] = in_file_list

@@ -86,6 +86,7 @@ def make_data_file_json(data_file_dict):
         merge_dict = {}
         in_file = '%s-%03d_%s.merged.bam' % (sample_name, int(process_group), pcr_pair)
         out_file = '%s-%03d_%s.trimmed.bam' % (sample_name, int(process_group), pcr_pair)
+        merge_dict['sample_name'] = '%s-%03d' % (sample_name, int(process_group))
         merge_dict['in_file'] = in_file
         merge_dict['out_file'] = out_file
         trim_bam_list.append(merge_dict)
