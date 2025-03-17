@@ -39,7 +39,7 @@ params.object_map.merge_align_bam_map = [:]
 include { make_merge_demux_json } from './modules/make_merge_demux_json.nf'
 include { merge_demux } from './modules/merge_demux.nf'
 include { make_process_hashes_json } from './modules/make_process_hashes_json.nf'
-include { process_hashes; cat_hashes; process_hashes_function; hash_umi_knee_plot; calc_tot_hash_dup; assign_hash } from './modules/process_hashes.nf'
+include { process_hashes; cat_hashes; process_hashes_function; hash_umi_knee_plot; calc_tot_hash_dup; assign_hash_raw; assign_hash_filtered } from './modules/process_hashes.nf'
 include { make_trim_bam_json } from './modules/make_trim_bam_json.nf'
 include { trim_bams; trim_bam_function } from './modules/trim_bams.nf'
 include { make_star_align_json } from './modules/make_star_align_json.nf'
@@ -48,8 +48,8 @@ include { make_merge_align_json } from './modules/make_merge_align_json.nf'
 include { merge_align; merge_align_function } from './modules/merge_align.nf'
 include { merge_starsolo; merge_starsolo_function } from './modules/merge_starsolo.nf'
 include { split_starsolo } from './modules/split_starsolo.nf'
-include { cat_matrices; cat_matrices_function } from './modules/cat_matrices.nf'
-include { make_cds } from './modules/make_cds.nf'
+include { cat_matrices_raw; cat_matrices_raw_function; cat_matrices_filtered; cat_matrices_filtered_function } from './modules/cat_matrices.nf'
+include { make_cds_raw; make_cds_filtered } from './modules/make_cds.nf'
 
 
 /*
@@ -218,8 +218,11 @@ workflow {
   ** Concatenate MM counts matrices.
   **
   */
-  make_merge_align_json.out.splitJson().map{cat_matrices_function(it)}.set{cat_matrices_channel_in}
-  cat_matrices(cat_matrices_channel_in)
+  make_merge_align_json.out.splitJson().map{cat_matrices_raw_function(it)}.set{cat_matrices_raw_channel_in}
+  cat_matrices_raw(cat_matrices_raw_channel_in)
+
+  make_merge_align_json.out.splitJson().map{cat_matrices_filtered_function(it)}.set{cat_matrices_filtered_channel_in}
+  cat_matrices_filtered(cat_matrices_filtered_channel_in)
 
   /*
   ** Make CDS objects.
@@ -227,14 +230,18 @@ workflow {
   **    tuple val(sample_name), path(cells), path(features), path(matrix)
   **    val(out_file)
   */
-  make_cds( cat_matrices.out.raw_matrix, 'counts_raw')
+  make_cds_raw( cat_matrices_raw.out.raw_matrix, 'counts_raw')
+
+  make_cds_filtered( cat_matrices_filtered.out.filtered_matrix, 'counts_filtered')
 
   /*
   ** Assign hashes to cells and update cds.
   */
-  assign_hash_channel_in = cat_hashes.out.hash_matrix.join(split_starsolo.out.counts_per_cell).join( make_cds.out.cds)
-  assign_hash(assign_hash_channel_in)
+  assign_hash_raw_channel_in = cat_hashes.out.hash_matrix.join(split_starsolo.out.counts_per_cell).join( make_cds_raw.out.cds)
+  assign_hash_raw(assign_hash_raw_channel_in)
 
+  assign_hash_filtered_channel_in = cat_hashes.out.hash_matrix.join(split_starsolo.out.counts_per_cell).join( make_cds_filtered.out.cds)
+  assign_hash_filtered(assign_hash_filtered_channel_in)
 }
 
 

@@ -102,11 +102,16 @@ def make_barcode_decoder(max_index):
     (ipl, swell) = index_to_well(index, True)
     lig_well_dict[encoded4_index] = 'LIG%d' % (index)
  
-    if(index <= 96):
-      (ipl, swell) = index_to_well(index-1, True)
-      p7_well_dict[encoded4_index] = 'P%02d-%s' % (ipl+1, swell)
-      (ipl, swell) = index_to_well(index-1, False)
-      p5_well_dict[encoded4_index] = 'P%02d-%s' % (ipl+1, swell)
+#     if(index <= 96):
+#       (ipl, swell) = index_to_well(index-1, True)
+#       p7_well_dict[encoded4_index] = 'P%02d-%s' % (ipl+1, swell)
+#       (ipl, swell) = index_to_well(index-1, False)
+#       p5_well_dict[encoded4_index] = 'P%02d-%s' % (ipl+1, swell)
+
+    (ipl, swell) = index_to_well(index-1, True)
+    p7_well_dict[encoded4_index] = 'P%02d-%s' % (ipl+1, swell)
+    (ipl, swell) = index_to_well(index-1, False)
+    p5_well_dict[encoded4_index] = 'P%02d-%s' % (ipl+1, swell)
 
   return((rt_well_dict, lig_well_dict, p7_well_dict, p5_well_dict))
 

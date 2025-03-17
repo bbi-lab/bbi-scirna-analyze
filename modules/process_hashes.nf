@@ -88,7 +88,7 @@ process cat_hashes {
 
   script:
   """
-  cat_sparse_matrix.py -i *_hashumis.mtx -o "${sample_name}" -n hashes
+  cat_sparse_matrix.py -i *_hashumis.mtx -m hashumis.mtx -f hashumis_hashes.txt -c hashumis_cells.txt -o "${sample_name}"
   mv ${sample_name}.matrix.mtx ${sample_name}.hashumis.mtx
   mv ${sample_name}.cells.tsv ${sample_name}.hashumis_cells.txt
   mv ${sample_name}.features.tsv ${sample_name}.hashumis_hashes.txt
@@ -149,19 +149,19 @@ process calc_tot_hash_dup {
 }
 
 
-process assign_hash {
+process assign_hash_raw {
   errorStrategy 'retry'
-  maxRetries 2
+  maxRetries 1
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_table.csv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_cds.RDS", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_table.raw.csv", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_cds.raw.RDS", mode: 'copy'
 
   input:
   tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(counts_per_cell), path(rds)
 
   output:
-  path("*hash_table.csv")
-  tuple val(sample_name), path("*hash_cds.RDS")
+  path("*hash_table.raw.csv")
+  tuple val(sample_name), path("*hash_cds.raw.RDS")
 
   script:
   """
@@ -180,6 +180,7 @@ process assign_hash {
 
   assign_hash.R \
     ${sample_name} \
+    'raw' \
     ${hashumis_mtx} \
     hashumis_cells.tmp2 \
     ${hashumis_hashes_txt} \
@@ -189,6 +190,53 @@ process assign_hash {
     ${params.hash_ratio}
 
   rm hashumis_cells.tmp1 hashumis_cells.tmp2
+  rm -r tmp_dir
+  """
+}
+
+
+process assign_hash_filtered {
+  errorStrategy 'retry'
+  maxRetries 1
+
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_table.filtered.csv", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_cds.filtered.RDS", mode: 'copy'
+
+  input:
+  tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(counts_per_cell), path(rds)
+
+  output:
+  path("*hash_table.filtered.csv")
+  tuple val(sample_name), path("*hash_cds.filtered.RDS")
+
+  script:
+  """
+  # bash watch for errors
+  set -ueo pipefail
+
+  mkdir tmp_dir
+  mv ${rds} tmp_dir
+
+  #
+  # Convert the well-based cell names to encoded barcode-based names,
+  # and pass the converted cell names to assign_hash.R.
+  #
+  well_to_barcode.py -i ${hashumis_cells_txt} -o hashumis_cells.tmp1
+  awk '{print \$2}' hashumis_cells.tmp1 > hashumis_cells.tmp2
+
+  assign_hash.R \
+    ${sample_name} \
+    'filtered' \
+    ${hashumis_mtx} \
+    hashumis_cells.tmp2 \
+    ${hashumis_hashes_txt} \
+    tmp_dir/${rds} \
+    ${counts_per_cell} \
+    ${params.hash_umi_cutoff} \
+    ${params.hash_ratio}
+
+  rm hashumis_cells.tmp1 hashumis_cells.tmp2
+  rm -r tmp_dir
   """
 }
 

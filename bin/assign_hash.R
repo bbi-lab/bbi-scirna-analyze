@@ -10,6 +10,7 @@ suppressPackageStartupMessages({
 
 parser = argparse::ArgumentParser(description='Script to assign hash per sample')
 parser$add_argument('key', help='Sample name')
+parser$add_argument('matrix_key', help='Input matrix type (raw or filtered)')
 parser$add_argument('hash_matrix', help='File of hash umi count matrix')
 parser$add_argument('cell_list', help='File with list of cell names with hash umis')
 parser$add_argument('hash_list', help='File with list of hash names')
@@ -160,10 +161,12 @@ sample_name = args$key
 
 # Drop any cells with less than hash umi cutoff
 # corrected_hash_table <- filter(corrected_hash_table, hash_umis >= args$hash_umi_cutoff)
-fwrite(corrected_hash_table, file=paste0(sample_name, "_hash_table.csv"), sep = ",")
+fwrite(corrected_hash_table, file=paste0(sample_name, "_hash_table.", args$matrix_key, ".csv"), sep = ",")
 
 # merge hash table with cds to assign to cells
 # If hash table is empty, put NA for each hash column 
+message(paste0('corrected hash table dim: ', dim(corrected_hash_table), '\n'))
+message(corrected_hash_table)
 if (dim(corrected_hash_table)[1] != 0) {
   merged = as.data.table(merge(x=corrected_hash_table, y=colData(cds), by = "cell",all.x=FALSE, all.y=TRUE))
   merged <- merged %>% mutate_at(vars("hash_umis"), ~replace_na(., 0)) # add 0 if a cell has no hash
@@ -187,4 +190,4 @@ if (dim(corrected_hash_table)[1] != 0) {
   } 
 }
 
-saveRDS(cds,file=paste0(sample_name, "_hash_cds.RDS"))
+saveRDS(cds,file=paste0(sample_name, "_hash_cds.", args$matrix_key, ".RDS"))

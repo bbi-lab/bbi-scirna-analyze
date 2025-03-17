@@ -30,15 +30,6 @@ import argparse
 
 
 #
-# Matrix-related filename suffixes. Use these for concatentating
-# both STARsolo expression matrices and process_hashes hash count
-# matrices.
-#
-matrix_name_dict = { 'star': {'matrix': 'matrix.mtx', 'features': 'features.tsv', 'cells': 'barcodes.tsv' },
-                     'hashes': {'matrix': 'hashumis.mtx', 'features': 'hashumis_hashes.txt', 'cells': 'hashumis_cells.txt'}}
-
-
-#
 # Calculate the md5 checksum of a file.
 #
 def calculate_md5(file_path):
@@ -54,13 +45,12 @@ def calculate_md5(file_path):
 # all have the same md5 checksum. We need the
 # rows to be the same for all input matrices.
 #
-def check_rownames(matrix_name_list, matrix_names_type):
-  features_file_suffix = matrix_name_dict[matrix_names_type]['features']
+def check_rownames(file_name_list):
   md5_list = []
   num_file = 0
-  for matrix_name in matrix_name_list:
+  for file_names in file_name_list:
     num_file += 1
-    file_name = '%s%s' % (matrix_name, features_file_suffix)
+    file_name = file_names[1]
     md5_file = calculate_md5(file_name)
     md5_list.append(md5_file)
   md5_1 = md5_list[0]
@@ -78,19 +68,18 @@ def check_rownames(matrix_name_list, matrix_names_type):
 # the output file, and to shift the column coordinates
 # of the triplets.
 #
-def gather_matrix_dimensions(matrix_name_list, matrix_names_type):
-  matrix_file_suffix = matrix_name_dict[matrix_names_type]['matrix']
+def gather_matrix_dimensions(file_name_list):
   matrix_dimension_list = []
   num_file = 0
-  for matrix_name in matrix_name_list:
+  for file_names in file_name_list:
     num_file += 1
-    file_name = '%s%s' % (matrix_name, matrix_file_suffix)
+    file_name = file_names[0]
     num_line = 0
     with open(file_name, 'r') as fh:
       for line in fh:
         num_line += 1
         if(num_line == 1):
-          if(not re.match(r'%%MatrixMarket matrix coordinate integer', line)):
+          if(not re.match(r'%%MatrixMarket matrix coordinate (integer|real)', line)):
             print('Error: file %s has unexpected header line.' % (file_name), file=sys.stderr)
             print('  header line: %s' % (line))
             sys.exit(-1)
@@ -99,7 +88,7 @@ def gather_matrix_dimensions(matrix_name_list, matrix_names_type):
         else:
           toks = line.split()
 #          print('%d %d %d' % (int(toks[0]), int(toks[1]), int(toks[2])))
-          matrix_dimension_list.append([int(toks[0]), int(toks[1]), int(toks[2])])
+          matrix_dimension_list.append([int(toks[0]), int(toks[1]), float(toks[2])])
           break
   return(matrix_dimension_list)          
 
@@ -118,8 +107,7 @@ def gather_matrix_dimensions(matrix_name_list, matrix_names_type):
 # The first feature name file is copied to the output
 # feature name file.
 #
-def matrix_concatenation(matrix_name_list, matrix_dimension_list, matrix_names_type, out_rootname):
-  matrix_file_suffix = matrix_name_dict[matrix_names_type]['matrix']
+def matrix_concatenation(file_name_list, matrix_dimension_list, out_rootname):
   out_matrix_name = '%s.matrix.mtx' % (out_rootname)
   try:
     ofh = open(out_matrix_name, 'w')
@@ -142,8 +130,8 @@ def matrix_concatenation(matrix_name_list, matrix_dimension_list, matrix_names_t
   # outside the main loop, when there is time to work on it.
   #
   cum_barcode_count = 0
-  for ifile, matrix_name in enumerate(matrix_name_list):
-    in_matrix_name = '%s%s' % (matrix_name, matrix_file_suffix)
+  for ifile, file_names in enumerate(file_name_list):
+    in_matrix_name = file_names[0]
 #    print('==== %s' % (in_matrix_name), file=ofh)
     with open(in_matrix_name, 'r') as ifh:
       num_data = 0
@@ -160,7 +148,6 @@ def matrix_concatenation(matrix_name_list, matrix_dimension_list, matrix_names_t
   #
   # Copy cell names to a file.
   #
-  cells_file_suffix = matrix_name_dict[matrix_names_type]['cells']
   out_barcodes_name = '%s.cells.tsv' % (out_rootname)
   try:
     ofh = open(out_barcodes_name, 'w')
@@ -168,15 +155,15 @@ def matrix_concatenation(matrix_name_list, matrix_dimension_list, matrix_names_t
     print('Error: unable to open output file \'%s\'' % (out_barcodes_name), sys.stderr)
     sys.exit(-1)
 
-  for ifile, matrix_name in enumerate(matrix_name_list):
-    in_barcodes_name = '%s%s' % (matrix_name, cells_file_suffix)
+  for ifile, file_names in enumerate(file_name_list):
+    in_barcodes_name = file_names[2]
     num_lines = 0
     with open(in_barcodes_name, 'r') as ifh:
       for line in ifh:
         num_lines += 1
         print('%s' % (line.strip()), file=ofh)
     if(num_lines != matrix_dimension_list[ifile][1]):
-      print('Error: inconsistent cell name count in file \'%s\'' % (in_barcodes_name), file=sys.stderr)
+      print('Error: inconsistent cell name count in file \'%s\' (%d != %d)' % (in_barcodes_name, num_lines, matrix_dimension_list[ifile][1]), file=sys.stderr)
       sys.exit(-1)
 
   ofh.close()
@@ -196,7 +183,6 @@ def matrix_concatenation(matrix_name_list, matrix_dimension_list, matrix_names_t
   #
   # Copy features to a file.
   #
-  features_file_suffix = matrix_name_dict[matrix_names_type]['features']
   out_features_name = '%s.features.tsv' % (out_rootname)
   try:
     ofh = open(out_features_name, 'w')
@@ -205,7 +191,7 @@ def matrix_concatenation(matrix_name_list, matrix_dimension_list, matrix_names_t
     sys.exit(-1)
 
   num_feature = 0
-  in_features_name = '%s%s' % (matrix_name, features_file_suffix)
+  in_features_name = file_names[1]
   with open(in_features_name, 'r') as ifh:
     for line in ifh:
       print('%s' % (line.strip()), file=ofh)
@@ -224,33 +210,30 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program to concatenate sparse matrix files, in triplet format, by column.')
   parser.add_argument('-i', '--input', required=True, default=None, nargs='+', help='Input sparse matrix filenames (required strings).')
   parser.add_argument('-o', '--output_root', required=False, default=None, help='Output files root name (required string).')
-  parser.add_argument('-n', '--matrix_names_type', required=True, default=None, help='Matrix names: \'star\' or \'hashes\' (required string).')
+  parser.add_argument('-m', '--matrix_root', required=True, default=None, help='Matrix file root name (required string).')
+  parser.add_argument('-f', '--feature_root', required=True, default=None, help='Features root name (required string).')
+  parser.add_argument('-c', '--cell_root', required=True, default=None, help='Cells root name (required string).')
   parser.add_argument('-v', '--version', required=False, default=None, help='Write version string to stdout.')
   args = parser.parse_args()
 
-  matrix_name_list = []
+  file_name_list = []
   for i in range(len(args.input)):
     matrix_file_name = args.input[i]
-    #
-    # We expect that the input values have the form
-    # .../Solo.out/GeneFull_Ex50pAS/(raw|filtered)/matrix.mtx
-    #
-    # We want the files
-    #
-    #  .../Solo.out/GeneFull_Ex50pAS/(raw|filtered)/matrix.mtx
-    #  .../Solo.out/GeneFull_Ex50pAS/(raw|filtered)/features.tsv
-    #  .../Solo.out/GeneFull_Ex50pAS/(raw|filtered)/barcodes.tsv
-    #
-    # so trim off the matrix.mtx and pass list of the resulting
-    # paths to the following functions.
-    #
-    matrix_file_suffix = matrix_name_dict[args.matrix_names_type]['matrix']
-    matrix_name = matrix_file_name.replace(matrix_file_suffix, '')
-    matrix_name_list.append(matrix_name)
+
+    matrix_file_root = args.matrix_root
+    features_file_root = args.feature_root
+    cell_file_root = args.cell_root
+    path_name = matrix_file_name.replace(matrix_file_root, '')
+
+    matrix_name = matrix_file_name
+    features_name = '%s%s' % (path_name, features_file_root)
+    cells_name = '%s%s' % (path_name, cell_file_root)
+
+    file_name_list.append([matrix_name, features_name, cells_name])
 #    print('matrix_name: %s' % (matrix_name))
 
-  check_rownames(matrix_name_list, args.matrix_names_type)
-  matrix_dimension_list = gather_matrix_dimensions(matrix_name_list, args.matrix_names_type)
+  check_rownames(file_name_list)
+  matrix_dimension_list = gather_matrix_dimensions(file_name_list)
 
   #
   # The output files have the names
@@ -259,5 +242,5 @@ if __name__ == '__main__':
   #   <out_rootname>.(raw|filtered).cells.tsv
   #
   out_rootname = args.output_root
-  matrix_concatenation(matrix_name_list, matrix_dimension_list, args.matrix_names_type, out_rootname)
+  matrix_concatenation(file_name_list, matrix_dimension_list, out_rootname)
 
