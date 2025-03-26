@@ -60,3 +60,62 @@ alexdobin:
 subMultiFeatureMultiGenomic: reads mapping to multiple genomic loci and multiple features (a subset of MultiFeature)
 yessubWLmatchExact: reads with cell barcode exactly matched to the whitelist (a subset of yesWLmatch)
 yessubWLmatch_UniqueFeature: reads with matched to the WL and unique feature (a subset of yesWLmatch)
+
+
+====
+
+from STAR/source/SoloFeature_statsOutput.cpp
+
+    strOut << "Number of Reads," << g_statsAll.readN <<'\n';
+    strOut << "Reads With Valid Barcodes," << 1.0 - double( readBarSum->stats.numInvalidBarcodes() + readFeatSum->stats.numInvalidBarcodes() )/g_statsAll.readN <<'\n';
+    strOut << "Sequencing Saturation," << readFeatSum->stats.numSequencingSaturation() <<'\n';
+
+    strOut << "Reads Mapped to Genome: Unique+Multiple," << double(g_statsAll.mappedReadsU+g_statsAll.mappedReadsM)/g_statsAll.readN <<'\n';
+    strOut << "Reads Mapped to Genome: Unique," << double(g_statsAll.mappedReadsU)/g_statsAll.readN <<'\n';
+
+    if (pSolo.multiMap.yes.multi) {
+        strOut << double( readFeatSum->stats.numMappedToTranscriptome() )/g_statsAll.readN <<'\n';
+    } else {
+        strOut << "NoMulti\n";
+    };
+
+   strOut << "Reads Mapped to "<< mapfeat << ": Unique " << SoloFeatureTypes::Names[featureType] <<"," << double( readFeatSum->stats.numMappedToTranscriptomeUnique() )/g_statsAll.readN <<'\n';
+
+    if (pSolo.cellFilter.type[0]!="None"
+        && (featureType==SoloFeatureTypes::Gene || featureType==SoloFeatureTypes::GeneFull
+         || featureType==SoloFeatureTypes::GeneFull_ExonOverIntron || featureType==SoloFeatureTypes::GeneFull_Ex50pAS)) {
+        //if (pSolo.cellFilter.type[0]=="CellRanger2.2")
+        {
+            strOut << "Estimated Number of Cells," << filteredCells.nCells <<'\n';
+
+            strOut << "Unique Reads in Cells Mapped to " << SoloFeatureTypes::Names[featureType] << "," << filteredCells.nReadInCellsUnique <<'\n';
+            strOut << "Fraction of Unique Reads in Cells," << double(filteredCells.nReadInCellsUnique) / readFeatSum->stats.numMappedToTranscriptomeUnique() <<'\n';
+            strOut << "Mean Reads per Cell," << filteredCells.meanReadPerCellUnique <<'\n';
+            strOut << "Median Reads per Cell," << filteredCells.medianReadPerCellUnique <<'\n';
+
+            strOut << "UMIs in Cells," << filteredCells.nUMIinCells <<'\n';
+            strOut << "Mean UMI per Cell," << filteredCells.meanUMIperCell <<'\n';
+            strOut << "Median UMI per Cell," << filteredCells.medianUMIperCell <<'\n';
+
+            strOut << "Mean "   << SoloFeatureTypes::Names[featureType] << " per Cell," << filteredCells.meanGenePerCell <<'\n';
+            strOut << "Median " << SoloFeatureTypes::Names[featureType] << " per Cell," << filteredCells.medianGenePerCell <<'\n';
+            strOut << "Total "  << SoloFeatureTypes::Names[featureType] << " Detected," << filteredCells.nGeneDetected <<'\n';
+        };
+
+        //output UMI per cell, sorted
+        ofstream &strOutUMIperCell = ofstrOpen(outputPrefix+"UMIperCellSorted.txt", ERROR_OUT, P);
+
+        for (auto & n : nUMIperCBsorted) {
+            if (n==0)
+                break;
+            strOutUMIperCell << n <<'\n';
+        };
+        strOutUMIperCell.close();
+    };
+
+
+see also:
+
+STAR/source/SoloFeature_processRecords.cpp
+
+

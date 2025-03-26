@@ -24,9 +24,11 @@ process trim_bams {
   set -ueo pipefail
 
   BBDUK=${task.ext.bbduk_path}
+  ADAPTERS_FA=${task.ext.adapters_fasta}
+
 
   \${BBDUK} -Xmx16g in=${bam_in} out=stdout.bam \
-  ref='/net/gs/vol1/home/bge/git/bbi-scirna-analyze/bin/illumina_adapters.fa' \
+  ref=\${ADAPTERS_FA} \
   ktrim=r \
   k=16 \
   rcomp=f \
