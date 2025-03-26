@@ -1,4 +1,4 @@
-def merge_starsolo_function(item) {
+def merge_starsolo_reports_function(item) {
   def sample_name = item['sample_name']
   def out_file = sample_name + '.starsolo.cell_reads.stats'
   def in_dir_list = []
@@ -21,7 +21,7 @@ def merge_starsolo_function(item) {
 
 def analyze_out = params.output_dir + '/analyze_out' 
 
-process merge_starsolo {
+process merge_starsolo_reports {
   errorStrategy 'retry'
   maxRetries 2
 

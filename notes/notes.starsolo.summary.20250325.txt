@@ -1,0 +1,62 @@
+== contents of STARsolo Summary.csv file.
+
+URL: https://broadinstitute.github.io/warp/docs/Pipelines/Optimus_Pipeline/starsolo-metrics
+
+
+Summary.csv:
+  Sequencing Saturation: calculated as: 1-(yesUMIs/yessubWLmatch_UniqueFeature)
+
+Features.stats:
+  yesUMIs: Number of reads associated with a valid UMI
+  yessubWLmatch_UniqueFeature: Number of reads matched to the WL and unique feature (a subset of yesWLmatch)
+
+
+== Alex Dobin on summary values
+
+URL: https://github.com/alexdobin/STAR/issues/1887
+
+
+Marta Benegas:
+
+Ok, let's see if I got it:
+
+Barcoded Reads Stats:
+Reads not used for quantification because:
+
+noNoAdapter: Reads without an Adapter.
+noNoUMI: Reads not Associated to a Valid UMI
+noNoCB: Reads not Associated to a Valid Cell Barcode
+noNinCB: Reads with N's in Cell Barcodes
+noNinUMI: Reads with N's in UMIs
+noUMIhomopolymer: Reads associated with a Homopolymeric UMI
+noNoWLmatch: Reads Without Match to the Whitelist
+noTooManyMM: Reads With Too Many Mismatches to the Whitelist
+noTooManyWLmatches: Reads With Too Many matches to the Whitelist
+Reads used for the quantification:
+
+yesWLmatchExact: Reads with Exact Match to Whitelist
+yesOneWLmatchWithMM: Reads with One Match to the Whitelist with Mismatches
+yesMultWLmatchWithMM: Reads with Multiple Matches to the Whitelist with Mismatches
+Feature ReadsStats
+Reads not used for quantification because:
+
+noUnmapped: Unmapped Reads
+noNoFeature: Reads not Mapped to a Feature
+MultiFeature: Reads Aligned to Multiple Features
+subMultiFeatureMultiGenomic ??
+noTooManyWLmatches: Reads Not Counted Because their Barcoded pair has Too Many Matches to the Whitelist
+noMMtoWLwithoutExact: Reads Not Counted Because their Barcoded pair has Mismatches to the Whitelist and there's no more reads supporting that barcode
+Reads used for the quantification:
+
+yesWLmatch: Reads whose Barcoded Pair has a Match to the Whitelist
+yessubWLmatchExact: ??
+yessubWLmatch_UniqueFeature: ??
+yesCellBarcodes: Reads Assossiated to a Valid Cell Barcode
+yesUMIs: Reads Assossiated to a Valid UMI
+
+
+
+alexdobin:
+subMultiFeatureMultiGenomic: reads mapping to multiple genomic loci and multiple features (a subset of MultiFeature)
+yessubWLmatchExact: reads with cell barcode exactly matched to the whitelist (a subset of yesWLmatch)
+yessubWLmatch_UniqueFeature: reads with matched to the WL and unique feature (a subset of yesWLmatch)
