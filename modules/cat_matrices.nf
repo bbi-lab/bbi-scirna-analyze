@@ -6,7 +6,7 @@ def analyze_out = params.output_dir + '/analyze_out'
 */
 def cat_matrices_raw_function(item) {
   def sample_name = item['sample_name']
-  def out_file = 'counts.raw'
+  def out_file = sample_name + '_counts.raw'
   def in_file_list = []
   for( in_dir in item['in_dir_list']) {
     def dir_base_name = in_dir.toString().tokenize('/').last()
@@ -30,16 +30,16 @@ process cat_matrices_raw {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${analyze_out}/${sample_file}", pattern: "*.cells.tsv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_file}", pattern: "*.features.tsv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_file}", pattern: "*.matrix.mtx", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_file}", pattern: "*.cells_barcode_to_wells.tsv", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.cells.tsv", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.features.tsv", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.matrix.mtx", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.cells_barcode_to_wells.tsv", mode: 'copy'
 
   input:
-  tuple val('sample_file'), val('out_file'), path('file')
+  tuple val('sample_name'), val('out_file'), path('file')
 
   output:
-  tuple val(sample_file), path("*.cells.tsv"), path("*.features.tsv"), path("*.matrix.mtx"), path("*.cells.barcode_to_wells.tsv"), emit: raw_matrix
+  tuple val(sample_name), path("*.cells.tsv"), path("*.features.tsv"), path("*.matrix.mtx"), path("*.cells.barcode_to_wells.tsv"), emit: raw_matrix
 
   script:
   """
@@ -60,8 +60,8 @@ process cat_matrices_raw {
 
   if [ -n "\$in_file_list" ]
   then
-    cat_sparse_matrix.py -i \$in_file_list -m 'UniqueAndMult-PropUnique.mtx' -f 'features.tsv' -c 'barcodes.tsv' -o ${out_file} -i \${in_file_list}
-#    cat_sparse_matrix.py -i \$in_file_list -m 'matrix.mtx' -f 'features.tsv' -c 'barcodes.tsv' -o ${out_file} -i \${in_file_list}
+    cat_sparse_matrix.py -i \$in_file_list -m 'UniqueAndMult-PropUnique.mtx' -f 'features.tsv' -c 'barcodes.tsv' -o ${out_file}
+#    cat_sparse_matrix.py -i \$in_file_list -m 'matrix.mtx' -f 'features.tsv' -c 'barcodes.tsv' -o ${out_file}
   fi
 
   barcode_to_well.py -i ${out_file}.cells.tsv -o ${out_file}.cells.barcode_to_wells.tsv
@@ -74,7 +74,7 @@ process cat_matrices_raw {
 */
 def cat_matrices_filtered_function(item) {
   def sample_name = item['sample_name']
-  def out_file = 'counts.filtered'
+  def out_file = sample_name + '_counts.filtered'
   def in_file_list = []
   for( in_dir in item['in_dir_list']) {
     def dir_base_name = in_dir.toString().tokenize('/').last()
@@ -97,15 +97,15 @@ process cat_matrices_filtered {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${analyze_out}/${sample_file}", pattern: "*.cells.tsv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_file}", pattern: "*.features.tsv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_file}", pattern: "*.matrix.mtx", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.cells.tsv", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.features.tsv", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.matrix.mtx", mode: 'copy'
 
   input:
-  tuple val('sample_file'), val('out_file'), path('file')
+  tuple val('sample_name'), val('out_file'), path('file')
 
   output:
-  tuple val(sample_file), path("*.cells.tsv"), path("*.features.tsv"), path("*.matrix.mtx"), path("*.cells.barcode_to_wells.tsv"), emit: filtered_matrix
+  tuple val(sample_name), path("*.cells.tsv"), path("*.features.tsv"), path("*.matrix.mtx"), path("*.cells.barcode_to_wells.tsv"), emit: filtered_matrix
 
   script:
   """
@@ -132,7 +132,7 @@ process cat_matrices_filtered {
 
   if [ -n "\$in_file_list" ]
   then
-    cat_sparse_matrix.py -i \$in_file_list -m 'matrix.mtx' -f 'features.tsv' -c 'barcodes.tsv' -o ${out_file} -i \${in_file_list}
+    cat_sparse_matrix.py -i \$in_file_list -m 'matrix.mtx' -f 'features.tsv' -c 'barcodes.tsv' -o ${out_file}
   fi
 
   barcode_to_well.py -i ${out_file}.cells.tsv -o ${out_file}.cells.barcode_to_wells.tsv

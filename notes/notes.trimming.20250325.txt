@@ -1,0 +1,7 @@
+cutadapt variant
+
+Another trimming program that works on SAM/BAM files! - Mary O'Neill
+
+https://github.com/jdidion/atropos
+
+

@@ -4,7 +4,7 @@ library(monocle3)
 library(ggplot2)
 
 parser = argparse::ArgumentParser(description='Script to make final cds per sample.')
-parser$add_argument('sample_dir', help='Sample dir')
+parser$add_argument('sample_name', help='Sample name.')
 parser$add_argument('matrix_key', help='Is this \'raw\' or \'filtered\'?')
 parser$add_argument('matrix', help='File of umi count matrix.')
 parser$add_argument('gene_data', help='File of gene data.')
@@ -18,7 +18,7 @@ parser$add_argument('umi_cutoff', help='UMI cutoff to count as a cell.')
 
 args = parser$parse_args()
 
-sample_name <- args$key
+# sample_name <- args$key
 
 umi_cutoff = strtoi(args$umi_cutoff, 10L)
 
@@ -42,9 +42,9 @@ if(ncol(counts(cds)) >= 51) {
   cds <- preprocess_cds(cds)
   cds <- reduce_dimension(cds)
   cds <- cluster_cells(cds)
-  saveRDS(cds, file=paste0(args$sample_dir, '_cds.', args$matrix_key, '.rds'))
-  file_name <- paste0('umap.', args$matrix_key, '.png')
+  saveRDS(cds, file=paste0(args$sample_name, '_cds.', args$matrix_key, '.rds'))
+  file_name <- paste0(args$sample_name, '_umap.', args$matrix_key, '.png')
   ggp_obj <- suppressMessages(plot_cells(cds))
   ggsave(filename=file_name, ggp_obj, device='png', width=5, height=5, dpi=600, units='in')
-#  save_monocle_objects(cds, directory_path=paste0(args$sample_dir))
+#  save_monocle_objects(cds, directory_path=paste0(args$sample_name))
 }

@@ -46,8 +46,8 @@ include { make_star_align_json } from './modules/make_star_align_json.nf'
 include { align_bams; align_bam_function } from './modules/align_bams.nf'
 include { make_merge_align_json } from './modules/make_merge_align_json.nf'
 include { merge_align; merge_align_function } from './modules/merge_align.nf'
-include { merge_starsolo; merge_starsolo_function } from './modules/merge_starsolo.nf'
-include { split_starsolo } from './modules/split_starsolo.nf'
+include { merge_starsolo_reports; merge_starsolo_reports_function } from './modules/merge_starsolo_reports.nf'
+include { split_starsolo_stats } from './modules/split_starsolo_stats.nf'
 include { cat_matrices_raw; cat_matrices_raw_function; cat_matrices_filtered; cat_matrices_filtered_function } from './modules/cat_matrices.nf'
 include { make_cds_raw; make_cds_filtered } from './modules/make_cds.nf'
 
@@ -206,13 +206,13 @@ workflow {
   **      the JSON file refers to the STARsolo output directory
   **      where all of the STARsolo results are stored.
   */
-  make_merge_align_json.out.splitJson().map{merge_starsolo_function(it)}.set{merge_starsolo_channel_in}
-  merge_starsolo(merge_starsolo_channel_in)
+  make_merge_align_json.out.splitJson().map{merge_starsolo_reports_function(it)}.set{merge_starsolo_reports_channel_in}
+  merge_starsolo_reports(merge_starsolo_reports_channel_in)
 
   /*
   ** Split out selected columns from CellReads.stats.
   */
-  split_starsolo(merge_starsolo.out)
+  split_starsolo_stats(merge_starsolo_reports.out)
 
   /*
   ** Concatenate MM counts matrices.
@@ -237,10 +237,10 @@ workflow {
   /*
   ** Assign hashes to cells and update cds.
   */
-  assign_hash_raw_channel_in = cat_hashes.out.hash_matrix.join(split_starsolo.out.counts_per_cell).join( make_cds_raw.out.cds)
+  assign_hash_raw_channel_in = cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join( make_cds_raw.out.cds)
   assign_hash_raw(assign_hash_raw_channel_in)
 
-  assign_hash_filtered_channel_in = cat_hashes.out.hash_matrix.join(split_starsolo.out.counts_per_cell).join( make_cds_filtered.out.cds)
+  assign_hash_filtered_channel_in = cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join( make_cds_filtered.out.cds)
   assign_hash_filtered(assign_hash_filtered_channel_in)
 }
 

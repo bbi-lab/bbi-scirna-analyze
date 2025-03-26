@@ -17,7 +17,7 @@ def process_file(in_filename, sample_name):
 
   pobj = re.compile(r'^CBnotInPasslist')
 
-  out_filename = 'counts_per_cell.txt'
+  out_filename = '%s_counts_per_cell.txt' % (sample_name)
   ofh_umi_unique = open(file=out_filename, mode='w')
   csv_writer = csv.writer(ofh_umi_unique, delimiter='\t', lineterminator='\n')
 
@@ -45,6 +45,8 @@ def process_file(in_filename, sample_name):
         cbMatchIndex = i
       elif(item == 'nUMIunique'):
         nUMIuniqueIndex = i
+      elif(item == 'nUMImulti'):
+        nUMImultiIndex = i
       elif(item == 'exonic'):
         exonicIndex = i
       elif(item == 'intronic'):
@@ -55,21 +57,22 @@ def process_file(in_filename, sample_name):
     if(cbIndex == None or
        cbMatchIndex == None or
        nUMIuniqueIndex == None or
+       nUMImultiIndex == None or
        exonicIndex == None or
        intronicIndex == None or
        mitoIndex == None):
-      print('Error: missing at least one column in the list \'cbIndex\', \'cbMatchIndex\', \'nUMIuniqueIndex\', \'exonicIndex\', \'intronicIndex\', \'mitoIndex\'', file=sys.stderr)
+      print('Error: missing at least one column in the list \'cbIndex\', \'cbMatchIndex\', \'nUMIuniqueIndex\', \'nUMImultiIndex\', \'exonicIndex\', \'intronicIndex\', \'mitoIndex\'', file=sys.stderr)
       sys.exit(-1)
 
 
     # Write header row.
-    csv_writer.writerow(['cell', 'cbMatch', 'nUMIunique', 'exonic', 'intronic', 'mito'])
+    csv_writer.writerow(['cell', 'cbMatch', 'nUMIunique', 'nUMImulti', 'nUMItot', 'exonic', 'intronic', 'mito'])
 
     # Write data rows.
     for row in csv_reader:
       if(pobj.match(row[0]) != None):
         continue
-      csv_writer.writerow([row[cbIndex], row[cbMatchIndex], row[nUMIuniqueIndex], row[exonicIndex], row[intronicIndex], row[mitoIndex]])
+      csv_writer.writerow([row[cbIndex], row[cbMatchIndex], row[nUMIuniqueIndex], row[nUMImultiIndex], int(row[nUMIuniqueIndex]) + int(row[nUMImultiIndex]), row[exonicIndex], row[intronicIndex], row[mitoIndex]])
 
   ofh_umi_unique.close()
 
