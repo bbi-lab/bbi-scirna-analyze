@@ -134,3 +134,37 @@ UMIs.per.cell.barcode.txt is made in process count_umis_by_sample in bbi-sci/mai
 "top_to_second_best_ratio"
 "top_oligo"          
 
+
+== STARsolo CellReads.stats definitions
+
+URL: https://github.com/alexdobin/STAR/discussions/1826
+
+cbMatch       means the number of read that matched the cell barcode,
+cbPerfect     for the number of perfect match on cell barcode
+cbMMunique :  number of reads with cell barcodes that map with mismatches to one barcode in the passlist
+cbMMmultiple: number of reads with cell barcodes that map with mismatches to multiple barcodes in the passlist
+
+genomeU:      number of reads mapping to one locus in the genome
+genomeM:      number of reads mapping to multiple loci in the genome
+featureU:     number of reads mapping to one feature (Gene, GeneFull, etc)
+featureM:     number of reads mapping to multiple features
+
+exonic:       number of reads mapping to annotated exons
+intronic:     number of reads mapping to annotated introns
+These are only calculated for --soloFeatures GeneFull_Ex50pAS and/or GeneFull_ExonOverIntron
+
+exonicAS:     number of reads mapping antisense to annotated exons
+intronicAS:   number of reads mapping antisense to annotated introns
+These are only calculated for --soloFeatures GeneFull_Ex50pAS
+
+countedU:     number of unique-gene reads whose UMIs contributed to counts in the matrix.mtx
+countedM:     number of multi-gene reads whose UMIs contributed to counts in the matrix.mtx
+
+mito:         for the number of read mapping on mitochondrial genome
+
+nUMIunique:   for the total number of counted UMI for unique-gene reads
+nGenesUnique: for the number of genes for unique-gene reads
+nUMImulti:    for the total number of counted UMI for multi-gene reads
+nGenesMulti:  for the number of genes for multi-gene reads
+
+

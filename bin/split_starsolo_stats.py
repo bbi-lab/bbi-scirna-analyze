@@ -66,6 +66,9 @@ def process_file(in_filename, sample_name):
 
 
     # Write header row.
+    #
+    # Note: any modifications to the columns here must be matched in assign_hash.R (counts_per_cell = fread(args$umis_per_cell,...)
+    #
     csv_writer.writerow(['cell', 'cbMatch', 'nUMIunique', 'nUMImulti', 'nUMItot', 'exonic', 'intronic', 'mito'])
 
     # Write data rows.

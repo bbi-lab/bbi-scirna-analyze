@@ -212,7 +212,7 @@ workflow {
   /*
   ** Split out selected columns from CellReads.stats.
   */
-  split_starsolo_stats(merge_starsolo_reports.out)
+  split_starsolo_stats(merge_starsolo_reports.out.cell_reads_stats)
 
   /*
   ** Concatenate MM counts matrices.

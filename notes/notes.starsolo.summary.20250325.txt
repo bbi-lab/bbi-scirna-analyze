@@ -2,6 +2,30 @@
 
 URL: https://broadinstitute.github.io/warp/docs/Pipelines/Optimus_Pipeline/starsolo-metrics
 
+Number of Reads:             Number of reads in the library.
+Reads With Valid Barcodes:   Fraction of reads with valid barcodes.
+Sequencing Saturation:       Proportion of unique molecular identifiers (UMIs)
+                             that have been sequenced at least once compared
+                             to the total number of possible UMIs in the sample;
+                             calculated as: 1-(yesUMIs/yessubWLmatch_UniqueFeature).
+Q30 Bases in CB+UMI:         Fraction of high-quality reads in the cell barcode and UMI read.
+Q30 Bases in RNA read:       Fraction of high-quality reads in the RNA read.
+Reads Mapped to Genome: Unique+Multiple:  Fraction of unique and multimapped reads that mapped to the genome.
+Reads Mapped to Genome: Unique:           Fraction of unique reads that mapped to the genome.
+Reads Mapped to genes: Unique+Multiple:   Fraction of reads that mapped to genes as defined by the –solo-feature parameter.
+Reads Mapped to Genes: Unique:            Fraction of unique reads that mapped to genes.
+Estimated Number of Cells:   Number of barcodes that STARsolo flagged as cells based on UMIs.
+Unique Reads in Cells Mapped to genes:    Total number of unique reads that mapped to genes across all cells
+Fraction of Unique Reads in Cells:        Fraction of unique reads across all cells.
+Mean Reads per Cell:         Mean number of reads per cell.
+Median Reads per Cell:       Median number of reads per cell.
+UMIs in Cells:               Number of UMIs per cell.
+Mean UMI per Cell:           Mean number of UMIs per cell.
+Median UMI per Cell:         Median number of UMI per cell.
+Mean Genes per Cell:         Mean number of genes expressed per cell.
+Median Genes per Cell:       Median number of genes per cell.
+Total Genes Detected:        Total number of genes detected in the overall library.
+
 
 Summary.csv:
   Sequencing Saturation: calculated as: 1-(yesUMIs/yessubWLmatch_UniqueFeature)
@@ -118,4 +142,20 @@ see also:
 
 STAR/source/SoloFeature_processRecords.cpp
 
+SoloReadFeatureStats.h:
+
+    uint64 numMappedToTranscriptome()
+    {
+        return V[yesWLmatch];
+    };
+
+    uint64 numMappedToTranscriptomeUnique()
+    {
+        return V[yessubWLmatch_UniqueFeature];
+    };
+
+    double numSequencingSaturation()
+    {
+        return 1.0 - double(V[yesUMIs])/V[yessubWLmatch_UniqueFeature]; //yesUMIs is calculated for unqiue-gene reads
+    };
 
