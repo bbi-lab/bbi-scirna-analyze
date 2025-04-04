@@ -57,6 +57,40 @@ process align_bams {
       --soloUMIstart 29 \
       --soloUMIlen 8 \
       --soloCBwhitelist None \
+      --soloInputSAMattrBarcodeSeq CB UB \
+      --soloInputSAMattrBarcodeQual CY UY \
+      --outSAMtype BAM SortedByCoordinate \
+      --outSAMattributes NH HI nM AS GX GN sM \
+      --outSJtype None \
+      --outSAMmultNmax 1 \
+      --outSAMstrandField intronMotif \
+      --soloUMIdedup Exact \
+      --soloCellReadStats Standard \
+      --soloStrand Forward \
+      --soloFeatures GeneFull_Ex50pAS \
+      --soloMultiMappers PropUnique \
+      --readFilesType SAM SE \
+      --readFilesIn \
+        ${bam_in} \
+      --readFilesCommand samtools view \
+      --soloCellFilter EmptyDrops_CR 3000 0.99 10 45000 90000 60 0.01 20000 0.01 10000 \
+      --outFileNamePrefix "${out_dir}/"
+  """
+}
+
+/*
+** Ss barcode+umi tag
+  \${STAR_ALIGNER} \
+      --runThreadN ${align_cpus} \
+      --genomeDir ${genome_dir} \
+      --soloCBmatchWLtype Exact \
+      --soloType CB_UMI_Simple \
+      --soloBarcodeMate 0 \
+      --soloCBstart 1 \
+      --soloCBlen   28 \
+      --soloUMIstart 29 \
+      --soloUMIlen 8 \
+      --soloCBwhitelist None \
       --outSAMtype BAM SortedByCoordinate \
       --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM \
       --outSJtype None \
@@ -75,6 +109,4 @@ process align_bams {
       --readFilesCommand samtools view \
       --soloCellFilter EmptyDrops_CR 3000 0.99 10 45000 90000 60 0.01 20000 0.01 10000 \
       --outFileNamePrefix "${out_dir}/"
-  """
-}
-
+*/
