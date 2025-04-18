@@ -20,11 +20,6 @@ if __name__ == '__main__':
   parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
 
-  # Write versions.
-  if( args.version ):
-    print( 'Program version: %s' % ( program_version ) )
-    sys.exit( 0 )
-
   ofh = open(args.output, 'w')
   for val in merge(*map(open, args.input), key=int, reverse=True):
     print('%d' % (int(val.strip())), file=ofh)
