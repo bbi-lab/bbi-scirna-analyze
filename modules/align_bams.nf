@@ -64,7 +64,7 @@ process align_bams {
       --outSJtype None \
       --outSAMmultNmax 1 \
       --outSAMstrandField intronMotif \
-      --soloUMIdedup Exact \
+      --soloUMIdedup 1MM_All \
       --soloCellReadStats Standard \
       --soloStrand Forward \
       --soloFeatures GeneFull_Ex50pAS \

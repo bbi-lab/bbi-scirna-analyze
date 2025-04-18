@@ -23,6 +23,9 @@
 #
 
 
+program_version = "0.1.1"
+
+
 import sys
 import hashlib
 import re
@@ -71,6 +74,7 @@ def check_rownames(file_name_list):
 def gather_matrix_dimensions(file_name_list):
   matrix_dimension_list = []
   num_file = 0
+  data_type = 'integer'
   for file_names in file_name_list:
     num_file += 1
     file_name = file_names[0]
@@ -79,10 +83,14 @@ def gather_matrix_dimensions(file_name_list):
       for line in fh:
         num_line += 1
         if(num_line == 1):
-          if(not re.match(r'%%MatrixMarket matrix coordinate (integer|real)', line)):
+          mobj = re.match(r'%%MatrixMarket matrix coordinate (integer|real)', line)
+          if(not mobj):
             print('Error: file %s has unexpected header line.' % (file_name), file=sys.stderr)
             print('  header line: %s' % (line))
             sys.exit(-1)
+          else:
+            if(mobj.group(1) == 'real'):
+              data_type = 'real'
         elif(re.match(r'%', line)):
           continue
         else:
@@ -90,7 +98,7 @@ def gather_matrix_dimensions(file_name_list):
 #          print('%d %d %d' % (int(toks[0]), int(toks[1]), int(toks[2])))
           matrix_dimension_list.append([int(toks[0]), int(toks[1]), float(toks[2])])
           break
-  return(matrix_dimension_list)          
+  return((matrix_dimension_list, data_type))
 
 
 #
@@ -107,7 +115,7 @@ def gather_matrix_dimensions(file_name_list):
 # The first feature name file is copied to the output
 # feature name file.
 #
-def matrix_concatenation(file_name_list, matrix_dimension_list, out_rootname):
+def matrix_concatenation(file_name_list, matrix_dimension_list, data_type, out_rootname):
   out_matrix_name = '%s.matrix.mtx' % (out_rootname)
   try:
     ofh = open(out_matrix_name, 'w')
@@ -121,7 +129,7 @@ def matrix_concatenation(file_name_list, matrix_dimension_list, out_rootname):
     sum_col += matrix_dim[1]
     sum_elem += matrix_dim[2]
 
-  print('%%MatrixMarket matrix coordinate integer general', file=ofh)
+  print('%%%%MatrixMarket matrix coordinate %s general' % data_type, file=ofh)
 #  print('%', file=ofh)
   print('%d %d %d' % (matrix_dimension_list[0][0], sum_col, sum_elem), file=ofh)
 
@@ -209,11 +217,11 @@ def matrix_concatenation(file_name_list, matrix_dimension_list, out_rootname):
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program to concatenate sparse matrix files, in triplet format, by column.')
   parser.add_argument('-i', '--input', required=True, default=None, nargs='+', help='Input sparse matrix filenames (required strings).')
-  parser.add_argument('-o', '--output_root', required=False, default=None, help='Output files root name (required string).')
+  parser.add_argument('-o', '--output_root', required=True, default=None, help='Output files root name (required string).')
   parser.add_argument('-m', '--matrix_root', required=True, default=None, help='Matrix file root name (required string).')
   parser.add_argument('-f', '--feature_root', required=True, default=None, help='Features root name (required string).')
   parser.add_argument('-c', '--cell_root', required=True, default=None, help='Cells root name (required string).')
-  parser.add_argument('-v', '--version', required=False, default=None, help='Write version string to stdout.')
+  parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
 
   file_name_list = []
@@ -233,7 +241,7 @@ if __name__ == '__main__':
 #    print('matrix_name: %s' % (matrix_name))
 
   check_rownames(file_name_list)
-  matrix_dimension_list = gather_matrix_dimensions(file_name_list)
+  (matrix_dimension_list, data_type) = gather_matrix_dimensions(file_name_list)
 
   #
   # The output files have the names
@@ -242,5 +250,5 @@ if __name__ == '__main__':
   #   <out_rootname>.(raw|filtered).cells.tsv
   #
   out_rootname = args.output_root
-  matrix_concatenation(file_name_list, matrix_dimension_list, out_rootname)
+  matrix_concatenation(file_name_list, matrix_dimension_list, data_type, out_rootname)
 

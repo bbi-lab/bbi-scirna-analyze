@@ -47,6 +47,7 @@ include { align_bams; align_bam_function } from './modules/align_bams.nf'
 include { make_merge_align_json } from './modules/make_merge_align_json.nf'
 include { merge_align; merge_align_function } from './modules/merge_align.nf'
 include { merge_starsolo_reports; merge_starsolo_reports_function } from './modules/merge_starsolo_reports.nf'
+include { make_knee_plot } from './modules/make_knee_plot.nf'
 include { split_starsolo_stats } from './modules/split_starsolo_stats.nf'
 include { cat_matrices_raw; cat_matrices_raw_function; cat_matrices_filtered; cat_matrices_filtered_function } from './modules/cat_matrices.nf'
 include { make_cds_raw; make_cds_filtered } from './modules/make_cds.nf'
@@ -172,14 +173,14 @@ workflow {
   /*
   ** Set up and run STAR aligner as STARsolo.
   */
-  trim_bams.out.subscribe onNext: {
+  trim_bams.out.trimmed_bams.subscribe onNext: {
     path -> {
       def file_base_name = path.toString().tokenize('/').last()
       params.object_map.trim_bam_map[file_base_name] = path
     }
   }
 
-  make_star_align_json(samplesheet_file, "${star_genomes_file}", trim_bams.out.collect())
+  make_star_align_json(samplesheet_file, "${star_genomes_file}", trim_bams.out.trimmed_bams.collect())
   make_star_align_json.out.splitJson().map{align_bam_function(it)}.set{align_bam_channel_in}
   align_bams(align_bam_channel_in)
 
@@ -225,14 +226,19 @@ workflow {
   cat_matrices_filtered(cat_matrices_filtered_channel_in)
 
   /*
+  ** Make knee plot.
+  */
+  make_knee_plot(merge_starsolo_reports.out.umi_per_cell)
+
+  /*
   ** Make CDS objects.
   **   Inputs:
   **    tuple val(sample_name), path(cells), path(features), path(matrix)
   **    val(out_file)
   */
-  make_cds_raw( cat_matrices_raw.out.raw_matrix, 'counts_raw')
 
-  make_cds_filtered( cat_matrices_filtered.out.filtered_matrix, 'counts_filtered')
+  make_cds_raw(cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell), 'counts_raw')
+  make_cds_filtered(cat_matrices_filtered.out.filtered_matrix.join(split_starsolo_stats.out.counts_per_cell), 'counts_filtered')
 
   /*
   ** Assign hashes to cells and update cds.

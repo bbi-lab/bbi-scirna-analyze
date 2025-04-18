@@ -119,7 +119,7 @@ process hash_umi_knee_plot {
   # bash watch for errors
   set -ueo pipefail
 
-  knee_plot.R ${hash_umis_per_cell} ${sample_name}
+  make_hash_knee_plot.R ${hash_umis_per_cell} ${sample_name}
   """
 }
 
@@ -154,14 +154,14 @@ process assign_hash_raw {
   maxRetries 1
 
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_table.raw.csv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_cds.raw.RDS", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_cds.raw.mobs", mode: 'copy'
 
   input:
-  tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(counts_per_cell), path(rds)
+  tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(counts_per_cell), path(mobs)
 
   output:
   path("*hash_table.raw.csv")
-  tuple val(sample_name), path("*hash_cds.raw.RDS")
+  tuple val(sample_name), path("*hash_cds.raw.mobs")
 
   script:
   """
@@ -169,7 +169,7 @@ process assign_hash_raw {
   set -ueo pipefail
 
   mkdir tmp_dir
-  mv ${rds} tmp_dir
+  mv ${mobs} tmp_dir
 
   #
   # Convert the well-based cell names to encoded barcode-based names,
@@ -184,7 +184,7 @@ process assign_hash_raw {
     ${hashumis_mtx} \
     hashumis_cells.tmp2 \
     ${hashumis_hashes_txt} \
-    tmp_dir/${rds} \
+    tmp_dir/${mobs} \
     ${counts_per_cell} \
     ${params.hash_umi_cutoff} \
     ${params.hash_ratio}
@@ -200,14 +200,14 @@ process assign_hash_filtered {
   maxRetries 1
 
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_table.filtered.csv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_cds.filtered.RDS", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_cds.filtered.mobs", mode: 'copy'
 
   input:
-  tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(counts_per_cell), path(rds)
+  tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(counts_per_cell), path(mobs)
 
   output:
   path("*hash_table.filtered.csv")
-  tuple val(sample_name), path("*hash_cds.filtered.RDS")
+  tuple val(sample_name), path("*hash_cds.filtered.mobs")
 
   script:
   """
@@ -215,7 +215,7 @@ process assign_hash_filtered {
   set -ueo pipefail
 
   mkdir tmp_dir
-  mv ${rds} tmp_dir
+  mv ${mobs} tmp_dir
 
   #
   # Convert the well-based cell names to encoded barcode-based names,
@@ -230,7 +230,7 @@ process assign_hash_filtered {
     ${hashumis_mtx} \
     hashumis_cells.tmp2 \
     ${hashumis_hashes_txt} \
-    tmp_dir/${rds} \
+    tmp_dir/${mobs} \
     ${counts_per_cell} \
     ${params.hash_umi_cutoff} \
     ${params.hash_ratio}

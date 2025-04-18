@@ -324,7 +324,7 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program to gather STARsolo Features.stats files.')
   parser.add_argument('-i', '--input', required=True, default=None, nargs='+', help='STARsolo output paths (required string).')
   parser.add_argument('-s', '--samplename', required=True, default=None, help='Sample name.')
-  parser.add_argument('-v', '--version', required=False, default=None, help='Write version string to stdout.')
+  parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
 
   #

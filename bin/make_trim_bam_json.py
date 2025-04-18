@@ -84,9 +84,11 @@ def make_data_file_json(data_file_dict):
     for pcr_pair in data_file_dict[process_group].keys():
       for sample_name in data_file_dict[process_group][pcr_pair].keys():
         merge_dict = {}
-        in_file = '%s-%03d_%s.merged.bam' % (sample_name, int(process_group), pcr_pair)
-        out_file = '%s-%03d_%s.trimmed.bam' % (sample_name, int(process_group), pcr_pair)
+        root_file = '%s-%03d_%s' % (sample_name, int(process_group), pcr_pair)
+        in_file = '%s.merged.bam' % (root_file)
+        out_file = '%s.trimmed.bam' % (root_file)
         merge_dict['sample_name'] = '%s-%03d' % (sample_name, int(process_group))
+        merge_dict['root_file'] = root_file
         merge_dict['in_file'] = in_file
         merge_dict['out_file'] = out_file
         trim_bam_list.append(merge_dict)
@@ -103,14 +105,8 @@ def make_data_file_json(data_file_dict):
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program to make JSON file for setting trim BAMs runs.')
   parser.add_argument('-i', '--input', required=True, default=None, help='Input JSON samplesheet filename (required string).')
-  parser.add_argument('-o', '--output', required=False, default=None, help='Output JSON output filename (required string).')
-  parser.add_argument('-v', '--version', required=False, default=None, help='Write version string to stdout.')
+  parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
-
-  # Write versions.
-  if( args.version ):
-    print( 'Program version: %s' % ( program_version ) )
-    sys.exit( 0 )
 
   #
   # Read input samplesheet file.

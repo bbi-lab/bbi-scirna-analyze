@@ -126,13 +126,8 @@ if __name__ == '__main__':
   parser.add_argument('-i', '--input', required=True, default=None, help='Input JSON samplesheet filename (required string).')
   parser.add_argument('-p', '--bam_path', required=True, default=None, help='Input BAM file path (required string).')
 #  parser.add_argument('-o', '--output', required=False, default=None, help='Output JSON output filename (required string).')
-  parser.add_argument('-v', '--version', required=False, default=None, help='Write version string to stdout.')
+  parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
-
-  # Write versions.
-  if( args.version ):
-    print( 'Program version: %s' % ( program_version ) )
-    sys.exit( 0 )
 
   #
   # Read input samplesheet file.
