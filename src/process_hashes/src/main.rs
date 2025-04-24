@@ -198,11 +198,9 @@ fn make_sparse_matrix(cells: &HashSet<String>, hash_lookup: &HashMap<String, Str
   **       one can be certain that the key exists in
   **       the HashMap.
   */
-  let mut num_hash: usize = 0;
   let mut cell_counter: HashSet<String> = HashSet::new();
   for key1 in map.keys() {
     if(!map[key1].is_empty()) {
-      num_hash += 1;
       for cell in map[key1].keys() {
         cell_counter.insert(cell.to_string());
       }
@@ -230,11 +228,11 @@ fn make_sparse_matrix(cells: &HashSet<String>, hash_lookup: &HashMap<String, Str
   ** Hash read names for all entries in hash file.
   ** Sort them.
   */
-  let mut num_hash: usize = hash_lookup.keys().len();
+  let num_hash: usize = hash_lookup.keys().len();
 
   let mut hash_seqs: Vec<String> = Vec::with_capacity(num_hash);
   let mut row_names: Vec<String> = Vec::with_capacity(num_hash);
-  let mut hash_barcode_keys = hash_lookup.keys().sorted();
+  let hash_barcode_keys = hash_lookup.keys().sorted();
   for hash_barcode in hash_barcode_keys {
     hash_seqs.push(hash_barcode.to_string());
     row_names.push(hash_lookup[hash_barcode].clone());

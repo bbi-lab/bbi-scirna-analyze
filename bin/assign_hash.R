@@ -170,18 +170,43 @@ fwrite(corrected_hash_table, file=paste0(sample_name, "_hash_table.", args$matri
 message(paste0('corrected hash table dim: ', dim(corrected_hash_table), '\n'))
 message(corrected_hash_table)
 if (dim(corrected_hash_table)[1] != 0) {
-  merged = as.data.table(merge(x=corrected_hash_table, y=colData(cds), by = "cell",all.x=FALSE, all.y=TRUE))
-  merged <- merged %>% mutate_at(vars("hash_umis"), ~replace_na(., 0)) # add 0 if a cell has no hash
+#   merged = as.data.table(merge(x=corrected_hash_table, y=colData(cds), by = "cell",all.x=FALSE, all.y=TRUE))
+#   merged <- merged %>% mutate_at(vars("hash_umis"), ~replace_na(., 0)) # add 0 if a cell has no hash
+# 
+#   # suppressMessages(merged <- splitstackshape::cSplit(merged, "top_oligo", "."))
+# 
+# # The following assumes incorrectly that the cells in the hash table are in the
+# # same order as in the CDS?
+# #
+# #   colData(cds)$hash_umis = merged$hash_umis
+# #   colData(cds)$pval = merged$pval
+# #   colData(cds)$qval = merged$qval
+# #   colData(cds)$top_to_second_best_ratio = merged$top_to_second_best_ratio
+# #   colData(cds)$top_oligo = merged$top_oligo
+# #   colData(cds)$best_hash_umi = merged$best_hash_umi
+# #   colData(cds)$second_best_hash_umi = merged$second_best_hash_umi
+# 
+#   #
+#   # The corrected data merge is
+#   #
+#   hash_df <- merged %>% 
+#   select("cell", "hash_umis", "pval", "qval", "top_to_second_best_ratio", 
+#           "top_oligo", "best_hash_umi", "second_best_hash_umi")
+# 
+#   to_merge <- data.frame(colData(cds)) %>% left_join(hash_df, by = "cell")
+#   colData(cds) <- as(to_merge, "DataFrame")
 
-  # suppressMessages(merged <- splitstackshape::cSplit(merged, "top_oligo", "."))
+  corrected_hash_table <- corrected_hash_table[,c('cell', 'hash_umis', 'pval', 'qval',
+                                                  'top_to_second_best_ratio', 'top_oligo',
+                                                  'best_hash_umi', 'second_best_hash_umi')]
+  # Bind the hash table columns to the colData(cds) keeping the colData(cds) dimension and row order.
+  col_data_merged = as.data.frame(left_join(x=as.data.frame(colData(cds)), y=corrected_hash_table, by = "cell", keep=FALSE))
+  # Add 0 if a cell has no hash
+  col_data_merged <- col_data_merged %>% mutate_at(vars("hash_umis"), ~replace_na(., 0))
+  colData(cds) <- as(col_data_merged, "DataFrame")
 
-  colData(cds)$hash_umis = merged$hash_umis
-  colData(cds)$pval = merged$pval
-  colData(cds)$qval = merged$qval
-  colData(cds)$top_to_second_best_ratio = merged$top_to_second_best_ratio
-  colData(cds)$top_oligo = merged$top_oligo
-  colData(cds)$best_hash_umi = merged$best_hash_umi
-  colData(cds)$second_best_hash_umi = merged$second_best_hash_umi
+  # Drop any cells with less than hash umi cutoff and top to second best hash ratio
+  # cds <- cds[,colData(cds)$hash_umis >= args$hash_umi_cutoff]
 
   # Drop any cells with less than hash umi cutoff and top to second best hash ratio
   # cds <- cds[,colData(cds)$hash_umis >= args$hash_umi_cutoff]
@@ -192,4 +217,4 @@ if (dim(corrected_hash_table)[1] != 0) {
   } 
 }
 
-save_monocle_objects(cds,directory_path=paste0(sample_name, "_hash_cds.", args$matrix_key, ".mobs"), archive_control=list(archive_type='none', archive_compression='none'))
+save_monocle_objects(cds,directory_path=paste0(sample_name, '_hash_cds.', args$matrix_key, '.mobs'), archive_control=list(archive_type='none', archive_compression='none'))
