@@ -325,3 +325,4 @@ flow cell
 /net/seahub_zfish/vol1/data/seq/GENE1/240913_GENE1_run1_nextseq2000p2.tar.gz
 
 
+

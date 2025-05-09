@@ -15,16 +15,15 @@ process trim_bams {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${analyze_out}/${sample_name}/cutadapt", pattern: "*.trimmed.bam", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}/cutadapt", pattern: "*.cutadapt_report.txt", mode: 'copy'
+//  publishDir path: "${analyze_out}/${sample_name}/cutadapt", pattern: "*.trimmed.bam", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}/cutadapt", pattern: "*.trimming_report.txt", mode: 'copy'
 
   input:
   tuple val(sample_name), val(root_file), path(bam_in), val(out_file)
 
   output:
   path("*.trimmed.bam"), emit: trimmed_bams
-  path("*.cutadapt_report.txt"), emit: trim_log
-
+  path("*.trimming_report.txt"), emit: trim_log
 
   """
   # bash watch for errors
@@ -41,7 +40,7 @@ process trim_bams {
   if [ "\${nread}" == "0" ]
   then
     cp ${bam_in} ${out_file}
-    touch ${root_file}.cutadapt_report.txt
+    touch ${root_file}.trimming_report.txt
     exit 0
   fi
 
@@ -73,20 +72,24 @@ process trim_bams {
   #   o  polyA sequence is not in the default adapter sequence
   #      file. Add it if you need it.
   #
-  cutadapt -a file:\${ADAPTOR_FASTA} --report=full -o ${root_file}_trimmed.fq tmp.fq 1> ${root_file}.cutadapt_report.txt
+  # I am told that there is no need to trim adapters so I use
+  # the cutadapt options in bbi-sci.
+  # cutadapt -a file:\${ADAPTOR_FASTA} --report=full -o ${root_file}_trimmed.fq tmp.fq 1> ${root_file}.cutadapt_report.txt
+  trim_galore -a AAAAAAAA --three_prime_clip_R1 1 tmp.fq
+  mv tmp.fq_trimming_report.txt ${root_file}.trimming_report.txt
 
   rm -f tmp.fq
 
-  nread=`wc -l ${root_file}_trimmed.fq | awk '{print\$1}'`
+  nread=`wc -l tmp_trimmed.fq | awk '{print\$1}'`
   if [ "\${nread}" == "0" ]
   then
     cp ${bam_in} ${out_file}
-    touch ${root_file}_trimming_report.txt
+    touch ${root_file}.trimming_report.txt
     exit 0
   fi
 
-  samtools import -T '*' -@ 3 ${root_file}_trimmed.fq -o ${out_file}
-  rm ${root_file}_trimmed.fq
+  samtools import -T '*' -@ 3 tmp_trimmed.fq -o ${out_file}
+  rm tmp_trimmed.fq
   """
 }
 

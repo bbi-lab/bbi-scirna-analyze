@@ -23,5 +23,3 @@ process merge_demux {
   """
 }
 
-
-

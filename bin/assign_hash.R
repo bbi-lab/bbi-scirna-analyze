@@ -203,7 +203,15 @@ if (dim(corrected_hash_table)[1] != 0) {
   col_data_merged = as.data.frame(left_join(x=as.data.frame(colData(cds)), y=corrected_hash_table, by = "cell", keep=FALSE))
   # Add 0 if a cell has no hash
   col_data_merged <- col_data_merged %>% mutate_at(vars("hash_umis"), ~replace_na(., 0))
+
+  #
+  # We need to reassign rownames to colData(cds). Check that they are reasonable.
+  #
+  assertthat::assert_that(all(col_data_merged[['cell']] == rownames(colData(cds))),
+                          msg = paste('inconsistent cell names in col_data_merged'))
+  coldata_rownames <- rownames(colData(cds))
   colData(cds) <- as(col_data_merged, "DataFrame")
+  rownames(colData(cds)) <- coldata_rownames
 
   # Drop any cells with less than hash umi cutoff and top to second best hash ratio
   # cds <- cds[,colData(cds)$hash_umis >= args$hash_umi_cutoff]

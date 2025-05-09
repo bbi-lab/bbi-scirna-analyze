@@ -101,31 +101,29 @@ workflow {
   **      params.object_map.merge_bam_map transfers
   **      values from the .subscribe() operator to the
   **      trim_bam_function().
-  **   o  the following .subscribe() operator makes
-  **      a Java associative array (map) that maps a
-  **      bam filename to its path in the work
+  **   o  in short, the following .subscribe() operator
+  **      makes a Java associative array (map) that
+  **      maps a bam filename to its path in the work
   **      directory. This runs after the merge_demux
   **      process finishes. The associative array is
   **      stored in the global variable called
   **      params.object_map.merge_bam_map.
-  **   o  the function trim_bam_function(item) uses
-  **      the associative array to make a channel that
-  **      has an output for each element in the list
-  **      of merged bam files that is in the JSON file
-  **      made by make_trim_bam_json. The .splitJson()
-  **      operator takes the JSON file contents and
-  **      populates this channel. The following .map()
-  **      operator calls trim_bam_function() and
-  **      sets up the channel used by the trim_bams
-  **      process.
-  **   o  the make_trim_bam_json process takes the
-  **      merge_demux.out.collect() value channel in
-  **      order to stall the run of the
-  **      make_trim_bam_json process until the
-  **      merge_demux process finishes AND, subsequently,
-  **      the required associative array is assembled
-  **      from the output channel of the
-  **      make_trim_bam_json process.
+  **   o  python scripts make json files that define
+  **      the contents of channels used in downstream
+  **      processes, including paths for input to the
+  **      downstream processes. The script knows the
+  **      input file names but not the paths in the
+  **      Nextflow work directory. The main list in
+  **      the JSON file is split into 'items' that
+  **      are processed by a groovy function to
+  **      define queue channel contents. The input
+  **      filenames are given in the JSON file but
+  **      not their paths within the Nextflow work
+  **      directory tree.
+  **   o  the maps in params.object_map.* are used to
+  **      substitute the file path for the file name
+  **      within a groovy function that sets up the
+  **      channel.
   **   o  I would like to use a 'cleaner' way to do this
   **      but I cannot think of one at this time.
   */      

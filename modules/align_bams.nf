@@ -19,7 +19,7 @@ process align_bams {
 
   clusterOptions { '-l m_mem_free=' + mem.toInteger() / align_cpus + 'G -pe serial ' + align_cpus + ' -l cpuid_level=22' }
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*trimmed", mode: 'copy'
+//  publishDir path: "${analyze_out}/${sample_name}", pattern: "*trimmed", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "CellReads.stats", mode: 'copy'
 
   input:
