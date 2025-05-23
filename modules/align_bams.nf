@@ -44,8 +44,15 @@ process align_bams {
 
   STAR_ALIGNER=${task.ext.star_path}
 
-  # emptyDrops_CR parameters: nExpectedCells maxPercentile maxMinRatio indMin indMax umiMin umiMinFracMedian candMaxN FDR simN
-
+  #
+  # Notes:
+  #   o  the cell filter does not work for small numbers of
+  #      cells and I wonder about using the multiple testing
+  #      correction on subsets of the alignments.
+  #   o  so I set --soloCellFilter to None.
+  #   o  we run emptyDrops on the concatenated raw matrices
+  #      later.
+  #
   \${STAR_ALIGNER} \
       --runThreadN ${align_cpus} \
       --genomeDir ${genome_dir} \
@@ -69,17 +76,18 @@ process align_bams {
       --soloStrand Forward \
       --soloFeatures GeneFull_Ex50pAS \
       --soloMultiMappers PropUnique \
+      --soloCellFilter None \
       --readFilesType SAM SE \
       --readFilesIn \
         ${bam_in} \
       --readFilesCommand samtools view \
-      --soloCellFilter EmptyDrops_CR 3000 0.99 10 45000 90000 60 0.01 20000 0.01 10000 \
       --outFileNamePrefix "${out_dir}/"
   """
 }
 
 /*
 ** Ss barcode+umi tag
+**   emptyDrops_CR parameters: nExpectedCells maxPercentile maxMinRatio indMin indMax umiMin umiMinFracMedian candMaxN FDR simN
   \${STAR_ALIGNER} \
       --runThreadN ${align_cpus} \
       --genomeDir ${genome_dir} \

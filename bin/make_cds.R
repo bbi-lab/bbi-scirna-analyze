@@ -15,7 +15,7 @@ parser$add_argument('barcodes_to_wells', help='File of encoded barcode indices a
 parser$add_argument('umi_cutoff', help='UMI cutoff to count as a cell.')
 parser$add_argument('counts_per_cell', help='Counts per cell from STARsolo CellReads.stats.')
 # parser$add_argument('gene_bed', help='Bed file of gene info.')
-# parser$add_argument('empty_drops', help='RDS file from emptyDrops.')
+parser$add_argument('empty_drops', help='RDS file from emptyDrops.')
 # parser$add_argument('intron_fraction_file', help='Intron fraction of barcode UMIs file.')
 # parser$add_argument('key', help='The sample name prefix.')
 
@@ -52,6 +52,25 @@ percent_mito_reads <- cbind(percent_mito_reads, 100.0 * counts_per_cell[['mito_r
 colnames(percent_mito_reads) <- c('cell', 'percent_mito_reads')
 rownames(percent_mito_reads) <- percent_mito_reads[,1]
 colData(cds)['percent_mito_reads'] <- percent_mito_reads[colData(cds)[['cell']],2]
+
+#
+# Add emptyDrops information.
+#
+emptydrops_data <- readRDS(args$empty_drops)
+
+if(is(emptydrops_data, 'DFrame')) {
+  pData(cds)[['emptyDrops_FDR']]         <- emptydrops_data[pData(cds)[,'cell'],]@listData[['FDR']]
+  pData(cds)[['emptyDrops_Limited']]     <- emptydrops_data[pData(cds)[,'cell'],]@listData[['Limited']]
+  metadata(pData(cds))$emptyDrops_lower  <- metadata(emptydrops_data)[['lower']]
+  metadata(pData(cds))$emptyDrops_niters <- metadata(emptydrops_data)[['niters']]
+  metadata(pData(cds))$emptyDrops_alpha  <- metadata(emptydrops_data)[['alpha']]
+  metadata(pData(cds))$emptyDrops_retain <- metadata(emptydrops_data)[['retain']]
+  metadata(pData(cds))$emptyDrops_ignore <- metadata(emptydrops_data)[['ignore']]
+  metadata(pData(cds))$emptyDrops_round  <- metadata(emptydrops_data)[['round']]
+  ed <- as.data.frame(pData(cds))[,c('cell', 'n.umi', 'emptyDrops_FDR')]
+} else {
+  ed <- as.data.frame(pData(cds))[,c('cell', 'n.umi')]
+}
 
 #
 # Add barcode well string to colData(cds).

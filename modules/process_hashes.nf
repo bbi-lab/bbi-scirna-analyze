@@ -150,8 +150,11 @@ process calc_tot_hash_dup {
 
 
 process assign_hash_raw {
+  errorStrategy 'ignore'
+/*
   errorStrategy 'retry'
   maxRetries 1
+*/
 
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_table.raw.csv", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_cds.raw.mobs", mode: 'copy'

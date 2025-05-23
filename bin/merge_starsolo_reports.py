@@ -306,16 +306,20 @@ def write_report(stats_bundle_merged, samplename):
     print('%s%s%.3f' % (key, sep, float(stats_bundle_merged[key]) / float(num_read)), file=ofh)
     key = 'Reads Mapped to GeneFull_Ex50pAS: Unique GeneFull_Ex50pAS'
     print('%s%s%.3f' % (key, sep, float(stats_bundle_merged[key]) / float(num_read)), file=ofh)
-    key = 'Estimated Number of Cells'
-    print('%s%s%d' % (key, sep, int(stats_bundle_merged[key])), file=ofh)
-    key = 'Unique Reads in Cells Mapped to GeneFull_Ex50pAS'
-    print('%s%s%d' % (key, sep, int(stats_bundle_merged[key])), file=ofh)
-    key = 'Fraction of Unique Reads in Cells'
-    print('%s%s%.3f' % (key, sep, float(stats_bundle_merged[key]) / float(stats_bundle_merged['Reads Mapped to GeneFull_Ex50pAS: Unique GeneFull_Ex50pAS'])), file=ofh)
-    key = 'UMIs in Cells'
-    print('%s%s%d' % (key, sep, int(stats_bundle_merged[key])), file=ofh)
-    key = 'Total GeneFull_Ex50pAS Detected'
-    print('%s%s%d' % (key, sep, int(stats_bundle_merged[key])), file=ofh)
+
+#
+# The following are calculated using the filtered data.
+#
+#    key = 'Estimated Number of Cells'
+#    print('%s%s%d' % (key, sep, int(stats_bundle_merged[key])), file=ofh)
+#    key = 'Unique Reads in Cells Mapped to GeneFull_Ex50pAS'
+#    print('%s%s%d' % (key, sep, int(stats_bundle_merged[key])), file=ofh)
+#    key = 'Fraction of Unique Reads in Cells'
+#    print('%s%s%.3f' % (key, sep, float(stats_bundle_merged[key]) / float(stats_bundle_merged['Reads Mapped to GeneFull_Ex50pAS: Unique GeneFull_Ex50pAS'])), file=ofh)
+#    key = 'UMIs in Cells'
+#    print('%s%s%d' % (key, sep, int(stats_bundle_merged[key])), file=ofh)
+#    key = 'Total GeneFull_Ex50pAS Detected'
+#    print('%s%s%d' % (key, sep, int(stats_bundle_merged[key])), file=ofh)
 
   return(0)
 

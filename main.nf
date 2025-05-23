@@ -4,12 +4,14 @@ import java.nio.file.Paths
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
+
 params.bin_dir = workflow.projectDir + '/bin'
 params.align_cpus = 4
 params.umi_cutoff = 100
 params.hash_umi_cutoff = 5
 params.hash_ratio = false
 params.hash_dup = false //Default is false. Other options are "p5" or "pcr_plate".
+params.run_empty_drops = false
 
 
 demux_out = "${params.output_dir}/demux_out"
@@ -39,7 +41,7 @@ params.object_map.merge_align_bam_map = [:]
 include { make_merge_demux_json } from './modules/make_merge_demux_json.nf'
 include { merge_demux } from './modules/merge_demux.nf'
 include { make_process_hashes_json } from './modules/make_process_hashes_json.nf'
-include { process_hashes; cat_hashes; process_hashes_function; hash_umi_knee_plot; calc_tot_hash_dup; assign_hash_raw; assign_hash_filtered } from './modules/process_hashes.nf'
+include { process_hashes; cat_hashes; process_hashes_function; hash_umi_knee_plot; calc_tot_hash_dup; assign_hash_raw } from './modules/process_hashes.nf'
 include { make_trim_bam_json } from './modules/make_trim_bam_json.nf'
 include { trim_bams; trim_bam_function } from './modules/trim_bams.nf'
 include { make_star_align_json } from './modules/make_star_align_json.nf'
@@ -49,8 +51,9 @@ include { merge_align; merge_align_function } from './modules/merge_align.nf'
 include { merge_starsolo_reports; merge_starsolo_reports_function } from './modules/merge_starsolo_reports.nf'
 include { make_knee_plot } from './modules/make_knee_plot.nf'
 include { split_starsolo_stats } from './modules/split_starsolo_stats.nf'
-include { cat_matrices_raw; cat_matrices_raw_function; cat_matrices_filtered; cat_matrices_filtered_function } from './modules/cat_matrices.nf'
-include { make_cds_raw; make_cds_filtered } from './modules/make_cds.nf'
+include { cat_matrices_raw; cat_matrices_raw_function } from './modules/cat_matrices.nf'
+include { make_cds_raw } from './modules/make_cds.nf'
+include { run_empty_drops } from './modules/run_empty_drops.nf'
 
 
 /*
@@ -155,9 +158,8 @@ workflow {
              process_hashes.out.hash_dup_per_cell.groupTuple(),
              process_hashes.out.hash_reads_per_cell.groupTuple(),
              process_hashes.out.hash_assigned_table.groupTuple(),
-             process_hashes.out.hash_log.groupTuple(),
+             process_hashes.out.hash_log.groupTuple())
 
-)
   hash_umi_knee_plot(process_hashes.out.hash_umis_per_cell)
   calc_tot_hash_dup(process_hashes.out.hash_dup_per_cell)
 
@@ -220,13 +222,15 @@ workflow {
   make_merge_align_json.out.splitJson().map{cat_matrices_raw_function(it)}.set{cat_matrices_raw_channel_in}
   cat_matrices_raw(cat_matrices_raw_channel_in)
 
-  make_merge_align_json.out.splitJson().map{cat_matrices_filtered_function(it)}.set{cat_matrices_filtered_channel_in}
-  cat_matrices_filtered(cat_matrices_filtered_channel_in)
-
   /*
   ** Make knee plot.
   */
-  make_knee_plot(merge_starsolo_reports.out.umi_per_cell)
+  make_knee_plot(cat_matrices_raw.out.raw_matrix)
+
+  /*
+  ** Run emptyDrops function.
+  */
+  run_empty_drops(cat_matrices_raw.out.raw_matrix)
 
   /*
   ** Make CDS objects.
@@ -234,18 +238,13 @@ workflow {
   **    tuple val(sample_name), path(cells), path(features), path(matrix)
   **    val(out_file)
   */
-
-  make_cds_raw(cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell), 'counts_raw')
-  make_cds_filtered(cat_matrices_filtered.out.filtered_matrix.join(split_starsolo_stats.out.counts_per_cell), 'counts_filtered')
+  make_cds_raw(cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out), 'counts_raw')
 
   /*
   ** Assign hashes to cells and update cds.
   */
   assign_hash_raw_channel_in = cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join( make_cds_raw.out.cds)
   assign_hash_raw(assign_hash_raw_channel_in)
-
-  assign_hash_filtered_channel_in = cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join( make_cds_filtered.out.cds)
-  assign_hash_filtered(assign_hash_filtered_channel_in)
 }
 
 

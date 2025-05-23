@@ -31,14 +31,14 @@ process merge_starsolo_reports {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*.starsolo.cell_reads.stats", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*Features.stats", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*Summary.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*UMIperCellSorted.txt", mode: 'copy'
+//  publishDir path: "${analyze_out}/${sample_name}", pattern: "*UMIperCellSorted.txt", mode: 'copy'
 
   input:
   tuple val('sample_name'), val('out_file'), path('file'), path('root')
 
   output:
   tuple val(sample_name), path("*.starsolo.cell_reads.stats"), emit: cell_reads_stats
-  tuple val(sample_name), path("*UMIperCellSorted.txt"), emit: umi_per_cell
+//  tuple val(sample_name), path("*UMIperCellSorted.txt"), emit: umi_per_cell
   tuple path("*Features.stats"), path("*Summary.txt"), emit: dummy
 
   script:
@@ -50,12 +50,12 @@ process merge_starsolo_reports {
 
   merge_starsolo_reports.py -i ${root} -s ${sample_name}
 
-  lfile=''
-  for apath in ${root}
-  do
-    lfile="\${apath}/Solo.out/GeneFull_Ex50pAS/UMIperCellSorted.txt \${lfile}"
-  done
-  merge_sorted_files_of_integers.py -o ${sample_name}_UMIperCellSorted.txt -i \${lfile}
+#  lfile=''
+#  for apath in ${root}
+#  do
+#    lfile="\${apath}/Solo.out/GeneFull_Ex50pAS/UMIperCellSorted.txt \${lfile}"
+#  done
+#  merge_sorted_files_of_integers.py -o ${sample_name}_UMIperCellSorted.txt -i \${lfile}
   """
 }
 
