@@ -12,7 +12,7 @@
 #      must sort the output of distill.samplesheet_json.py,
 #      for example,
 #
-#        distill.samplesheet_json.py -i samplesheet.json | sort -i 1,1 > distill.samplesheet_json.py.sorted.out
+#        distill.samplesheet_json.py -i samplesheet.json | sort -k 1,1 > distill.samplesheet_json.py.sorted.out
 #
 
 

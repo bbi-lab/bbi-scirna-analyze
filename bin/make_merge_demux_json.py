@@ -8,7 +8,7 @@ import re
 #
 # Program version string.
 #
-program_version = '0.1.1'
+program_version = '0.2.0'
 
 #
 # Merge the lane-specific BAM files that belong to a combination
@@ -59,35 +59,39 @@ def expand_index_list(index_string):
 # than one entry in the sample_index_list. Therefore
 # the entries for the sample+process group must be
 # collected into a single entry in the output JSON
-# file. The lanes and pcr pairs are gathered together
-# for the sample+process group, regardless of whether
-# the lane and pcr pairs appear together in any of
-# the sample_index_list entries. This seems reasonable
-# because we want to be able to restrict processing to
-# specific pcr pairs (within a sample+process group)
-# while giving p7 and p5 indices as ranges or lists.
+# file.
+#
+# Make a dictionary as follows
+#   data_file_dict[<process_group>][<sample_name>][<pcr_pair_string>][<lane_index_int>] = 1 (a flag)
 #
 def get_data_file_dict(json_data):
   data_file_dict = {}
   for sample_index_dict in json_data['sample_index_list']:
+    # Gather relevant values.
     index_ranges = sample_index_dict['ranges'].split(':')
     process_group = sample_index_dict['process_group']
     sample_name = sample_index_dict['sample_id']
     p7_index_list = expand_index_list(index_ranges[1])
     p5_index_list = expand_index_list(index_ranges[2])
     lane_index_list = expand_index_list(sample_index_dict['lanes'])
+    # Add process group to data_file_dict, if necessary.
     if(not process_group in data_file_dict):
       data_file_dict[process_group] = {}
+    # Add sample name to data_file_dict[process_group] dict, if necessary.
     if(not sample_name in data_file_dict[process_group]):
        data_file_dict[process_group][sample_name] = {}
-       data_file_dict[process_group][sample_name]['pcr_pair_dict'] = {}
-       data_file_dict[process_group][sample_name]['lane_dict'] = {}
+    # Loop through p7 and p5 indices to make PCR pairs.
     for p7_index in p7_index_list:
       for p5_index in p5_index_list:
         pcr_pair = '%03d_%03d' % (int(p7_index), int(p5_index))
-        data_file_dict[process_group][sample_name]['pcr_pair_dict'][pcr_pair] = 1
-    for lane_index in lane_index_list:
-      data_file_dict[process_group][sample_name]['lane_dict'][int(lane_index)] = 1
+        # Add PCR pair to data_file_dict[process_group][sample_name] dict, if necessary.
+        if(not pcr_pair in data_file_dict[process_group][sample_name]):
+          data_file_dict[process_group][sample_name][pcr_pair] = {}
+        # Loop through lane indices.
+        for lane_index in lane_index_list:
+          # Add lane to data_file_dict[process_group][sample_name][pcr_pair] dict, if necessary.
+          if(not lane_index in data_file_dict[process_group][sample_name][pcr_pair]):
+            data_file_dict[process_group][sample_name][pcr_pair][int(lane_index)] = 1
   return(data_file_dict)
 
 
@@ -100,14 +104,15 @@ def make_data_file_json(data_file_dict, bam_path):
   bam_merge_list = []
   for process_group in data_file_dict.keys():
     for sample_name in data_file_dict[process_group].keys():
-      for pcr_pair in data_file_dict[process_group][sample_name]['pcr_pair_dict'].keys():
+      for pcr_pair in data_file_dict[process_group][sample_name].keys():
         merge_dict = {}
-        out_filename = '%s-%03d_%s.merged.bam' % (sample_name, int(process_group), pcr_pair)
+        # 'sample_name' consists of <sample_name>-<process_group> so it's distinct
         merge_dict['sample_name'] = '%s-%03d' % (sample_name, int(process_group))
+        out_filename = '%s-%03d_%s.merged.bam' % (sample_name, int(process_group), pcr_pair)
         merge_dict['out_file'] = out_filename
         in_file_list = []
         merge_dict['in_file_list'] = in_file_list
-        for lane_index in data_file_dict[process_group][sample_name]['lane_dict'].keys():
+        for lane_index in data_file_dict[process_group][sample_name][pcr_pair].keys():
           in_file = '%s/%s-%03d_%s-L%03d.bam' % (bam_path, sample_name, lane_index, pcr_pair, lane_index)
           merge_dict['in_file_list'].append(in_file)
         bam_merge_list.append(merge_dict)
