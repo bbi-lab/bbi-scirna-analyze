@@ -85,9 +85,15 @@ if(ncol(counts(cds)) >= 51) {
   cds <- preprocess_cds(cds)
   cds <- reduce_dimension(cds)
   cds <- cluster_cells(cds)
-  file_name <- paste0(args$sample_name, '_umap.', args$matrix_key, '.png')
   ggp_obj <- suppressMessages(plot_cells(cds))
+  file_name <- paste0(args$sample_name, '_umap.', args$matrix_key, '.png')
   ggsave(filename=file_name, ggp_obj, device='png', width=5, height=5, dpi=600, units='in')
 #  saveRDS(cds, file=paste0(args$sample_name, '_cds.', args$matrix_key, '.rds'))
-  save_monocle_objects(cds, directory_path=paste0(args$sample_name, '_cds.', args$matrix_key, '.mobs'), archive_control=list(archive_type='none', archive_compression='none'))
+} else {
+  ggp_obj <- ggplot() + geom_text(aes(x = 1, y = 1, label = "Insufficient number of cells")) + monocle3:::monocle_theme_opts() + theme(legend.position = "none") + labs(x="X", y = "Y")
+  file_name <- paste0(args$sample_name, '_umap.', args$matrix_key, '.png')
+  ggsave(filename=file_name, ggp_obj, device='png', width=5, height=5, dpi=600, units='in')
 }
+
+save_monocle_objects(cds, directory_path=paste0(args$sample_name, '_cds.', args$matrix_key, '.mobs'), archive_control=list(archive_type='none', archive_compression='none'))
+

@@ -8,26 +8,27 @@ suppressPackageStartupMessages({
 
 
 parser = argparse::ArgumentParser(description='Script to make a barnyard plot.')
-parser$add_argument('plot_type', help='Plot type: \'barnyard\' or \'fishbowl\'')
 parser$add_argument('sample_name', help='Sample name.')
-parser$add_argument('cds_path', help='File with cds.')
+parser$add_argument('genome', help='Genome name.')
+parser$add_argument('mobs_path', help='Path to monocle objects directory.')
 args = parser$parse_args()
 
 
-cds_path <- args$cds_path
+mobs_path <- args$mobs_path
 sample_name <- args$sample_name
-plot_type <- args$plot_type
+genome <- args$genome
 
-make_plot <- function(cds_path, sample_name, plot_type) {
-  plot_type_dict = list('barnyard' = list('organism_1_tag' = 'Mouse',     'gene_1_tag' = 'ENSMUSG', 'organism_2_tag' = 'Human', 'gene_2_tag' = 'ENSG' ),
-                        'fishbowl' = list('organism_1_tag' = 'Zebrafish', 'gene_1_tag' = 'ZEBRAFISH_',    'organism_2_tag' = 'Mouse',  'gene_2_tag' = 'MOUSE_' ))
+make_plot <- function(mobs_path, sample_name, genome) {
+  plot_type_dict = list('Barnyard' =          list('organism_1_tag' = 'Mouse',     'gene_1_tag' = 'ENSMUSG',    'organism_2_tag' = 'Human', 'gene_2_tag' = 'ENSG' ),
+                        'Fishbowl_seahub' =   list('organism_1_tag' = 'Zebrafish', 'gene_1_tag' = 'ZEBRAFISH_', 'organism_2_tag' = 'Mouse', 'gene_2_tag' = 'MOUSE_' ),
+                        'fishbowlGenomeGen' = list('organism_1_tag' = 'Zebrafish', 'gene_1_tag' = 'ZEBRA_',     'organism_2_tag' = 'Human', 'gene_2_tag' = 'HUMAN_' ))
 
-  organism_1_tag <- plot_type_dict[[plot_type]][['organism_1_tag']]
-  organism_2_tag <- plot_type_dict[[plot_type]][['organism_2_tag']]
-  gene_1_tag <- plot_type_dict[[plot_type]][['gene_1_tag']]
-  gene_2_tag <- plot_type_dict[[plot_type]][['gene_2_tag']]
+  organism_1_tag <- plot_type_dict[[genome]][['organism_1_tag']]
+  organism_2_tag <- plot_type_dict[[genome]][['organism_2_tag']]
+  gene_1_tag <- plot_type_dict[[genome]][['gene_1_tag']]
+  gene_2_tag <- plot_type_dict[[genome]][['gene_2_tag']]
 
-  cds <- readRDS(cds_path)
+  cds <- load_monocle_objects(mobs_path)
 
   fData(cds)[organism_1_tag] <- grepl(gene_1_tag, rownames(fData(cds)))
   fData(cds)[organism_2_tag] <- grepl(gene_2_tag, rownames(fData(cds)))
@@ -47,14 +48,14 @@ make_plot <- function(cds_path, sample_name, plot_type) {
     xlab("Mouse UMIs") +
     ylab("Human UMIs")
 
-  ggsave(paste0(sample_name, '.barnyard_plot.png'), plot = plot, units = "in", width = 3.5*1.3, height = 3.5)
+  ggsave(paste0(sample_name, '_barnyard_plot.png'), plot = plot, units = "in", width = 3.5*1.3, height = 3.5)
 
   collision_rate <- round(sum(pData(cds)$collision/nrow(pData(cds))) * 200, 1)
-  fileConn<-file(paste0(sample_name, '.barnyard_collision.txt'))
+  fileConn<-file(paste0(sample_name, '_barnyard_collision.txt'))
   writeLines(paste0(args$sample_name, "\t", collision_rate, "%"), fileConn)
   close(fileConn)
 }
 
-make_plot(cds_path, sample_name, plot_type)
+make_plot(mobs_path, sample_name, genome)
 
 

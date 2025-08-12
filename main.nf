@@ -32,6 +32,7 @@ params.object_map.merge_bam_map = [:]
 params.object_map.process_hashes_map = [:]
 params.object_map.trim_bam_map = [:]
 params.object_map.merge_align_bam_map = [:]
+params.object_map.make_cds_raw_cds_map = [:]
 
 
 /*
@@ -54,6 +55,8 @@ include { split_starsolo_stats } from './modules/split_starsolo_stats.nf'
 include { cat_matrices_raw; cat_matrices_raw_function } from './modules/cat_matrices.nf'
 include { make_cds_raw } from './modules/make_cds.nf'
 include { run_empty_drops } from './modules/run_empty_drops.nf'
+include {make_barnyard_json } from './modules/make_barnyard_json.nf'
+include {make_barnyard_plot; make_barnyard_plot_function } from './modules/make_barnyard_plot.nf'
 
 
 /*
@@ -240,11 +243,28 @@ workflow {
   */
   make_cds_raw(cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out), 'counts_raw')
 
+  make_cds_raw.out.cds.subscribe onNext: {
+    path -> {
+      def dir_base_name = path[1].toString().tokenize('/').last()
+//      println "dir base name: " + dir_base_name
+//      println "path: " + path[1]
+      params.object_map.make_cds_raw_cds_map[dir_base_name] = path[1]
+    }
+  }
+
   /*
   ** Assign hashes to cells and update cds.
   */
   assign_hash_raw_channel_in = cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join( make_cds_raw.out.cds)
   assign_hash_raw(assign_hash_raw_channel_in)
+
+  /*
+  ** Make barnyard plots.
+  */
+  make_barnyard_json(samplesheet_file, make_cds_raw.out.png.collect())
+  make_barnyard_json.out.splitJson().map{make_barnyard_plot_function(it)}.set{make_barnyard_plot_in}
+  make_barnyard_plot(make_barnyard_plot_in)
+  
 }
 
 
