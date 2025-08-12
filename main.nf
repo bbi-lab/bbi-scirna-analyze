@@ -130,6 +130,9 @@ workflow {
   **      substitute the file path for the file name
   **      within a groovy function that sets up the
   **      channel.
+  **   o  when the channel objects are tuples, one
+  **      must subscript 'path' to get the necessary
+  **      element.
   **   o  I would like to use a 'cleaner' way to do this
   **      but I cannot think of one at this time.
   */      
@@ -243,6 +246,11 @@ workflow {
   */
   make_cds_raw(cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out), 'counts_raw')
 
+  /*
+  ** Note:
+  **   o  the make_cds_raw.out.cds channel is a tuple
+  **      so it's necessary to select the path element.
+  */
   make_cds_raw.out.cds.subscribe onNext: {
     path -> {
       def dir_base_name = path[1].toString().tokenize('/').last()
