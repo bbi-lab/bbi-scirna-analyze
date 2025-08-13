@@ -250,13 +250,18 @@ workflow {
   ** Note:
   **   o  the make_cds_raw.out.cds channel is a tuple
   **      so it's necessary to select the path element.
+  **
+  **   o  make_cds_raw.out.cds channel is
+  **
+  **        tuple val(sample_name), path("*.raw.mobs"), emit: cds
   */
   make_cds_raw.out.cds.subscribe onNext: {
-    path -> {
-      def dir_base_name = path[1].toString().tokenize('/').last()
+    tup -> {
+      def path = tup[1]
+      def dir_base_name = path.toString().tokenize('/').last()
 //      println "dir base name: " + dir_base_name
-//      println "path: " + path[1]
-      params.object_map.make_cds_raw_cds_map[dir_base_name] = path[1]
+//      println "path: " + path
+      params.object_map.make_cds_raw_cds_map[dir_base_name] = path
     }
   }
 
