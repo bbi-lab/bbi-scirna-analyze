@@ -64,9 +64,7 @@ def make_barnyard_dict(json_data):
 
 
 #
-# Merge the lane-specific BAM files that belong to a combination
-# of sample+process_group+pcr_pair. As a result, the output file
-# contains the reads for sample_name, process_group, and pcr_pair.
+# Make JSON file for barnyard plot process.
 #
 def make_barnyard_file_json(barnyard_dict):
   barnyard_plot_list = []

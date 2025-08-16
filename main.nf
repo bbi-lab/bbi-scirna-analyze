@@ -33,6 +33,7 @@ params.object_map.process_hashes_map = [:]
 params.object_map.trim_bam_map = [:]
 params.object_map.merge_align_bam_map = [:]
 params.object_map.make_cds_raw_cds_map = [:]
+params.object_map.cat_matrices_raw_map = [:]
 
 
 /*
@@ -53,10 +54,12 @@ include { merge_starsolo_reports; merge_starsolo_reports_function } from './modu
 include { make_knee_plot } from './modules/make_knee_plot.nf'
 include { split_starsolo_stats } from './modules/split_starsolo_stats.nf'
 include { cat_matrices_raw; cat_matrices_raw_function } from './modules/cat_matrices.nf'
+include { make_mito_umis_json } from './modules/make_mito_umis_json.nf'
+include { make_mito_umis; make_mito_umis_function} from './modules/make_mito_umis.nf'
 include { make_cds_raw } from './modules/make_cds.nf'
 include { run_empty_drops } from './modules/run_empty_drops.nf'
-include {make_barnyard_json } from './modules/make_barnyard_json.nf'
-include {make_barnyard_plot; make_barnyard_plot_function } from './modules/make_barnyard_plot.nf'
+include { make_barnyard_json } from './modules/make_barnyard_json.nf'
+include { make_barnyard_plot; make_barnyard_plot_function } from './modules/make_barnyard_plot.nf'
 
 
 /*
@@ -229,9 +232,38 @@ workflow {
   cat_matrices_raw(cat_matrices_raw_channel_in)
 
   /*
+  ** Make cat_matrices_raw_map map with matrix file paths.
+  */
+  cat_matrices_raw.out.raw_matrix.subscribe onNext: {
+    tup -> {
+      def cells_path = tup[1]
+      def cells_base_name = cells_path.toString().tokenize('/').last()
+      params.object_map.cat_matrices_raw_map[cells_base_name] = cells_path
+
+      def features_path = tup[2]
+      def features_base_name = features_path.toString().tokenize('/').last()
+      params.object_map.cat_matrices_raw_map[features_base_name] = features_path
+
+      def matrix_path = tup[3]
+      def matrix_base_name = matrix_path.toString().tokenize('/').last()
+      params.object_map.cat_matrices_raw_map[matrix_base_name] = matrix_path
+    }
+  }
+
+  /*
   ** Make knee plot.
   */
   make_knee_plot(cat_matrices_raw.out.raw_matrix)
+
+  /*
+  ** Calculate mitochondrial UMIs per cell.
+  ** Need
+  **   o  concatenated matrix
+  **   o  genome info
+  */
+  make_mito_umis_json(samplesheet_file, "${star_genomes_file}", cat_matrices_raw.out.raw_matrix.collect())
+  make_mito_umis_json.out.splitJson().map{make_mito_umis_function(it)}.set{make_mito_umis_in}
+  make_mito_umis(make_mito_umis_in)
 
   /*
   ** Run emptyDrops function.
@@ -244,7 +276,7 @@ workflow {
   **    tuple val(sample_name), path(cells), path(features), path(matrix)
   **    val(out_file)
   */
-  make_cds_raw(cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out), 'counts_raw')
+  make_cds_raw(cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_mito_umis.out), 'counts_raw')
 
   /*
   ** Note:
@@ -258,10 +290,10 @@ workflow {
   make_cds_raw.out.cds.subscribe onNext: {
     tup -> {
       def path = tup[1]
-      def dir_base_name = path.toString().tokenize('/').last()
-//      println "dir base name: " + dir_base_name
+      def file_base_name = path.toString().tokenize('/').last()
+//      println "file base name: " + file_base_name
 //      println "path: " + path
-      params.object_map.make_cds_raw_cds_map[dir_base_name] = path
+      params.object_map.make_cds_raw_cds_map[file_base_name] = path
     }
   }
 
@@ -277,7 +309,6 @@ workflow {
   make_barnyard_json(samplesheet_file, make_cds_raw.out.png.collect())
   make_barnyard_json.out.splitJson().map{make_barnyard_plot_function(it)}.set{make_barnyard_plot_in}
   make_barnyard_plot(make_barnyard_plot_in)
-  
 }
 
 

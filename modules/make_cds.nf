@@ -7,7 +7,7 @@ process make_cds_raw {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*.png", mode: 'copy'
 
   input:
-  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells), path(counts_per_cell), path(empty_drops)
+  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells), path(counts_per_cell), path(empty_drops), path(mito_umis)
   val(out_file)
 
   output:
@@ -26,6 +26,7 @@ process make_cds_raw {
   ${feature_tsv} \
   ${cell_tsv} \
   ${barcode_to_wells} \
+  ${mito_umis} \
   ${params.umi_cutoff} \
   ${counts_per_cell} \
   ${empty_drops}

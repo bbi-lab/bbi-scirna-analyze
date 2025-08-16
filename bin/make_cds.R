@@ -12,6 +12,7 @@ parser$add_argument('matrix', help='File of umi count matrix.')
 parser$add_argument('gene_data', help='File of gene data.')
 parser$add_argument('cell_data', help='File of cell data.')
 parser$add_argument('barcodes_to_wells', help='File of encoded barcode indices and wells.')
+parser$add_argument('mito_umis', help='File of mitochondrial UMI counts.')
 parser$add_argument('umi_cutoff', help='UMI cutoff to count as a cell.')
 parser$add_argument('counts_per_cell', help='Counts per cell from STARsolo CellReads.stats.')
 # parser$add_argument('gene_bed', help='Bed file of gene info.')
@@ -28,10 +29,14 @@ umi_cutoff = strtoi(args$umi_cutoff, 10L)
 cds <- load_mm_data(mat_path=args$matrix,
                     feature_anno_path=args$gene_data,
                     cell_anno_path=args$cell_data,
+                    feature_metadata_column_names=c('gene_short_name', 'gene_expression'),
                     umi_cutoff=umi_cutoff,
-                    sep="",
                     matrix_control=list(matrix_class='BPCells'))
-#                    feature_metadata_column_names=c('gene_short_name'), sep="")
+
+#
+# Drop useless feature values.
+#
+cds@rowRanges@elementMetadata@listData[['gene_expression']] <- NULL
 
 #
 # Assign percent mitochondrial reads to the cds.
@@ -47,11 +52,13 @@ counts_per_cell <- fread(args$counts_per_cell,
                                        "intronic_read_count",
                                        "mito_read_count"))
 
-percent_mito_reads <- counts_per_cell[,c('cell')]
-percent_mito_reads <- cbind(percent_mito_reads, 100.0 * counts_per_cell[['mito_read_count']] / counts_per_cell[['read_total_count']])
-colnames(percent_mito_reads) <- c('cell', 'percent_mito_reads')
-rownames(percent_mito_reads) <- percent_mito_reads[,1]
-colData(cds)['percent_mito_reads'] <- percent_mito_reads[colData(cds)[['cell']],2]
+#
+# Add percent mitochondrial UMIs.
+#
+mito_umis <- read.csv(args$mito_umis, header=FALSE, sep='\t')
+perc_mito_umis <- mito_umis[3] / (mito_umis[2] + mito_umis[3])
+rownames(perc_mito_umis) <- mito_umis$V1
+colData(cds)['perc_mitochondrial_umis'] <- perc_mito_umis[rownames(colData(cds)),]
 
 #
 # Add emptyDrops information.
