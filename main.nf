@@ -98,7 +98,7 @@ workflow {
   /*
   ** Make a JSON file with genome file paths by sample.
   */
-  make_genome_files_json(samplesheet_file, star_genomes_file, make_merge_demux_json.out.collect())
+  make_genome_files_json(samplesheet_file, star_genomes_file)
 
   /*
   ** Here are some convolutions in order to pass
