@@ -15,7 +15,7 @@ parser$add_argument('barcodes_to_wells', help='File of encoded barcode indices a
 parser$add_argument('mito_umis', help='File of mitochondrial UMI counts.')
 parser$add_argument('umi_cutoff', help='UMI cutoff to count as a cell.')
 parser$add_argument('counts_per_cell', help='Counts per cell from STARsolo CellReads.stats.')
-# parser$add_argument('gene_bed', help='Bed file of gene info.')
+parser$add_argument('gene_bed', help='Bed file of gene info.')
 parser$add_argument('empty_drops', help='RDS file from emptyDrops.')
 # parser$add_argument('intron_fraction_file', help='Intron fraction of barcode UMIs file.')
 # parser$add_argument('key', help='The sample name prefix.')
@@ -39,6 +39,14 @@ cds <- load_mm_data(mat_path=args$matrix,
 cds@rowRanges@elementMetadata@listData[['gene_expression']] <- NULL
 
 #
+# Add additional gene information.
+#
+gene_info <- read.csv(args$gene_bed, header=FALSE, sep='\t')
+rownames(gene_info) <- gene_info$V4
+colnames(gene_info) <- c('chromosome', 'bp1', 'bp2', 'id', 'integer', 'gene_strand')
+rowData(cds) <- cbind(rowData(cds), gene_info[rownames(rowData(cds)), c('id', 'chromosome', 'bp1', 'bp2', 'gene_strand')])
+
+#
 # Assign percent mitochondrial reads to the cds.
 #
 counts_per_cell <- fread(args$counts_per_cell,
@@ -56,9 +64,14 @@ counts_per_cell <- fread(args$counts_per_cell,
 # Add percent mitochondrial UMIs.
 #
 mito_umis <- read.csv(args$mito_umis, header=FALSE, sep='\t')
-perc_mito_umis <- mito_umis[3] / (mito_umis[2] + mito_umis[3])
+perc_mito_umis <- mito_umis[3] / (mito_umis[2] + mito_umis[3]) * 100.0
 rownames(perc_mito_umis) <- mito_umis$V1
 colData(cds)['perc_mitochondrial_umis'] <- perc_mito_umis[rownames(colData(cds)),]
+
+#
+# Add number of genes expresses by cell.
+#
+# cds <- detect_genes(cds)
 
 #
 # Add emptyDrops information.

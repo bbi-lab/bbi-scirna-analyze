@@ -1,3 +1,11 @@
+def make_cds_raw_genomes_function(item) {
+  def sample_name = item['sample_name']
+  def genome_name = item['genome']
+  def tmp_genes_bed = item['tmp_genes_bed']
+  def latest_genes_bed = item['latest_genes_bed']
+  return([sample_name, genome_name, latest_genes_bed])
+}
+
 def analyze_out = params.output_dir + '/analyze_out'
 
 process make_cds_raw {
@@ -7,7 +15,7 @@ process make_cds_raw {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*.png", mode: 'copy'
 
   input:
-  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells), path(counts_per_cell), path(empty_drops), path(mito_umis)
+  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells), path(counts_per_cell), path(empty_drops), path(mito_umis), val(genome), path(latest_genes_bed)
   val(out_file)
 
   output:
@@ -29,6 +37,7 @@ process make_cds_raw {
   ${mito_umis} \
   ${params.umi_cutoff} \
   ${counts_per_cell} \
+  ${latest_genes_bed} \
   ${empty_drops}
   """
 }
@@ -42,7 +51,7 @@ process make_cds_filtered {
 
   input:
 //  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells)
-  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells), path(counts_per_cell)
+  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells), path(counts_per_cell), path(mito_umis), val(genome), path(latest_genes_bed)
   val(out_file)
 
   output:
@@ -61,8 +70,10 @@ process make_cds_filtered {
   ${feature_tsv} \
   ${cell_tsv} \
   ${barcode_to_wells} \
+  ${mito_umis} \
   ${params.umi_cutoff} \
-  ${counts_per_cell}
+  ${counts_per_cell} \
+  ${latest_genes_bed}
   """
 }
 

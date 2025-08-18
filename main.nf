@@ -40,6 +40,7 @@ params.object_map.cat_matrices_raw_map = [:]
 ** Import modules after defining params.* so that
 ** the parameters are accessible in the modules.
 */
+include { make_genome_files_json } from './modules/make_genome_files_json.nf'
 include { make_merge_demux_json } from './modules/make_merge_demux_json.nf'
 include { merge_demux } from './modules/merge_demux.nf'
 include { make_process_hashes_json } from './modules/make_process_hashes_json.nf'
@@ -56,7 +57,7 @@ include { split_starsolo_stats } from './modules/split_starsolo_stats.nf'
 include { cat_matrices_raw; cat_matrices_raw_function } from './modules/cat_matrices.nf'
 include { make_mito_umis_json } from './modules/make_mito_umis_json.nf'
 include { make_mito_umis; make_mito_umis_function} from './modules/make_mito_umis.nf'
-include { make_cds_raw } from './modules/make_cds.nf'
+include { make_cds_raw; make_cds_raw_genomes_function } from './modules/make_cds.nf'
 include { run_empty_drops } from './modules/run_empty_drops.nf'
 include { make_barnyard_json } from './modules/make_barnyard_json.nf'
 include { make_barnyard_plot; make_barnyard_plot_function } from './modules/make_barnyard_plot.nf'
@@ -93,6 +94,11 @@ workflow {
   make_merge_demux_json(samplesheet_file, "$demux_out")
   make_merge_demux_json.out.splitJson().map{merge_demux_closure(it)}.set{merge_demux_channel_in}
   merge_demux(merge_demux_channel_in)
+
+  /*
+  ** Make a JSON file with genome file paths by sample.
+  */
+  make_genome_files_json(samplesheet_file, star_genomes_file, make_merge_demux_json.out.collect())
 
   /*
   ** Here are some convolutions in order to pass
@@ -276,7 +282,8 @@ workflow {
   **    tuple val(sample_name), path(cells), path(features), path(matrix)
   **    val(out_file)
   */
-  make_cds_raw(cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_mito_umis.out), 'counts_raw')
+  make_genome_files_json.out.genome_files.splitJson().map{make_cds_raw_genomes_function(it)}.set{make_cds_genomes_in}
+  make_cds_raw(cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_mito_umis.out).join(make_cds_genomes_in), 'counts_raw')
 
   /*
   ** Note:
