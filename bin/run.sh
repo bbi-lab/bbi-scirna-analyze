@@ -1,7 +1,12 @@
 #!/bin/bash
 
-samplesheet_json='/net/bbi/vol1/data/bge/bbi/tests/bclconvert/RNA3-065-a/samplesheet.json'
+samplesheet_json='/net/bbi/vol2/home/bge/bbi/tests/nobackup/RNA3-074-a.bbi_scirna.barnyard_plot.20250812/samplesheet.json'
 
-make_merge_demux_json.py -i $samplesheet_json -p hoo
-# make_trim_bam_json.py -i $samplesheet_json -o foo.json
+#   parser = argparse.ArgumentParser(description='A program to make JSON file for running mito_umis process.')
+#   parser.add_argument('-i', '--input', required=True, default=None, help='Input JSON samplesheet filename (required string).')
+#   parser.add_argument('-g', '--genomes_file', required=True, default=None, help='Path to file of STAR aligner genomes data. (required string).')
+#   parser.add_argument('-v', '--version', action='version', version=program_version)
+#   args = parser.parse_args()
 
+# make_genome_files.py -i ${samplesheet_json} -g /net/gs/vol1/home/bge/git/bbi-scirna-analyze/bin/star_genomes.txt
+make_mito_umis_json.py -i ${samplesheet_json} -g /net/gs/vol1/home/bge/git/bbi-scirna-analyze/bin/star_genomes.txt

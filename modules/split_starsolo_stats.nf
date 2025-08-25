@@ -1,4 +1,4 @@
-analyze_out = params.output_dir + '/analyze_out' 
+def analyze_out = params.output_dir + '/analyze_out' 
 
 process split_starsolo_stats {
   errorStrategy 'retry'
