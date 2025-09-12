@@ -2,6 +2,7 @@ process make_genome_files_json {
   input:
   path(samplesheet_file)
   val(star_genomes_file)
+  val(dummy)
 
   output:
   path("genome_files.json"), emit: genome_files

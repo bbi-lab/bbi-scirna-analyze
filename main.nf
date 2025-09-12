@@ -98,7 +98,7 @@ workflow {
   /*
   ** Make a JSON file with genome file paths by sample.
   */
-  make_genome_files_json(samplesheet_file, star_genomes_file)
+  make_genome_files_json(samplesheet_file, star_genomes_file, make_merge_demux_json.out.collect())
 
   /*
   ** Here are some convolutions in order to pass
@@ -241,7 +241,7 @@ workflow {
   ** Make cat_matrices_raw_map map with matrix file paths.
   */
   cat_matrices_raw.out.raw_matrix.subscribe onNext: {
-    tup -> {
+    def tup -> {
       def cells_path = tup[1]
       def cells_base_name = cells_path.toString().tokenize('/').last()
       params.object_map.cat_matrices_raw_map[cells_base_name] = cells_path
@@ -283,7 +283,15 @@ workflow {
   **    val(out_file)
   */
   make_genome_files_json.out.genome_files.splitJson().map{make_cds_raw_genomes_function(it)}.set{make_cds_genomes_in}
+/*
+  make_cds_raw_in = cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_mito_umis.out).join(make_cds_genomes_in)
+  make_cds_raw(make_cds_raw_in, 'counts_raw')
   make_cds_raw(cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_mito_umis.out).join(make_cds_genomes_in), 'counts_raw')
+println "make_cds_raw: " + make_cds_raw.out.cds
+*/
+
+  cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_mito_umis.out).join(make_cds_genomes_in).set{make_cds_raw_in}
+  make_cds_raw(make_cds_raw_in, 'counts_raw')
 
   /*
   ** Note:
@@ -295,7 +303,7 @@ workflow {
   **        tuple val(sample_name), path("*.raw.mobs"), emit: cds
   */
   make_cds_raw.out.cds.subscribe onNext: {
-    tup -> {
+    def tup -> {
       def path = tup[1]
       def file_base_name = path.toString().tokenize('/').last()
 //      println "file base name: " + file_base_name
@@ -306,8 +314,12 @@ workflow {
 
   /*
   ** Assign hashes to cells and update cds.
+  assign_hash_raw_channel_in = cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join(make_cds_raw.out.cds)
+  println "assign_hashes_in" + cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join(make_cds_raw.out.cds)
+  assign_hash_raw(cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join(make_cds_raw.out.cds))
   */
-  assign_hash_raw_channel_in = cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join( make_cds_raw.out.cds)
+
+  cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join(make_cds_raw.out.cds).set{assign_hash_raw_channel_in}
   assign_hash_raw(assign_hash_raw_channel_in)
 
   /*
