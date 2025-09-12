@@ -13,7 +13,7 @@ def make_mito_umis_function(item) {
 def analyze_out = params.output_dir + '/analyze_out'
 
 process make_mito_umis {
-  errorStrategy 'ignore'
+  errorStrategy 'retry'
 
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_mito_umis.tsv", mode: 'copy'
 
