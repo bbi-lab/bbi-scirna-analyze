@@ -2,22 +2,31 @@
 
 ## Intro
 
-This *bbi-scirna-analyze* pipeline reads the unaligned BAM files from the *bbi-scirna-demux* pipeline, runs trimming, alignment, and makes a CDS file.
+This *bbi-scirna-analyze* pipeline reads the unaligned BAM files from the *bbi-scirna-demux* pipeline, runs trimming and alignment programs, and makes a CDS file.
 
 ## Installation
 
 Install the following software
 
 - Nextflow
-- STAR aligner
 - bbduk.sh
+
+You may also need to build and install
+
 - process_hashes
+- STAR aligner
+
+The following sections have additional information.
 
 ### Install Nextflow
 
 See the Nextflow installation instructions at
 
 https://www.nextflow.io/docs/latest/install.html
+
+### *process_hashes* program
+
+We include a *process_hashes* executable in the *bbi-scirna-analyze/bin* directory. It runs on the Shendure cluster nodes. If it does not run on your CPUs, you will need to build the executable from the source code. See the following sections on installing Rust and building and installing *process_hashes*.
 
 ### Install Rust
 
@@ -37,12 +46,15 @@ cp target/release/process_hashes ../../bin
 
 I recommend that you build *process_hashes* on a newer cluster node, for example, s020 on the Shendure cluster.
 
+### *STAR* aligner program
 
-### Load the STAR aligner on the Genome Sciences cluster
+We include a *STAR* aligner executable in the *bbi-scirna-analyze/bin* directory. It runs on the Shendure cluster nodes. If it does not run on your CPUs, you will need to build the executable from the source code. See the following sections on building and installing the *STAR* aligner program.
 
-The STAR aligner is loaded by Nextflow. The module load command is in the *bbi-scirna-analyze/nextflow.config* file.
+### Load the *STAR* aligner on the Genome Sciences cluster
 
-I found that the most recent STAR aligner, STAR 2.7.11b, can fail with a segmentation fault when it runs on an input file with very few reads. You can fix this problem by cloning the STAR git repository and editing the source code file called *STAR-2.7.11b/source/serviceFuns.cpp* to add the lines
+The *STAR* aligner can be loaded by Nextflow from a GS module. The module load command is in the file *bbi-scirna-analyze/nextflow.config*.
+
+I found that the most recent *STAR* aligner version, *STAR 2.7.11b*, can fail with a segmentation fault when run on input files with only a few reads. You can fix this problem by cloning the *STAR* git repository and editing the source-code file called *STAR-2.7.11b/source/serviceFuns.cpp* to add the lines
 
 ```
     if (N==0)
@@ -66,15 +78,16 @@ inline int64 binarySearchExact(argType x, argType *X, uint64 N) {
         return -1;
 ```
 
-Then build the STAR executable using the command
+Then build the *STAR* executable using the command
 
 ```
 make
 ```
 
-in the *STAR-2.7.11b/source* directory. Copy the resulting STAR executable file to the *bbi-scirna-analyze/bin* directory.
+in the *STAR-2.7.11b/source* directory. Copy the resulting *STAR* executable file to the *bbi-scirna-analyze/bin* directory.
 
-You may need to edit the *bbi-scirna-analyze/nextflow.config* file by setting the value *ext.star_path* to the STAR executable that you installed. In this case, I suggest that you also remove the STAR/2.7.11b module load in the *nextflow.config* file.
+Notes:
+- the STAR compilation failed when the samtools/1.19 module was loaded. I believe that the linker was using the samtools htslib rather than the STAR htslib.
 
 ### Install bbduk.sh
 

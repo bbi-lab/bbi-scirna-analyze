@@ -1,0 +1,12 @@
+[package]
+name = "mito_umis"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+clap = "4.5.38"
+libm = "0.2.15"
+mimalloc = "0.1.46"
+sprs = "0.11.3"
+csv = "1.3.1"
+

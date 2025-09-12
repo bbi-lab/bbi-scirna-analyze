@@ -1,0 +1,10 @@
+[package]
+name = "umis_per_barcode"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+clap = "4.5.38"
+libm = "0.2.15"
+mimalloc = "0.1.46"
+sprs = "0.11.3"

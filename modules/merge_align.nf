@@ -1,5 +1,5 @@
 def merge_align_function(item) {
-  def sample_dir = item['sample_dir']
+  def sample_name = item['sample_name']
   def out_file = item['out_file']
   def in_dir_list = []
   for( in_dir in item['in_dir_list']) {
@@ -15,7 +15,7 @@ def merge_align_function(item) {
     }
     in_dir_list.add(file_path)
   }
-  return([sample_dir, out_file, in_dir_list])
+  return([sample_name, out_file, in_dir_list])
 }
 
 
@@ -25,26 +25,20 @@ process merge_align {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${analyze_out}/${sample_dir}", pattern: "*.aligned.bam", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*aligned.bam", mode: 'copy'
 
   input:
-  tuple val('sample_dir'), val('out_file'), path('file')
+  tuple val('sample_name'), val('out_file'), path('file')
 
   output:
-  path("*.aligned.bam")
+  path("*aligned.bam")
 
   script:
   """
   # bash watch for errors
   set -ueo pipefail
 
-  file_list=`ls file*`
-  for file in \$file_list
-  do
-    samtools sort -@ 4 -m 8G \${file} -o \${file}.sorted
-  done
-  samtools merge -@ 4 ${out_file} *.sorted
-  rm -r *.sorted
+  sambamba merge -t 8 ${out_file} file*
   """
 }
 

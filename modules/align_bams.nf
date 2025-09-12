@@ -19,12 +19,12 @@ process align_bams {
 
   clusterOptions { '-l m_mem_free=' + mem.toInteger() / align_cpus + 'G -pe serial ' + align_cpus + ' -l cpuid_level=22' }
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*trimmed", mode: 'copy'
+//  publishDir path: "${analyze_out}/${sample_name}", pattern: "*trimmed", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "CellReads.stats", mode: 'copy'
 
   input:
   tuple val(sample_name), path(bam_in), val(genome_dir), val(mem), val(out_dir)
-  
+
   output:
   path(out_dir)
   //path(out_dir/Solo.out/GeneFull_Ex50pAS/CellReads.stats)
@@ -44,6 +44,50 @@ process align_bams {
 
   STAR_ALIGNER=${task.ext.star_path}
 
+  #
+  # Notes:
+  #   o  the cell filter does not work for small numbers of
+  #      cells and I wonder about using the multiple testing
+  #      correction on subsets of the alignments.
+  #   o  so I set --soloCellFilter to None.
+  #   o  we run emptyDrops on the concatenated raw matrices
+  #      later.
+  #
+  \${STAR_ALIGNER} \
+      --runThreadN ${align_cpus} \
+      --genomeDir ${genome_dir} \
+      --soloCBmatchWLtype Exact \
+      --soloType CB_UMI_Simple \
+      --soloBarcodeMate 0 \
+      --soloCBstart 1 \
+      --soloCBlen   28 \
+      --soloUMIstart 29 \
+      --soloUMIlen 8 \
+      --soloCBwhitelist None \
+      --soloInputSAMattrBarcodeSeq CB UB \
+      --soloInputSAMattrBarcodeQual CY UY \
+      --outSAMtype BAM SortedByCoordinate \
+      --outSAMattributes NH HI nM AS GX GN sM \
+      --outSJtype None \
+      --outSAMmultNmax 1 \
+      --outSAMstrandField intronMotif \
+      --soloUMIdedup 1MM_All \
+      --soloCellReadStats Standard \
+      --soloStrand Forward \
+      --soloFeatures GeneFull_Ex50pAS \
+      --soloMultiMappers PropUnique \
+      --soloCellFilter None \
+      --readFilesType SAM SE \
+      --readFilesIn \
+        ${bam_in} \
+      --readFilesCommand samtools view \
+      --outFileNamePrefix "${out_dir}/"
+  """
+}
+
+/*
+** Ss barcode+umi tag
+**   emptyDrops_CR parameters: nExpectedCells maxPercentile maxMinRatio indMin indMax umiMin umiMinFracMedian candMaxN FDR simN
   \${STAR_ALIGNER} \
       --runThreadN ${align_cpus} \
       --genomeDir ${genome_dir} \
@@ -71,110 +115,6 @@ process align_bams {
       --readFilesIn \
         ${bam_in} \
       --readFilesCommand samtools view \
+      --soloCellFilter EmptyDrops_CR 3000 0.99 10 45000 90000 60 0.01 20000 0.01 10000 \
       --outFileNamePrefix "${out_dir}/"
-  """
-}
-
-/*
-**
-** Good parameters using the flawed STAR version.
-**
-  STAR \
-      --runThreadN ${align_cpus} \
-      --genomeDir ${genome_dir} \
-      --soloCBmatchWLtype Exact \
-      --soloType CB_UMI_Simple \
-      --soloBarcodeMate 0 \
-      --soloCBstart 1 \
-      --soloCBlen   28 \
-      --soloUMIstart 29 \
-      --soloUMIlen 8 \
-      --soloCBwhitelist None \
-      --outSAMtype BAM SortedByCoordinate \
-      --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM \
-      --outSJtype None \
-      --outSAMmultNmax 1 \
-      --outSAMstrandField intronMotif \
-      --soloUMIdedup Exact \
-      --soloCellReadStats Standard \
-      --soloStrand Forward \
-      --soloFeatures GeneFull_Ex50pAS \
-      --soloMultiMappers PropUnique \
-      --soloInputSAMattrBarcodeSeq sS \
-      --soloInputSAMattrBarcodeQual sQ \
-      --readFilesType SAM SE \
-      --readFilesIn \
-        ${bam_in} \
-      --readFilesCommand samtools view \
-      --outFileNamePrefix "${out_dir}/"
-*/
-
-/*
-**
-** Good parameters using the flawed STAR version.
-**
-  STAR \
-      --runThreadN ${align_cpus} \
-      --genomeDir ${genome_dir} \
-      --soloCBmatchWLtype Exact \
-      --soloType CB_UMI_Simple \
-      --soloBarcodeMate 0 \
-      --soloCBstart 1 \
-      --soloCBlen   28 \
-      --soloUMIstart 29 \
-      --soloUMIlen 8 \
-      --soloCBwhitelist None \
-      --outSAMtype BAM SortedByCoordinate \
-      --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM \
-      --outSJtype None \
-      --outSAMmultNmax 1 \
-      --outSAMstrandField intronMotif \
-      --soloUMIdedup Exact \
-      --soloCellReadStats Standard \
-      --soloStrand Forward \
-      --soloFeatures GeneFull_Ex50pAS \
-      --soloMultiMappers PropUnique \
-      --soloInputSAMattrBarcodeSeq sS \
-      --soloInputSAMattrBarcodeQual sQ \
-      --readFilesType SAM SE \
-      --readFilesIn \
-        ${bam_in} \
-      --readFilesCommand samtools view \
-      --outFileNamePrefix "${out_dir}/"
-*/
-
-
-/*
-** The following runs but gives too many entries and alignments.
-**
-  STAR \
-      --runThreadN 8 \
-      --genomeDir ${genome_dir} \
-      --soloCBmatchWLtype Exact \
-      --soloType CB_UMI_Simple \
-      --soloBarcodeMate 0 \
-      --soloCBstart 1 \
-      --soloCBlen   28 \
-      --soloUMIstart 29 \
-      --soloUMIlen 8 \
-      --soloCBwhitelist None \
-      --outSAMtype BAM SortedByCoordinate \
-      --outSAMattributes NH HI nM AS CR UR CB UB GX GN sS sQ sM \
-      --outSAMunmapped Within \
-      --outSJtype None \
-      --soloCellReadStats Standard \
-      --soloStrand Forward \
-      --soloFeatures GeneFull_Ex50pAS \
-      --soloMultiMappers PropUnique \
-      --soloInputSAMattrBarcodeSeq sS \
-      --soloInputSAMattrBarcodeQual sQ \
-      --readFilesType SAM SE \
-      --readFilesIn \
-        ${bam_in} \
-      --readFilesCommand samtools view \
-      --outFileNamePrefix "${out_dir}/"
-
-
-** added bbduk and removed STAR option
-      --clip3pAdapterSeq polyA \
 */

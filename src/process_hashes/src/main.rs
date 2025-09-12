@@ -198,11 +198,9 @@ fn make_sparse_matrix(cells: &HashSet<String>, hash_lookup: &HashMap<String, Str
   **       one can be certain that the key exists in
   **       the HashMap.
   */
-  let mut num_hash: usize = 0;
   let mut cell_counter: HashSet<String> = HashSet::new();
   for key1 in map.keys() {
     if(!map[key1].is_empty()) {
-      num_hash += 1;
       for cell in map[key1].keys() {
         cell_counter.insert(cell.to_string());
       }

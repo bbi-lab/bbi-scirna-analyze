@@ -10,10 +10,11 @@ suppressPackageStartupMessages({
 
 parser = argparse::ArgumentParser(description='Script to assign hash per sample')
 parser$add_argument('key', help='Sample name')
+parser$add_argument('matrix_key', help='Input matrix type (raw or filtered)')
 parser$add_argument('hash_matrix', help='File of hash umi count matrix')
 parser$add_argument('cell_list', help='File with list of cell names with hash umis')
 parser$add_argument('hash_list', help='File with list of hash names')
-parser$add_argument('cds', help='cds object in RDS format')
+parser$add_argument('cds', help='cds object in monocle_objects format')
 parser$add_argument('umis_per_cell', help='File with list of umis per cell barcode (all cells -- used to calculate background hash umis)')
 parser$add_argument('hash_umi_cutoff', type='integer', help='min number of hash umis to determine top to second best ratio')
 parser$add_argument('hash_ratio', help='min top to second best hash ratio. Default is false and not filtered')
@@ -93,7 +94,7 @@ assign_hash_labels <-
                                second_best_hash_umi = second_best_hash_umi)
   }
 
-cds <- readRDS(args$cds)
+cds <- load_monocle_objects(args$cds)
 
 # Extract meta info from cell name 
 df <- as.data.frame(colData(cds))
@@ -134,14 +135,23 @@ colnames(hash_mtx) = cell_list
 hash_mtx = t(hash_mtx)
 
 # Grab sci umis 
-rna_umis = fread(args$umis_per_cell,
-                 header = F, data.table = F, col.names = c("cell", "n.umi"))
+counts_per_cell = fread(args$umis_per_cell,
+                        header = TRUE, data.table = F,
+                        col.names = c("cell",
+                                      "read_total_count",
+                                      "umi_count_unique",
+                                      "umi_count_multi",
+                                      "umi_count_total",
+                                      "exonic_read_count",
+                                      "intronic_read_count",
+                                      "mito_read_count"))
+rna_umis <- counts_per_cell[,c('cell', 'umi_count_total')]
 
 # Filter for rna umis that are less than specified cutoff to find 'cells' used
 # to calculate background hash umis.
 # Determine background cell hashes to find top_to_second_best_ratio
 background_cell_hashes =
-  rna_umis$cell[rna_umis$n.umi < args$hash_umi_cutoff] %>%
+  rna_umis$cell[rna_umis$umi_count_total < args$hash_umi_cutoff] %>%
   as.character()
 
 # Assign number of hash umis to each cell, pvals, qvals, top_to_second_best_ratio, and the top oligo
@@ -153,23 +163,58 @@ sample_name = args$key
 
 # Drop any cells with less than hash umi cutoff
 # corrected_hash_table <- filter(corrected_hash_table, hash_umis >= args$hash_umi_cutoff)
-fwrite(corrected_hash_table, file=paste0(sample_name, "_hash_table.csv"), sep = ",")
+fwrite(corrected_hash_table, file=paste0(sample_name, "_hash_table.", args$matrix_key, ".csv"), sep = ",")
 
 # merge hash table with cds to assign to cells
 # If hash table is empty, put NA for each hash column 
+message(paste0('corrected hash table dim: ', dim(corrected_hash_table), '\n'))
+message(corrected_hash_table)
 if (dim(corrected_hash_table)[1] != 0) {
-  merged = as.data.table(merge(x=corrected_hash_table, y=colData(cds), by = "cell",all.x=FALSE, all.y=TRUE))
-  merged <- merged %>% mutate_at(vars("hash_umis"), ~replace_na(., 0)) # add 0 if a cell has no hash
+#   merged = as.data.table(merge(x=corrected_hash_table, y=colData(cds), by = "cell",all.x=FALSE, all.y=TRUE))
+#   merged <- merged %>% mutate_at(vars("hash_umis"), ~replace_na(., 0)) # add 0 if a cell has no hash
+# 
+#   # suppressMessages(merged <- splitstackshape::cSplit(merged, "top_oligo", "."))
+# 
+# # The following assumes incorrectly that the cells in the hash table are in the
+# # same order as in the CDS?
+# #
+# #   colData(cds)$hash_umis = merged$hash_umis
+# #   colData(cds)$pval = merged$pval
+# #   colData(cds)$qval = merged$qval
+# #   colData(cds)$top_to_second_best_ratio = merged$top_to_second_best_ratio
+# #   colData(cds)$top_oligo = merged$top_oligo
+# #   colData(cds)$best_hash_umi = merged$best_hash_umi
+# #   colData(cds)$second_best_hash_umi = merged$second_best_hash_umi
+# 
+#   #
+#   # The corrected data merge is
+#   #
+#   hash_df <- merged %>% 
+#   select("cell", "hash_umis", "pval", "qval", "top_to_second_best_ratio", 
+#           "top_oligo", "best_hash_umi", "second_best_hash_umi")
+# 
+#   to_merge <- data.frame(colData(cds)) %>% left_join(hash_df, by = "cell")
+#   colData(cds) <- as(to_merge, "DataFrame")
 
-  # suppressMessages(merged <- splitstackshape::cSplit(merged, "top_oligo", "."))
+  corrected_hash_table <- corrected_hash_table[,c('cell', 'hash_umis', 'pval', 'qval',
+                                                  'top_to_second_best_ratio', 'top_oligo',
+                                                  'best_hash_umi', 'second_best_hash_umi')]
+  # Bind the hash table columns to the colData(cds) keeping the colData(cds) dimension and row order.
+  col_data_merged = as.data.frame(left_join(x=as.data.frame(colData(cds)), y=corrected_hash_table, by = "cell", keep=FALSE))
+  # Add 0 if a cell has no hash
+  col_data_merged <- col_data_merged %>% mutate_at(vars("hash_umis"), ~replace_na(., 0))
 
-  colData(cds)$hash_umis = merged$hash_umis
-  colData(cds)$pval = merged$pval
-  colData(cds)$qval = merged$qval
-  colData(cds)$top_to_second_best_ratio = merged$top_to_second_best_ratio
-  colData(cds)$top_oligo = merged$top_oligo
-  colData(cds)$best_hash_umi = merged$best_hash_umi
-  colData(cds)$second_best_hash_umi = merged$second_best_hash_umi
+  #
+  # We need to reassign rownames to colData(cds). Check that they are reasonable.
+  #
+  assertthat::assert_that(all(col_data_merged[['cell']] == rownames(colData(cds))),
+                          msg = paste('inconsistent cell names in col_data_merged'))
+  coldata_rownames <- rownames(colData(cds))
+  colData(cds) <- as(col_data_merged, "DataFrame")
+  rownames(colData(cds)) <- coldata_rownames
+
+  # Drop any cells with less than hash umi cutoff and top to second best hash ratio
+  # cds <- cds[,colData(cds)$hash_umis >= args$hash_umi_cutoff]
 
   # Drop any cells with less than hash umi cutoff and top to second best hash ratio
   # cds <- cds[,colData(cds)$hash_umis >= args$hash_umi_cutoff]
@@ -180,4 +225,4 @@ if (dim(corrected_hash_table)[1] != 0) {
   } 
 }
 
-saveRDS(cds,file=paste0(sample_name, "_hash_cds.RDS"))
+save_monocle_objects(cds,directory_path=paste0(sample_name, '_hash_cds.', args$matrix_key, '.mobs'), archive_control=list(archive_type='none', archive_compression='none'))

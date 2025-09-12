@@ -1,10 +1,17 @@
-def cat_matrices_function(item) {
+def analyze_out = params.output_dir + '/analyze_out' 
+
+
+/*
+** STARsolo 'raw' matrix concatenation.
+*/
+def cat_matrices_raw_function(item) {
   def sample_name = item['sample_name']
-  def out_file = 'counts.raw'
-  def in_dir_list = []
+  def out_file = sample_name + '_counts.raw'
+  def in_file_list = []
   for( in_dir in item['in_dir_list']) {
     def dir_base_name = in_dir.toString().tokenize('/').last()
-    file_path = params.object_map.merge_align_bam_map[dir_base_name] + '/Solo.out/GeneFull_Ex50pAS/raw/matrix.mtx'
+    def file_path = params.object_map.merge_align_bam_map[dir_base_name] + '/Solo.out/GeneFull_Ex50pAS/raw/UniqueAndMult-PropUnique.mtx'
+//    def file_path = params.object_map.merge_align_bam_map[dir_base_name] + '/Solo.out/GeneFull_Ex50pAS/raw/matrix.mtx'
     /*
     ** If the file/value does not exist in
     ** params.object_map.merge_bam_map,
@@ -13,47 +20,34 @@ def cat_matrices_function(item) {
     if(file_path == null) {
       continue
     }
-    in_dir_list.add(file_path)
+    in_file_list.add(file_path)
   }
-  return([sample_name, out_file, in_dir_list])
+  return([sample_name, out_file, in_file_list])
 }
 
 
-
-def analyze_out = params.output_dir + '/analyze_out' 
-
-process cat_matrices {
+process cat_matrices_raw {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${analyze_out}/${sample_file}", pattern: "*.raw.cells.tsv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_file}", pattern: "*.raw.features.tsv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_file}", pattern: "*.raw.matrix.mtx", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_file}", pattern: "*.raw.cells.barcode_to_wells.tsv", mode: 'copy'
-/*
-  publishDir path: "${analyze_out}/${sample_file}", pattern: "*.filtered.cells.tsv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_file}", pattern: "*.filtered.features.tsv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_file}", pattern: "*.filtered.matrix.mtx", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_file}", pattern: "*.filtered.cells.barcode_to_wells.tsv", mode: 'copy'
-*/
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.cells.tsv", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.features.tsv", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.matrix.mtx", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.cells_barcode_to_wells.tsv", mode: 'copy'
 
   input:
-  tuple val('sample_file'), val('out_file'), path('file')
+  tuple val('sample_name'), val('out_file'), path('file')
 
   output:
-  tuple val(sample_file), path("*.raw.cells.tsv"), path("*.raw.features.tsv"), path("*.raw.matrix.mtx"), path("*.raw.cells.barcode_to_wells.tsv"), emit: raw_matrix
-/*
-  tuple val(sample_file), path("*.filtered.cells.tsv"), path("*.filtered.features.tsv"), path("*.filtered.matrix.mtx"), emit: filtered_matrix
-*/
+  tuple val(sample_name), path("*.cells.tsv"), path("*.features.tsv"), path("*.matrix.mtx"), path("*.cells.barcode_to_wells.tsv"), emit: raw_matrix
 
   script:
   """
   # bash watch for errors
   set -ueo pipefail
 
-  #
   # Use the symbolic link referent because we use the path
-  # to find the feature files in cat_sparse_matrix.py.
+  # to find the feature and cell files for cat_sparse_matrix.py.
   #
   file_list=`ls file*`
 
@@ -64,14 +58,84 @@ process cat_matrices {
     in_file_list="\${in_file_list} \${file_path}"
   done
 
-  cat_sparse_matrix.py -o ${out_file} -i \${in_file_list}
+  if [ -n "\$in_file_list" ]
+  then
+    cat_sparse_matrix.py -i \$in_file_list -m 'UniqueAndMult-PropUnique.mtx' -f 'features.tsv' -c 'barcodes.tsv' -o ${out_file}
+#    cat_sparse_matrix.py -i \$in_file_list -m 'matrix.mtx' -f 'features.tsv' -c 'barcodes.tsv' -o ${out_file}
+  fi
 
   barcode_to_well.py -i ${out_file}.cells.tsv -o ${out_file}.cells.barcode_to_wells.tsv
-
-# Note: when the STAR input BAM file has few or no reads (after trimming)
-#       the filtered directory does not exist.
-#
   """
 }
 
+
+/*
+** STARsolo 'filtered' matrix concatenation.
+*/
+def cat_matrices_filtered_function(item) {
+  def sample_name = item['sample_name']
+  def out_file = sample_name + '_counts.filtered'
+  def in_file_list = []
+  for( in_dir in item['in_dir_list']) {
+    def dir_base_name = in_dir.toString().tokenize('/').last()
+    def file_path = params.object_map.merge_align_bam_map[dir_base_name] + '/Solo.out/GeneFull_Ex50pAS/filtered/matrix.mtx'
+    /*
+    ** If the file/value does not exist in
+    ** params.object_map.merge_bam_map,
+    ** skip this pipeline entry.
+    */
+    if(file_path == null) {
+      continue
+    }
+    in_file_list.add(file_path)
+  }
+  return([sample_name, out_file, in_file_list])
+}
+
+
+process cat_matrices_filtered {
+  errorStrategy 'retry'
+  maxRetries 2
+
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.cells.tsv", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.features.tsv", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.matrix.mtx", mode: 'copy'
+
+  input:
+  tuple val('sample_name'), val('out_file'), path('file')
+
+  output:
+  tuple val(sample_name), path("*.cells.tsv"), path("*.features.tsv"), path("*.matrix.mtx"), path("*.cells.barcode_to_wells.tsv"), emit: filtered_matrix
+
+  script:
+  """
+  # bash watch for errors
+  set -ueo pipefail
+
+  #
+  #
+  file_list=`ls file*`
+
+  #
+  # Note: when the STAR input BAM file has few or no reads (after trimming)
+  #       the filtered directory does not exist.
+  #
+  in_file_list=''
+  for file in \${file_list}
+  do
+    file_path=`readlink \$file`
+    if [ -f \${file_path} ]
+    then
+      in_file_list="\${in_file_list} \${file_path}"
+    fi
+  done
+
+  if [ -n "\$in_file_list" ]
+  then
+    cat_sparse_matrix.py -i \$in_file_list -m 'matrix.mtx' -f 'features.tsv' -c 'barcodes.tsv' -o ${out_file}
+  fi
+
+  barcode_to_well.py -i ${out_file}.cells.tsv -o ${out_file}.cells.barcode_to_wells.tsv
+  """
+}
 

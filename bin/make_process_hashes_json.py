@@ -130,15 +130,16 @@ def make_data_file_json(data_file_dict, sample_hash_dict):
         and sample_hash_dict[process_group].get(sample_name) != None
         and len(sample_hash_dict[process_group][sample_name][0]) > 0):
 
-        merge_dict = {}
-        merge_dict['sample_name'] = '%s-%03d' % (sample_name, int(process_group))
-        merge_dict['hash_file'] = sample_hash_dict[process_group][sample_name][0]
-        in_file_list = []
-        merge_dict['in_file_list'] = in_file_list
         for pcr_pair in data_file_dict[process_group][sample_name].keys():
           in_file = '%s-%03d_%s.merged.bam' % (sample_name, int(process_group), pcr_pair)
-          merge_dict['in_file_list'].append(in_file)
-        hash_bam_list.append(merge_dict)
+          hash_file = sample_hash_dict[process_group][sample_name][0]
+          out_root = '%s-%03d_%s' % (sample_name, int(process_group), pcr_pair)
+          merge_dict = {}
+          merge_dict['sample_name'] = '%s-%03d' % (sample_name, int(process_group))
+          merge_dict['in_file'] = in_file
+          merge_dict['hash_file'] = hash_file
+          merge_dict['out_root'] = out_root
+          hash_bam_list.append(merge_dict)
 
   try:
     filename_json = 'process_hashes.json'
@@ -152,14 +153,8 @@ def make_data_file_json(data_file_dict, sample_hash_dict):
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program to make JSON file for setting process_hash runs.')
   parser.add_argument('-i', '--input', required=True, default=None, help='Input JSON samplesheet filename (required string).')
-  parser.add_argument('-o', '--output', required=False, default=None, help='Output JSON output filename (required string).')
-  parser.add_argument('-v', '--version', required=False, default=None, help='Write version string to stdout.')
+  parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
-
-  # Write versions.
-  if( args.version ):
-    print( 'Program version: %s' % ( program_version ) )
-    sys.exit( 0 )
 
   #
   # Read input samplesheet file.
