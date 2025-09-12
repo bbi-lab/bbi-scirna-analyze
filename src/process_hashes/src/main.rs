@@ -228,11 +228,11 @@ fn make_sparse_matrix(cells: &HashSet<String>, hash_lookup: &HashMap<String, Str
   ** Hash read names for all entries in hash file.
   ** Sort them.
   */
-  let mut num_hash: usize = hash_lookup.keys().len();
+  let num_hash: usize = hash_lookup.keys().len();
 
   let mut hash_seqs: Vec<String> = Vec::with_capacity(num_hash);
   let mut row_names: Vec<String> = Vec::with_capacity(num_hash);
-  let mut hash_barcode_keys = hash_lookup.keys().sorted();
+  let hash_barcode_keys = hash_lookup.keys().sorted();
   for hash_barcode in hash_barcode_keys {
     hash_seqs.push(hash_barcode.to_string());
     row_names.push(hash_lookup[hash_barcode].clone());
