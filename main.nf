@@ -11,7 +11,7 @@ params.umi_cutoff = 100
 params.hash_umi_cutoff = 5
 params.hash_ratio = false
 params.hash_dup = false //Default is false. Other options are "p5" or "pcr_plate".
-params.run_empty_drops = false
+params.run_empty_drops = true
 
 
 demux_out = "${params.output_dir}/demux_out"
