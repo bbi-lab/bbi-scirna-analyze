@@ -6,7 +6,7 @@ import groovy.json.JsonSlurper
 
 
 params.bin_dir = workflow.projectDir + '/bin'
-params.align_cpus = 4
+params.align_cpus = 8
 params.umi_cutoff = 100
 params.hash_umi_cutoff = 5
 params.hash_ratio = false
