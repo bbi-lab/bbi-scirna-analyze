@@ -3,7 +3,8 @@ def make_cds_raw_genomes_function(item) {
   def genome_name = item['genome']
   def tmp_genes_bed = item['tmp_genes_bed']
   def latest_genes_bed = item['latest_genes_bed']
-  return([sample_name, genome_name, latest_genes_bed])
+  def hash_file = item['hash_file']
+  return([sample_name, genome_name, latest_genes_bed, hash_file])
 }
 
 def analyze_out = params.output_dir + '/analyze_out'
@@ -15,11 +16,11 @@ process make_cds_raw {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*.png", mode: 'copy'
 
   input:
-  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells), path(counts_per_cell), path(empty_drops), path(mito_umis), val(genome), path(latest_genes_bed)
+  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells), path(counts_per_cell), path(empty_drops), path(umi_counts), val(genome), path(latest_genes_bed), val(hash_file)
   val(out_file)
 
   output:
-  tuple val(sample_name), path("*.raw.mobs"), emit: cds
+  tuple val(sample_name), val(genome), path("*.raw.mobs"), path(umi_counts), val(hash_file), emit: cds
   tuple val(sample_name), path("*.png"), emit: png
 
   script:
@@ -34,7 +35,7 @@ process make_cds_raw {
   ${feature_tsv} \
   ${cell_tsv} \
   ${barcode_to_wells} \
-  ${mito_umis} \
+  ${umi_counts} \
   ${params.umi_cutoff} \
   ${counts_per_cell} \
   ${latest_genes_bed} \
@@ -51,11 +52,11 @@ process make_cds_filtered {
 
   input:
 //  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells)
-  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells), path(counts_per_cell), path(mito_umis), val(genome), path(latest_genes_bed)
+  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells), path(counts_per_cell), path(umi_counts), val(genome), path(latest_genes_bed), val(hash_file)
   val(out_file)
 
   output:
-  tuple val(sample_name), path("*.filtered.mobs"), emit: cds
+  tuple val(sample_name), val(genome), path("*.filtered.mobs"), path(umi_counts), val(hash_file), emit: cds
   tuple val(sample_name), path("*.png"), emit: png
 
   script:
@@ -70,7 +71,7 @@ process make_cds_filtered {
   ${feature_tsv} \
   ${cell_tsv} \
   ${barcode_to_wells} \
-  ${mito_umis} \
+  ${umi_counts} \
   ${params.umi_cutoff} \
   ${counts_per_cell} \
   ${latest_genes_bed}

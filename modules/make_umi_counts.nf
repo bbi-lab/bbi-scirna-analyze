@@ -1,4 +1,4 @@
-def make_mito_umis_function(item) {
+def make_umi_counts_function(item) {
   def sample_name = item['sample_name']
   def genome = item['genome']
   def in_matrix = params.object_map.cat_matrices_raw_map[item['in_matrix']]
@@ -12,16 +12,16 @@ def make_mito_umis_function(item) {
 
 def analyze_out = params.output_dir + '/analyze_out'
 
-process make_mito_umis {
+process make_umi_counts {
   errorStrategy 'retry'
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_mito_umis.tsv", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_umi_counts.tsv", mode: 'copy'
 
   input:
   tuple val(sample_name), val(out_file), path(in_matrix), path(in_features), path(in_barcodes), path(in_genes_bed)
 
   output:
-  tuple val(sample_name), path("*_mito_umis.tsv")
+  tuple val(sample_name), path("*_umi_counts.tsv")
 
   """
   # bash watch for errors
