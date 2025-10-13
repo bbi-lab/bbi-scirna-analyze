@@ -322,8 +322,7 @@ generate_hash_plots <- function(cds, sample_name) {
     message('no hash information in the cds')
     file_name <- paste0(sample_name, "_hash_plots.png")
     ggp_obj <- ggplot() + theme_void() + geom_text(aes(x = 1, y = 1, label = "Process hash skipped."))
-    ggsave(filename=file_name, ggp_obj, device='png')
-    return()
+    return(ggp_obj)
   }
 
   # Rank barcodes by hash umis

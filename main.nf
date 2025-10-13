@@ -61,7 +61,7 @@ include { make_cds_raw; make_cds_raw_genomes_function } from './modules/make_cds
 include { run_empty_drops } from './modules/run_empty_drops.nf'
 include { make_barnyard_json } from './modules/make_barnyard_json.nf'
 include { make_barnyard_plot; make_barnyard_plot_function } from './modules/make_barnyard_plot.nf'
-
+include { make_generate_qc_hash; make_generate_qc_no_hash } from './modules/make_generate_qc.nf'
 
 /*
 ** Set up channels.
@@ -343,9 +343,11 @@ println "make_cds_raw: " + make_cds_raw.out.cds
   **        o  .join():
   **              o  cds channel
   **              o  emptydrops channel
-  **              o  umis channel
-  make_generate_qc()
   */
+  assign_hash_raw.out.mobs.join(run_empty_drops.out).set{make_generate_qc_hash_in}
+  make_generate_qc_hash(make_generate_qc_hash_in, params.umi_cutoff)
+  make_cds_raw.out.cds.join(run_empty_drops.out).set{make_generate_qc_no_hash_in}
+  make_generate_qc_no_hash(make_generate_qc_no_hash_in, params.umi_cutoff)
 }
 
 
