@@ -166,17 +166,11 @@ workflow {
   make_process_hashes_json.out.splitJson().filter{it.size() > 0}.map{process_hashes_function(it)}.set{process_hashes_channel_in}
   process_hashes(process_hashes_channel_in)
 
-  cat_hashes(process_hashes.out.hash_matrix.groupTuple(),
-             process_hashes.out.hash_cells.groupTuple(),
-             process_hashes.out.hash_hashes.groupTuple(),
-             process_hashes.out.hash_umis_per_cell.groupTuple(),
-             process_hashes.out.hash_dup_per_cell.groupTuple(),
-             process_hashes.out.hash_reads_per_cell.groupTuple(),
-             process_hashes.out.hash_assigned_table.groupTuple(),
-             process_hashes.out.hash_log.groupTuple())
+  process_hashes.out.hash_matrix.groupTuple().join(process_hashes.out.hash_cells.groupTuple()).join(process_hashes.out.hash_hashes.groupTuple()).join(process_hashes.out.hash_umis_per_cell.groupTuple()).join(process_hashes.out.hash_dup_per_cell.groupTuple()).join(process_hashes.out.hash_reads_per_cell.groupTuple()).join(process_hashes.out.hash_assigned_table.groupTuple()).join(process_hashes.out.hash_log.groupTuple()).set{cat_hashes_in}
+  cat_hashes(cat_hashes_in)
 
-  hash_umi_knee_plot(process_hashes.out.hash_umis_per_cell)
-  calc_tot_hash_dup(process_hashes.out.hash_dup_per_cell)
+  hash_umi_knee_plot(cat_hashes.out.hash_umis_per_cell)
+  calc_tot_hash_dup(cat_hashes.out.hash_dup_per_cell)
 
   /*
   ** Set up and run bbduk.sh read trimming.
@@ -283,13 +277,6 @@ workflow {
   **    val(out_file)
   */
   make_genome_files_json.out.genome_files.splitJson().map{make_cds_raw_genomes_function(it)}.set{make_cds_genomes_in}
-/*
-  make_cds_raw_in = cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_umi_counts.out).join(make_cds_genomes_in)
-  make_cds_raw(make_cds_raw_in, 'counts_raw')
-  make_cds_raw(cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_umi_counts.out).join(make_cds_genomes_in), 'counts_raw')
-println "make_cds_raw: " + make_cds_raw.out.cds
-*/
-
   cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_umi_counts.out).join(make_cds_genomes_in).set{make_cds_raw_in}
   make_cds_raw(make_cds_raw_in, 'counts_raw')
 

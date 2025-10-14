@@ -5,17 +5,6 @@ def process_hashes_function(item) {
   def out_root = item['out_root']
   def in_file_path = params.object_map.process_hashes_map[in_file]
 
-/*
-  def in_path_list = []
-  for(in_file in item['in_file_list']) {
-    def file_path = params.object_map.process_hashes_map[in_file]
-    if(file_path == null) {
-      continue
-    }
-    in_path_list.add(file_path)
-  }
-  return([sample_name, in_path_list, hash_file])
-*/
   return([sample_name, hash_file, in_file_path, out_root])
 }
 
@@ -38,7 +27,6 @@ process process_hashes {
   tuple val(sample_name), path("*_hash_reads_per_cell.txt"), emit: hash_reads_per_cell
   tuple val(sample_name), path("*_hash_assigned_table.txt"), emit: hash_assigned_table
   tuple val(sample_name), path("*_hash.log"), emit: hash_log
-
 
   /*
   ** Notes:
@@ -69,14 +57,7 @@ process cat_hashes {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash.log", mode: 'copy'
 
   input:
-  tuple val(sample_name), path("???_hashumis.mtx")
-  tuple val(sample_name), path("???_hashumis_cells.txt")
-  tuple val(sample_name), path("???_hashumis_hashes.txt")
-  tuple val(sample_name), path("???_hash_umis_per_cell_txt")
-  tuple val(sample_name), path("???_hash_dup_per_cell_txt")
-  tuple val(sample_name), path("???_hash_reads_per_cell_txt")
-  tuple val(sample_name), path("???_hash_assigned_table_txt")
-  tuple val(sample_name), path("???_hash_log")
+  tuple val(sample_name), path("???_hashumis.mtx"), path("???_hashumis_cells.txt"), path("???_hashumis_hashes.txt"), path("???_hash_umis_per_cell_txt"), path("???_hash_dup_per_cell_txt"), path("???_hash_reads_per_cell_txt"), path("???_hash_assigned_table_txt"), path("???_hash_log")
 
   output:
   tuple val(sample_name), path("*_hash_umis_per_cell.txt"), emit: hash_umis_per_cell
