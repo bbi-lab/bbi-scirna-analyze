@@ -301,11 +301,7 @@ workflow {
 
   /*
   ** Assign hashes to cells and update cds.
-  assign_hash_raw_channel_in = cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join(make_cds_raw.out.cds)
-  println "assign_hashes_in" + cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join(make_cds_raw.out.cds)
-  assign_hash_raw(cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join(make_cds_raw.out.cds))
   */
-
   cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join(make_cds_raw.out.cds).set{assign_hash_raw_channel_in}
   assign_hash_raw(assign_hash_raw_channel_in)
 
