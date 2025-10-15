@@ -55,13 +55,13 @@ include { merge_starsolo_reports; merge_starsolo_reports_function } from './modu
 include { make_knee_plot } from './modules/make_knee_plot.nf'
 include { split_starsolo_stats } from './modules/split_starsolo_stats.nf'
 include { cat_matrices_raw; cat_matrices_raw_function } from './modules/cat_matrices.nf'
-include { make_mito_umis_json } from './modules/make_mito_umis_json.nf'
-include { make_mito_umis; make_mito_umis_function} from './modules/make_mito_umis.nf'
+include { make_umi_counts_json } from './modules/make_umi_counts_json.nf'
+include { make_umi_counts; make_umi_counts_function} from './modules/make_umi_counts.nf'
 include { make_cds_raw; make_cds_raw_genomes_function } from './modules/make_cds.nf'
 include { run_empty_drops } from './modules/run_empty_drops.nf'
 include { make_barnyard_json } from './modules/make_barnyard_json.nf'
 include { make_barnyard_plot; make_barnyard_plot_function } from './modules/make_barnyard_plot.nf'
-
+include { make_generate_qc_hash; make_generate_qc_no_hash } from './modules/make_generate_qc.nf'
 
 /*
 ** Set up channels.
@@ -166,17 +166,11 @@ workflow {
   make_process_hashes_json.out.splitJson().filter{it.size() > 0}.map{process_hashes_function(it)}.set{process_hashes_channel_in}
   process_hashes(process_hashes_channel_in)
 
-  cat_hashes(process_hashes.out.hash_matrix.groupTuple(),
-             process_hashes.out.hash_cells.groupTuple(),
-             process_hashes.out.hash_hashes.groupTuple(),
-             process_hashes.out.hash_umis_per_cell.groupTuple(),
-             process_hashes.out.hash_dup_per_cell.groupTuple(),
-             process_hashes.out.hash_reads_per_cell.groupTuple(),
-             process_hashes.out.hash_assigned_table.groupTuple(),
-             process_hashes.out.hash_log.groupTuple())
+  process_hashes.out.hash_matrix.groupTuple().join(process_hashes.out.hash_cells.groupTuple()).join(process_hashes.out.hash_hashes.groupTuple()).join(process_hashes.out.hash_umis_per_cell.groupTuple()).join(process_hashes.out.hash_dup_per_cell.groupTuple()).join(process_hashes.out.hash_reads_per_cell.groupTuple()).join(process_hashes.out.hash_assigned_table.groupTuple()).join(process_hashes.out.hash_log.groupTuple()).set{cat_hashes_in}
+  cat_hashes(cat_hashes_in)
 
-  hash_umi_knee_plot(process_hashes.out.hash_umis_per_cell)
-  calc_tot_hash_dup(process_hashes.out.hash_dup_per_cell)
+  hash_umi_knee_plot(cat_hashes.out.hash_umis_per_cell)
+  calc_tot_hash_dup(cat_hashes.out.hash_dup_per_cell)
 
   /*
   ** Set up and run bbduk.sh read trimming.
@@ -267,9 +261,9 @@ workflow {
   **   o  concatenated matrix
   **   o  genome info
   */
-  make_mito_umis_json(samplesheet_file, "${star_genomes_file}", cat_matrices_raw.out.raw_matrix.collect())
-  make_mito_umis_json.out.splitJson().map{make_mito_umis_function(it)}.set{make_mito_umis_in}
-  make_mito_umis(make_mito_umis_in)
+  make_umi_counts_json(samplesheet_file, "${star_genomes_file}", cat_matrices_raw.out.raw_matrix.collect())
+  make_umi_counts_json.out.splitJson().map{make_umi_counts_function(it)}.set{make_umi_counts_in}
+  make_umi_counts(make_umi_counts_in)
 
   /*
   ** Run emptyDrops function.
@@ -283,14 +277,7 @@ workflow {
   **    val(out_file)
   */
   make_genome_files_json.out.genome_files.splitJson().map{make_cds_raw_genomes_function(it)}.set{make_cds_genomes_in}
-/*
-  make_cds_raw_in = cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_mito_umis.out).join(make_cds_genomes_in)
-  make_cds_raw(make_cds_raw_in, 'counts_raw')
-  make_cds_raw(cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_mito_umis.out).join(make_cds_genomes_in), 'counts_raw')
-println "make_cds_raw: " + make_cds_raw.out.cds
-*/
-
-  cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_mito_umis.out).join(make_cds_genomes_in).set{make_cds_raw_in}
+  cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_umi_counts.out).join(make_cds_genomes_in).set{make_cds_raw_in}
   make_cds_raw(make_cds_raw_in, 'counts_raw')
 
   /*
@@ -314,11 +301,7 @@ println "make_cds_raw: " + make_cds_raw.out.cds
 
   /*
   ** Assign hashes to cells and update cds.
-  assign_hash_raw_channel_in = cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join(make_cds_raw.out.cds)
-  println "assign_hashes_in" + cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join(make_cds_raw.out.cds)
-  assign_hash_raw(cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join(make_cds_raw.out.cds))
   */
-
   cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join(make_cds_raw.out.cds).set{assign_hash_raw_channel_in}
   assign_hash_raw(assign_hash_raw_channel_in)
 
@@ -328,6 +311,26 @@ println "make_cds_raw: " + make_cds_raw.out.cds
   make_barnyard_json(samplesheet_file, make_cds_raw.out.png.collect())
   make_barnyard_json.out.splitJson().map{make_barnyard_plot_function(it)}.set{make_barnyard_plot_in}
   make_barnyard_plot(make_barnyard_plot_in)
+
+  /*
+  ** Run generate_qc.R.
+  ** Need:
+  **   o  cds_path (in raw cds output channel)
+  **   o  umis_file (in make_umi_counts channel)
+  **   o  sample_name (in raw cds output channel)
+  **   o  empty_drops RDS (in run_empty_drops channel. Note: if not run, is not a data frame.)
+  **   o  hash flag (in raw cds output channel)
+  **   o  genome (in raw cds output channel)
+  **   o  pipeline name (fixed)
+  **   o  Notes:
+  **        o  .join():
+  **              o  cds channel
+  **              o  emptydrops channel
+  */
+  assign_hash_raw.out.mobs.join(run_empty_drops.out).set{make_generate_qc_hash_in}
+  make_generate_qc_hash(make_generate_qc_hash_in, params.umi_cutoff)
+  make_cds_raw.out.cds.join(run_empty_drops.out).set{make_generate_qc_no_hash_in}
+  make_generate_qc_no_hash(make_generate_qc_no_hash_in, params.umi_cutoff)
 }
 
 

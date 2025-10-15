@@ -12,7 +12,7 @@ parser$add_argument('matrix', help='File of umi count matrix.')
 parser$add_argument('gene_data', help='File of gene data.')
 parser$add_argument('cell_data', help='File of cell data.')
 parser$add_argument('barcodes_to_wells', help='File of encoded barcode indices and wells.')
-parser$add_argument('mito_umis', help='File of mitochondrial UMI counts.')
+parser$add_argument('umi_counts', help='File of mitochondrial UMI counts.')
 parser$add_argument('umi_cutoff', help='UMI cutoff to count as a cell.')
 parser$add_argument('counts_per_cell', help='Counts per cell from STARsolo CellReads.stats.')
 parser$add_argument('gene_bed', help='Bed file of gene info.')
@@ -63,9 +63,9 @@ counts_per_cell <- fread(args$counts_per_cell,
 #
 # Add percent mitochondrial UMIs.
 #
-mito_umis <- read.csv(args$mito_umis, header=FALSE, sep='\t')
-perc_mito_umis <- mito_umis[3] / (mito_umis[2] + mito_umis[3]) * 100.0
-rownames(perc_mito_umis) <- mito_umis$V1
+umi_counts <- read.csv(args$umi_counts, header=FALSE, sep='\t')
+perc_mito_umis <- umi_counts[3] / (umi_counts[2] + umi_counts[3]) * 100.0
+rownames(perc_mito_umis) <- umi_counts$V1
 colData(cds)['perc_mitochondrial_umis'] <- perc_mito_umis[rownames(colData(cds)),]
 
 #

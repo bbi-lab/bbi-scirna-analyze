@@ -68,18 +68,36 @@ def make_genome_files_dict(json_data, genome_files_dict):
       genome_species = os.path.basename(genome_root)
       tmp_genes_bed = os.path.join(genome_root, '%s_rna' % genome_species, 'tmp.genes.bed')
       latest_genes_bed = os.path.join(genome_root, '%s_rna' % genome_species, 'latest.genes.bed')
+      hash_file = sample_index_dict['hash_file']
 
       tmp_dict = dict()
       tmp_dict['sample_name'] = key
       tmp_dict['genome'] = genome_name
       tmp_dict['tmp_genes_bed'] = tmp_genes_bed
       tmp_dict['latest_genes_bed'] = latest_genes_bed
+      tmp_dict['hash_file'] = hash_file
       genome_files_dict[key] = tmp_dict
   return(genome_files_dict)
 
 
 #
 # Make JSON file for sourcing genome files.
+#
+# [
+#   {
+#     "sample_name": "SeahubZ01-001",
+#     "genome": "Zebrafish",
+#     "tmp_genes_bed": "/net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_rna/tmp.genes.bed",
+#     "latest_genes_bed": "/net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_rna/latest.genes.bed"
+#   },
+#   {
+#     "sample_name": "Keyhole-001",
+#     "genome": "Fishbowl_seahub",
+#     "tmp_genes_bed": "/net/bbi/vol1/data/genomes_stage/fishbowl_seahub/fishbowl_seahub_rna/tmp.genes.bed",
+#     "latest_genes_bed": "/net/bbi/vol1/data/genomes_stage/fishbowl_seahub/fishbowl_seahub_rna/latest.genes.bed"
+#   },
+# ...
+# ]
 #
 def make_genome_files_json(genome_files_dict):
   genome_files_list = []
