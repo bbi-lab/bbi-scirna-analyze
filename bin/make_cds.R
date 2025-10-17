@@ -98,6 +98,15 @@ if(is(emptydrops_data, 'DFrame')) {
 wells <- read.table(args$barcodes_to_wells, sep='\t', row.names=1)
 colData(cds)['wells'] <- wells[row.names(colData(cds)),1]
 
+# Extract meta info from well name
+df <- as.data.frame(colData(cds))
+meta_types <-  meta_types <- c("P5_barcode", "P7_barcode", "RT_barcode", "Ligation_barcode")
+meta<- separate(df, wells, into=meta_types, sep="_", remove=FALSE)
+
+for (m in meta_types) {
+  colData(cds)[,m] <- meta[[m]]
+}
+
 cds <- cds[,Matrix::colSums(counts(cds)) != 0]
 cds <- estimate_size_factors(cds)
 
