@@ -1,9 +1,11 @@
 #!/usr/bin/env Rscript
 
-library(monocle3)
-library(ggplot2)
-library(data.table)
-
+suppressPackageStartupMessages({
+  library(monocle3)
+  library(ggplot2)
+  library(data.table)
+  library(tidyverse)
+})
 
 parser = argparse::ArgumentParser(description='Script to make final cds per sample.')
 parser$add_argument('sample_name', help='Sample name.')

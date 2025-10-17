@@ -96,14 +96,15 @@ assign_hash_labels <-
 
 cds <- load_monocle_objects(args$cds)
 
-# Extract meta info from well name 
-#  Note: moved to make_cds.R
 #
-# df <- as.data.frame(colData(cds))
-# meta_types <-  meta_types <- c("P5_barcode", "P7_barcode", "RT_barcode", "Ligation_barcode")
-# meta<- separate(df, wells, into=meta_types, sep="_", remove=FALSE)
+#  Extract meta info from well name 
+#
+df <- as.data.frame(colData(cds))
+meta_types <-  meta_types <- c("P5_barcode", "P7_barcode", "RT_barcode", "Ligation_barcode")
+meta<- separate(df, wells, into=meta_types, sep="_", remove=FALSE)
 
 # Fill in barcode information in cds object from meta object 
+#  Note: moved to make_cds.R
 # for (m in meta_types) {
 #   colData(cds)[,m] <- meta[[m]]
 # }
