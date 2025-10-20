@@ -28,11 +28,6 @@ process make_cds_raw {
   # bash watch for errors
   set -ueo pipefail
 
-  echo "${sample_map['genome']}" > star_index.txt
-  echo "${sample_map['star_index']}" > star_index.txt
-  echo "${sample_map['genes_bed']}" > genes_bed.txt
-  echo "${sample_map['star_memory']}" > star_memory.txt
-
   make_cds.R \
   ${sample_name} \
   'raw' \
