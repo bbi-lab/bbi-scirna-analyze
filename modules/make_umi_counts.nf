@@ -18,7 +18,7 @@ process make_umi_counts {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_umi_counts.tsv", mode: 'copy'
 
   input:
-  tuple val(sample_name), val(out_file), path(in_matrix), path(in_features), path(in_barcodes), path(in_genes_bed)
+  tuple val(sample_name), val(out_file), path(in_matrix), path(in_features), path(in_barcodes), path(in_genes_bed), val(sample_map)
 
   output:
   tuple val(sample_name), path("*_umi_counts.tsv")
@@ -27,7 +27,7 @@ process make_umi_counts {
   # bash watch for errors
   set -ueo pipefail
 
-  mito_umis -m ${in_matrix} -f ${in_features} -b ${in_barcodes} -a ${in_genes_bed} -o ${out_file}
+  mito_umis -m ${in_matrix} -f ${in_features} -b ${in_barcodes} -a ${sample_map['genes_bed']} -o ${out_file}
   """
 }
 

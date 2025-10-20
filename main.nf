@@ -16,6 +16,7 @@ params.run_empty_drops = true
 
 demux_out = "${params.output_dir}/demux_out"
 star_genomes_file = "${params.bin_dir}/star_genomes.txt"
+genomes_data_file = "${params.bin_dir}/genomes_data.json"
 
 
 /*
@@ -40,6 +41,7 @@ params.object_map.cat_matrices_raw_map = [:]
 ** Import modules after defining params.* so that
 ** the parameters are accessible in the modules.
 */
+include { make_sample_map_json } from './modules/make_sample_map_json.nf'
 include { make_genome_files_json } from './modules/make_genome_files_json.nf'
 include { make_merge_demux_json } from './modules/make_merge_demux_json.nf'
 include { merge_demux } from './modules/merge_demux.nf'
@@ -83,6 +85,11 @@ def merge_demux_closure = {
           [sample_name, out_name, in_file_list]
 }
 
+def sample_maps_split_closure = {
+  item ->
+         def sample_name = item['sample_name']
+         [sample_name, item]
+}
 
 /*
 ** Run pipeline.
@@ -94,6 +101,12 @@ workflow {
   make_merge_demux_json(samplesheet_file, "$demux_out")
   make_merge_demux_json.out.splitJson().map{merge_demux_closure(it)}.set{merge_demux_channel_in}
   merge_demux(merge_demux_channel_in)
+
+  /*
+  ** Make a JSON file with sample-specific values.
+  */
+  make_sample_map_json(samplesheet_file, genomes_data_file)
+  make_sample_map_json.out.sample_maps.splitJson().map{sample_maps_split_closure(it)}.set{sample_maps_split}
 
   /*
   ** Make a JSON file with genome file paths by sample.
@@ -262,7 +275,7 @@ workflow {
   **   o  genome info
   */
   make_umi_counts_json(samplesheet_file, "${star_genomes_file}", cat_matrices_raw.out.raw_matrix.collect())
-  make_umi_counts_json.out.splitJson().map{make_umi_counts_function(it)}.set{make_umi_counts_in}
+  make_umi_counts_json.out.splitJson().map{make_umi_counts_function(it)}.join(sample_maps_split)set{make_umi_counts_in}
   make_umi_counts(make_umi_counts_in)
 
   /*
@@ -277,7 +290,7 @@ workflow {
   **    val(out_file)
   */
   make_genome_files_json.out.genome_files.splitJson().map{make_cds_raw_genomes_function(it)}.set{make_cds_genomes_in}
-  cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_umi_counts.out).join(make_cds_genomes_in).set{make_cds_raw_in}
+  cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_umi_counts.out).join(make_cds_genomes_in).join(sample_maps_split).set{make_cds_raw_in}
   make_cds_raw(make_cds_raw_in, 'counts_raw')
 
   /*
