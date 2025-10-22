@@ -100,6 +100,10 @@ fn process_bam_file(hash_edit_distance: usize,
     let bseq = record.seq().as_bytes();
     seq = std::str::from_utf8(&bseq).expect("bad status getting bam read sequence");
 
+    if(seq.len() < 15) {
+      continue
+    }
+
     /*
     ** Is this a hash read?
     */
