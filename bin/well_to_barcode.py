@@ -107,6 +107,9 @@ def make_well_encoder(max_index):
     (ipl, swell) = index_to_well(index-1, False)
     p5_barcode_dict['P%02d-%s' % (ipl+1, swell)] = encoded4_index
 
+    p7_barcode_dict['none'] = 'AAAAAAA'
+    p5_barcode_dict['none'] = 'AAAAAAA'
+
   return((rt_barcode_dict, lig_barcode_dict, p7_barcode_dict, p5_barcode_dict))
 
 
