@@ -275,7 +275,7 @@ workflow {
   **   o  genome info
   */
   make_umi_counts_json(samplesheet_file, "${star_genomes_file}", cat_matrices_raw.out.raw_matrix.collect())
-  make_umi_counts_json.out.splitJson().map{make_umi_counts_function(it)}.join(sample_maps_split)set{make_umi_counts_in}
+  make_umi_counts_json.out.splitJson().map{make_umi_counts_function(it)}.join(sample_maps_split).set{make_umi_counts_in}
   make_umi_counts(make_umi_counts_in)
 
   /*
