@@ -71,6 +71,7 @@ fn set_cl_options() -> Result<clap::Command, Box<dyn std::error::Error>> {
 fn process_bam_file(hash_edit_distance: usize,
                     hash_whitelist: &Vec<HashMap<String, String>>,
                     cells: &mut HashSet<String>,
+                    read_counts: &mut Vec<u64>,
                     hash_counts: &mut Vec<u64>,
                     hashdict: &mut HashMap<String, HashMap<String, HashMap<String, u64>>>,
                     bam_reader: &mut Reader,
@@ -92,9 +93,13 @@ fn process_bam_file(hash_edit_distance: usize,
   let mut umi: String;
   let mut is_hash: bool;
   let mut i_edit_distance: usize = 0;
+  let mut num_read: u64 = 0;
+  let mut num_hash_read: u64 = 0;
 
   while let Some(result) = bam_reader.read(&mut record) {
     result.expect("Error: unable to parse BAM record");
+
+    num_read += 1;
 
     header = std::str::from_utf8(record.qname()).expect("bad status getting bam read header");
     let bseq = record.seq().as_bytes();
@@ -124,6 +129,8 @@ fn process_bam_file(hash_edit_distance: usize,
     if(!is_hash) {
       continue;
     }
+
+    num_hash_read += 1;
 
     /*
     ** This is a hash read!
@@ -156,6 +163,9 @@ fn process_bam_file(hash_edit_distance: usize,
 
     *num_hash += 1;
   }
+
+  read_counts[0] += num_read;
+  read_counts[1] += num_hash_read;
 
   Ok(())
 }
@@ -592,8 +602,9 @@ fn main() {
   let mut cells: HashSet<String> = HashSet::with_capacity(100000);
 
   /*
-  ** Total hashes assigned counter.
+  ** Total read and hashes counters.
   */
+  let mut read_counts: Vec<u64> = vec![0; 2];
   let mut hash_counts: Vec<u64> = vec![0; hash_edit_distance+1];
 
   /*
@@ -612,7 +623,7 @@ fn main() {
   for bam_filename in bam_filenames {
     let mut bam_reader = rust_htslib::bam::Reader::from_path(&bam_filename).expect("Error: unable to open BAM file");
     bam_reader.set_threads(num_threads).expect("Error: unable to set number of threads for BAM file reading");
-    let _ = process_bam_file(hash_edit_distance, &hash_whitelist, &mut cells, &mut hash_counts, &mut hashdict, &mut bam_reader, &mut num_hash, &hash_lookup);
+    let _ = process_bam_file(hash_edit_distance, &hash_whitelist, &mut cells, &mut read_counts, &mut hash_counts, &mut hashdict, &mut bam_reader, &mut num_hash, &hash_lookup);
   }
 
   // dump_nested_maps(&mut hashdict);
@@ -664,6 +675,7 @@ fn main() {
   let mut writer = BufWriter::new(file);
   for i_dist in (0..hash_edit_distance+1) {
     writeln!(writer, "Hash UMIs detected with {} correction: {}", i_dist, hash_counts[i_dist]).expect("error writing log file");
+    writeln!(writer, "Read_counts: {} {} {:.4}", read_counts[0], read_counts[1], read_counts[1] as f64 / read_counts[0] as f64).expect("error writing log file");
   }
   let _ = writer.flush();
 

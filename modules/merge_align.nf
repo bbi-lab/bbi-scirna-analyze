@@ -28,7 +28,7 @@ process merge_align {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*aligned.bam", mode: 'copy'
 
   input:
-  tuple val('sample_name'), val('out_file'), path('file')
+  tuple val('sample_name'), val('out_file'), path('files')
 
   output:
   path("*aligned.bam")
@@ -38,7 +38,14 @@ process merge_align {
   # bash watch for errors
   set -ueo pipefail
 
-  sambamba merge -t 8 ${out_file} file*
+  nfil=`ls files*`
+
+  if [ "\${nfil}" -gt 1 ]
+  then
+    sambamba merge -t 8 ${out_file} files*
+  else
+    cp files* ${out_file}
+  fi
   """
 }
 

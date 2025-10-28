@@ -13,7 +13,7 @@ process merge_demux {
   # bash watch for errors
   set -ueo pipefail
 
-  file_list=`ls file*`
+  file_list=`ls files*`
   for file in \$file_list
   do
     samtools sort -@ 4 -m 8G \${file} -o \${file}.sorted
