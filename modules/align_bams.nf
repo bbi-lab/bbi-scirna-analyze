@@ -2,11 +2,9 @@ def align_bam_function(item) {
   def sample_name = item['sample_name']
   def in_file = item['in_file']
   def file_path = params.object_map.trim_bam_map[in_file]
-  def genome  = item['genome']
-  def mem     = item['mem']
   def out_dir = in_file.take(in_file.lastIndexOf('.'))
 
-  return([sample_name, file_path, genome, mem, out_dir])
+  return([sample_name, file_path, out_dir])
 }
 
 
@@ -17,13 +15,13 @@ process align_bams {
   errorStrategy 'retry'
   maxRetries 2
 
-  clusterOptions { '-l m_mem_free=' + mem.toInteger() / align_cpus + 'G -pe serial ' + align_cpus + ' -l cpuid_level=22' }
+  clusterOptions { '-l m_mem_free=' + sample_maps_all['sample_name']['star_memory'].toInteger() / align_cpus + 'G -pe serial ' + align_cpus + ' -l cpuid_level=22' }
 
 //  publishDir path: "${analyze_out}/${sample_name}", pattern: "*trimmed", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "CellReads.stats", mode: 'copy'
 
   input:
-  tuple val(sample_name), path(bam_in), val(genome_dir), val(mem), val(out_dir)
+  tuple val(sample_name), path(bam_in), val(out_dir), val(sample_maps_all)
 
   output:
   path(out_dir)
@@ -55,7 +53,7 @@ process align_bams {
   #
   \${STAR_ALIGNER} \
       --runThreadN ${align_cpus} \
-      --genomeDir ${genome_dir} \
+      --genomeDir ${sample_maps_all['sample_name']['star_index']} \
       --soloCBmatchWLtype Exact \
       --soloType CB_UMI_Simple \
       --soloBarcodeMate 0 \

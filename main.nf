@@ -15,7 +15,6 @@ params.run_empty_drops = true
 
 
 demux_out = "${params.output_dir}/demux_out"
-star_genomes_file = "${params.bin_dir}/star_genomes.txt"
 genomes_data_file = "${params.bin_dir}/genomes_data.json"
 
 
@@ -42,7 +41,6 @@ params.object_map.cat_matrices_raw_map = [:]
 ** the parameters are accessible in the modules.
 */
 include { make_sample_map_json } from './modules/make_sample_map_json.nf'
-include { make_genome_files_json } from './modules/make_genome_files_json.nf'
 include { make_merge_demux_json } from './modules/make_merge_demux_json.nf'
 include { merge_demux } from './modules/merge_demux.nf'
 include { make_process_hashes_json } from './modules/make_process_hashes_json.nf'
@@ -59,7 +57,7 @@ include { split_starsolo_stats } from './modules/split_starsolo_stats.nf'
 include { cat_matrices_raw; cat_matrices_raw_function } from './modules/cat_matrices.nf'
 include { make_umi_counts_json } from './modules/make_umi_counts_json.nf'
 include { make_umi_counts; make_umi_counts_function} from './modules/make_umi_counts.nf'
-include { make_cds_raw; make_cds_raw_genomes_function } from './modules/make_cds.nf'
+include { make_cds_raw } from './modules/make_cds.nf'
 include { run_empty_drops } from './modules/run_empty_drops.nf'
 include { make_barnyard_json } from './modules/make_barnyard_json.nf'
 include { make_barnyard_plot; make_barnyard_plot_function } from './modules/make_barnyard_plot.nf'
@@ -107,11 +105,6 @@ workflow {
   */
   make_sample_map_json(samplesheet_file, genomes_data_file)
   make_sample_map_json.out.sample_maps.splitJson().map{sample_maps_split_closure(it)}.set{sample_maps_split}
-
-  /*
-  ** Make a JSON file with genome file paths by sample.
-  */
-  make_genome_files_json(samplesheet_file, star_genomes_file, make_merge_demux_json.out.collect())
 
   /*
   ** Here are some convolutions in order to pass
@@ -202,8 +195,8 @@ workflow {
     }
   }
 
-  make_star_align_json(samplesheet_file, "${star_genomes_file}", trim_bams.out.trimmed_bams.collect())
-  make_star_align_json.out.splitJson().map{align_bam_function(it)}.set{align_bam_channel_in}
+  make_star_align_json(samplesheet_file, trim_bams.out.trimmed_bams.collect())
+  make_star_align_json.out.splitJson().map{align_bam_function(it)}.join(make_sample_map_json.out.sample_maps).set{align_bam_channel_in}
   align_bams(align_bam_channel_in)
 
   /*
@@ -289,8 +282,7 @@ workflow {
   **    tuple val(sample_name), path(cells), path(features), path(matrix)
   **    val(out_file)
   */
-  make_genome_files_json.out.genome_files.splitJson().map{make_cds_raw_genomes_function(it)}.set{make_cds_genomes_in}
-  cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_umi_counts.out).join(make_cds_genomes_in).join(sample_maps_split).set{make_cds_raw_in}
+  cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_umi_counts.out).join(sample_maps_split).set{make_cds_raw_in}
   make_cds_raw(make_cds_raw_in, 'counts_raw')
 
   /*
@@ -340,9 +332,9 @@ workflow {
   **              o  cds channel
   **              o  emptydrops channel
   */
-  assign_hash_raw.out.mobs.join(run_empty_drops.out).set{make_generate_qc_hash_in}
+  assign_hash_raw.out.mobs.join(run_empty_drops.out).join(sample_maps_split).set{make_generate_qc_hash_in}
   make_generate_qc_hash(make_generate_qc_hash_in, params.umi_cutoff)
-  make_cds_raw.out.cds.join(run_empty_drops.out).set{make_generate_qc_no_hash_in}
+  make_cds_raw.out.cds.join(run_empty_drops.out).join(sample_maps_split).set{make_generate_qc_no_hash_in}
   make_generate_qc_no_hash(make_generate_qc_no_hash_in, params.umi_cutoff)
 }
 

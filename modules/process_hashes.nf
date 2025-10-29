@@ -141,11 +141,11 @@ process assign_hash_raw {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_cds.raw.mobs", mode: 'copy'
 
   input:
-  tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(counts_per_cell), val(genome), path(mobs), path(umi_counts), val(hash_file)
+  tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(counts_per_cell), path(mobs), path(umi_counts)
 
   output:
   path("*hash_table.raw.csv"), emit: hash_table
-  tuple val(sample_name), val(genome), path("*hash_cds.raw.mobs"), path(umi_counts), val(hash_file), emit: mobs
+  tuple val(sample_name), path("*hash_cds.raw.mobs"), path(umi_counts), emit: mobs
 
   script:
   """

@@ -52,7 +52,7 @@ process make_generate_qc_hash {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_no_collision.txt", mode: 'copy'
 
   input:
-  tuple val(sample_name), val(genome), path(cds_raw_hash_mobs), path(umi_counts), val(hash_file), path(empty_drops_rds)
+  tuple val(sample_name), path(cds_raw_hash_mobs), path(umi_counts), path(empty_drops_rds), val(sample_map)
   val(umi_cutoff)
 
   output:
@@ -62,7 +62,7 @@ process make_generate_qc_hash {
   # bash watch for errors
   set -ueo pipefail
 
-  generate_qc.R ${cds_raw_hash_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} ${hash_file} ${genome} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}
+  generate_qc.R ${cds_raw_hash_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} ${sample_map['hash_file']} ${sample_map['genome']} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}
   """
 }
 
@@ -82,7 +82,7 @@ process make_generate_qc_no_hash {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_no_collision.txt", mode: 'copy'
 
   input:
-  tuple val(sample_name), val(genome), path(cds_raw_mobs), path(umi_counts), val(hash_file), path(empty_drops_rds)
+  tuple val(sample_name), path(cds_raw_mobs), path(umi_counts), path(empty_drops_rds), val(sample_map)
   val(umi_cutoff)
 
   output:
@@ -94,7 +94,7 @@ process make_generate_qc_no_hash {
     # bash watch for errors
     set -ueo pipefail
 
-    generate_qc.R ${cds_raw_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} 'false' ${genome} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}
+    generate_qc.R ${cds_raw_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} 'false' ${sample_map['genome']} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}
     """
   else
     """
