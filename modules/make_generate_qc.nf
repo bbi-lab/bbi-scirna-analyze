@@ -2,23 +2,6 @@ def analyze_out = params.output_dir + '/analyze_out'
 
 /*
 ** Run generate_qc.R.
-** Need:
-**   o  cds_path (in raw cds output channel)
-**   o  umis_file (in make_umi_counts channel)
-**   o  sample_name (in raw cds output channel)
-**   o  empty_drops RDS (in run_empty_drops channel. Note: if not run, is not a data frame.)
-**   o  hash flag (in raw cds output channel)
-**   o  genome (in raw cds output channel)
-**   o  pipeline name (fixed)
-**   o  Notes:
-**        o  .join():
-**              o  cds channel
-**              o  emptydrops channel
-** make_cds.out.cds
-**   tuple val(sample_name), val(genome), path("*.filtered.mobs"), path(umi_counts), val(hash_file), emit: cds
-** run_empty_drops.out
-**   tuple val(sample_name), path("*_emptyDrops.RDS")
-**
 */
 
 /*
@@ -89,7 +72,7 @@ process make_generate_qc_no_hash {
   tuple val(sample_name), path("*_umi.png"), path("*_genes_by_umi.png"), path("*_RT_barcode_pseudobulk_correlations.txt"), path("*_Ligation_plate_pseudobulk_correlations.txt"), path("*_P5_barcode_pseudobulk_correlations.txt"), path("*_pseudobulk_heatmap.png"), path("*_pseudobulk_histogram.png"), path("*_knee_plot.png"), path("*_umi_cutoff.txt"), path("*_no_collision.txt")
 
   script:
-  if(hash_file == '')
+  if(sample_map['hash_file'] == '')
     """
     # bash watch for errors
     set -ueo pipefail

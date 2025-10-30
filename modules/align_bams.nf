@@ -15,13 +15,13 @@ process align_bams {
   errorStrategy 'retry'
   maxRetries 2
 
-  clusterOptions { '-l m_mem_free=' + sample_maps_all['sample_name']['star_memory'].toInteger() / align_cpus + 'G -pe serial ' + align_cpus + ' -l cpuid_level=22' }
+  clusterOptions { '-l m_mem_free=' + sample_map['star_memory'].toInteger() / align_cpus + 'G -pe serial ' + align_cpus + ' -l cpuid_level=22' }
 
 //  publishDir path: "${analyze_out}/${sample_name}", pattern: "*trimmed", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "CellReads.stats", mode: 'copy'
 
   input:
-  tuple val(sample_name), path(bam_in), val(out_dir), val(sample_maps_all)
+  tuple val(sample_name), path(bam_in), val(out_dir), val(sample_map)
 
   output:
   path(out_dir)
@@ -53,7 +53,7 @@ process align_bams {
   #
   \${STAR_ALIGNER} \
       --runThreadN ${align_cpus} \
-      --genomeDir ${sample_maps_all['sample_name']['star_index']} \
+      --genomeDir ${sample_map['star_index']} \
       --soloCBmatchWLtype Exact \
       --soloType CB_UMI_Simple \
       --soloBarcodeMate 0 \

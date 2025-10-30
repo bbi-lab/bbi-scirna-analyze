@@ -38,7 +38,7 @@ process merge_align {
   # bash watch for errors
   set -ueo pipefail
 
-  nfil=`ls files*`
+  nfil=`ls files* | wc -l`
 
   if [ "\${nfil}" -gt 1 ]
   then

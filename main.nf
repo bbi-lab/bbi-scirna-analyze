@@ -83,6 +83,23 @@ def merge_demux_closure = {
           [sample_name, out_name, in_file_list]
 }
 
+def read_json(filename) {
+  def file_json = new File(filename.toString())
+  def json_text = file_json.getText()
+  def json_slurper = new groovy.json.JsonSlurper()
+  json_object = json_slurper.parseText(json_text) 
+  return(json_object)
+}
+
+def maps_list_to_maps_map(maps_list) {
+    def maps_map = [:]
+    maps_list.each{ inner_map ->
+      def sample_name = inner_map['sample_name']
+      maps_map[sample_name] = inner_map
+    }
+  return(maps_map)
+}
+
 def sample_maps_split_closure = {
   item ->
          def sample_name = item['sample_name']
@@ -104,6 +121,7 @@ workflow {
   ** Make a JSON file with sample-specific values.
   */
   make_sample_map_json(samplesheet_file, genomes_data_file)
+  make_sample_map_json.out.sample_maps.map{maps_list_to_maps_map(read_json(it))}.set{sample_maps_map}
   make_sample_map_json.out.sample_maps.splitJson().map{sample_maps_split_closure(it)}.set{sample_maps_split}
 
   /*
@@ -179,7 +197,7 @@ workflow {
   calc_tot_hash_dup(cat_hashes.out.hash_dup_per_cell)
 
   /*
-  ** Set up and run bbduk.sh read trimming.
+  ** Set up and run (cutadapt) read trimming.
   */
   make_trim_bam_json(samplesheet_file, merge_demux.out.collect())
   make_trim_bam_json.out.splitJson().map{trim_bam_function(it)}.set{trim_bam_channel_in}
@@ -196,7 +214,7 @@ workflow {
   }
 
   make_star_align_json(samplesheet_file, trim_bams.out.trimmed_bams.collect())
-  make_star_align_json.out.splitJson().map{align_bam_function(it)}.join(make_sample_map_json.out.sample_maps).set{align_bam_channel_in}
+  make_star_align_json.out.splitJson().map{align_bam_function(it)}.combine(sample_maps_split, by: 0).set{align_bam_channel_in}
   align_bams(align_bam_channel_in)
 
   /*
@@ -267,7 +285,7 @@ workflow {
   **   o  concatenated matrix
   **   o  genome info
   */
-  make_umi_counts_json(samplesheet_file, "${star_genomes_file}", cat_matrices_raw.out.raw_matrix.collect())
+  make_umi_counts_json(samplesheet_file, cat_matrices_raw.out.raw_matrix.collect())
   make_umi_counts_json.out.splitJson().map{make_umi_counts_function(it)}.join(sample_maps_split).set{make_umi_counts_in}
   make_umi_counts(make_umi_counts_in)
 

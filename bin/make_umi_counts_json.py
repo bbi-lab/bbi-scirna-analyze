@@ -39,41 +39,18 @@ def read_json(filename):
   return(json_data)
 
 
-def read_star_genomes_file(file_path):
-  star_genomes_dict = {}
-  with open(file_path, 'r') as fp:
-    for line in fp:
-      line = line.strip()
-      parts = line.split()
-      genome_name = parts[0]
-      genome_path = parts[1]
-      genome_mem  = parts[2]
-      if(not genome_name in star_genomes_dict):
-        star_genomes_dict[genome_name] = {}
-      star_genomes_dict[genome_name]['genome_path'] = genome_path
-      star_genomes_dict[genome_name]['genome_mem']   = genome_mem
-  return(star_genomes_dict)
-
-
-def make_umi_counts_dict(json_data, star_genomes_dict):
+def make_umi_counts_dict(json_data):
   umi_counts_dict = dict()
   for sample_index_dict in json_data['sample_index_list']:
     sample_name = sample_index_dict['sample_id']
     process_group = sample_index_dict['process_group']
     key = '%s-%03d' % (sample_name, int(process_group))
     if(not key in umi_counts_dict):
-      genome_name = sample_index_dict['genome']
-      genome_path = star_genomes_dict[genome_name]['genome_path']
-      genome_root = os.path.dirname(genome_path)
-      genome_species = os.path.basename(genome_root)
-      genes_bed = os.path.join(genome_root, '%s_rna' % genome_species, 'tmp.genes.bed')
       tmp_dict = dict()
       tmp_dict['sample_name'] = key
-      tmp_dict['genome'] = genome_name
       tmp_dict['in_matrix'] = '%s_counts.raw.matrix.mtx' % key
       tmp_dict['in_features'] = '%s_counts.raw.features.tsv' % key
       tmp_dict['in_barcodes'] = '%s_counts.raw.cells.tsv' % key
-      tmp_dict['in_genes_bed'] = genes_bed
       tmp_dict['out_file'] = '%s_umi_counts.tsv' % key
       umi_counts_dict[key] = tmp_dict
   return(umi_counts_dict)
@@ -101,7 +78,6 @@ def make_umi_counts_file_json(umi_counts_dict):
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program to make JSON file for running umi_counts process.')
   parser.add_argument('-i', '--input', required=True, default=None, help='Input JSON samplesheet filename (required string).')
-  parser.add_argument('-g', '--genomes_file', required=True, default=None, help='Path to file of STAR aligner genomes data. (required string).')
 #  parser.add_argument('-o', '--output', required=False, default=None, help='Output JSON filename (required string).')
   parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
@@ -110,9 +86,8 @@ if __name__ == '__main__':
   # Read input samplesheet file.
   #
   json_data = read_json(args.input)
-  star_genomes_dict = read_star_genomes_file(args.genomes_file)
 #  print(json.dumps(json_data['sample_index_list'], indent=2))
-  umi_counts_dict = make_umi_counts_dict(json_data, star_genomes_dict)
+  umi_counts_dict = make_umi_counts_dict(json_data)
 #  print(umi_counts_dict)
   make_umi_counts_file_json(umi_counts_dict)
 
