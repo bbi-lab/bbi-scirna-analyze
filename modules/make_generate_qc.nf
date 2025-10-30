@@ -22,24 +22,15 @@ def analyze_out = params.output_dir + '/analyze_out'
 process make_generate_qc_hash {
   errorStrategy 'ignore'
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_umi.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_genes_by_umi.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_RT_barcode_pseudobulk_correlations.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_Ligation_plate_pseudobulk_correlations.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_P5_barcode_pseudobulk_correlations.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_pseudobulk_heatmap.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_pseudobulk_histogram.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_plots.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_knee_plot.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_umi_cutoff.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_no_collision.txt", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.png", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.txt", mode: 'copy'
 
   input:
   tuple val(sample_name), path(cds_raw_hash_mobs), path(umi_counts), path(empty_drops_rds), val(sample_map)
   val(umi_cutoff)
 
   output:
-  tuple val(sample_name), path("*_umi.png"), path("*_genes_by_umi.png"), path("*_RT_barcode_pseudobulk_correlations.txt"), path("*_Ligation_plate_pseudobulk_correlations.txt"), path("*_P5_barcode_pseudobulk_correlations.txt"), path("*_pseudobulk_heatmap.png"), path("*_pseudobulk_histogram.png"), path("*_hash_plots.png"), path("*_knee_plot.png"), path("*_umi_cutoff.txt"), path("*_no_collision.txt")
+  tuple val(sample_name), path("*.png"), path("*.txt")
 
   """
   # bash watch for errors
@@ -53,23 +44,15 @@ process make_generate_qc_hash {
 process make_generate_qc_no_hash {
   errorStrategy 'ignore'
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_umi.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_genes_by_umi.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_RT_barcode_pseudobulk_correlations.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_Ligation_plate_pseudobulk_correlations.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_P5_barcode_pseudobulk_correlations.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_pseudobulk_heatmap.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_pseudobulk_histogram.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_knee_plot.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_umi_cutoff.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_no_collision.txt", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.png", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.txt", mode: 'copy'
 
   input:
   tuple val(sample_name), path(cds_raw_mobs), path(umi_counts), path(empty_drops_rds), val(sample_map)
   val(umi_cutoff)
 
   output:
-  tuple val(sample_name), path("*_umi.png"), path("*_genes_by_umi.png"), path("*_RT_barcode_pseudobulk_correlations.txt"), path("*_Ligation_plate_pseudobulk_correlations.txt"), path("*_P5_barcode_pseudobulk_correlations.txt"), path("*_pseudobulk_heatmap.png"), path("*_pseudobulk_histogram.png"), path("*_knee_plot.png"), path("*_umi_cutoff.txt"), path("*_no_collision.txt")
+  tuple val(sample_name), path("*.png"), path("*.txt")
 
   script:
   if(sample_map['hash_file'] == '')
