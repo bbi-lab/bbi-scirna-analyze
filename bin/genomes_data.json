@@ -18,7 +18,7 @@
   "Zebrafish": {
      "genes_bed": "/net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_star_2_7/latest.genes.bed",
      "star_index": "/net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_star_2_7",
-     "star_memory": 32
+     "star_memory": 60
   },
   "Fishbowl_seahub": {
      "genes_bed": "/net/bbi/vol1/data/genomes_stage/fishbowl_seahub/fishbowl_seahub_rna/latest.genes.bed",
