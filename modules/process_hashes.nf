@@ -55,6 +55,7 @@ process cat_hashes {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_reads_per_cell.txt", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_umis_per_cell.txt", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash.log", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_read_rate.txt", mode: 'copy'
 
   input:
   tuple val(sample_name), path("???_hashumis.mtx"), path("???_hashumis_cells.txt"), path("???_hashumis_hashes.txt"), path("???_hash_umis_per_cell_txt"), path("???_hash_dup_per_cell_txt"), path("???_hash_reads_per_cell_txt"), path("???_hash_assigned_table_txt"), path("???_hash_log")
@@ -66,6 +67,7 @@ process cat_hashes {
   path("*_hash.log")
   path("*_hash_assigned_table.txt")
   path("*_hash_reads_per_cell.txt")
+  path("*_hash_read_rate.txt")
 
   script:
   """
@@ -79,6 +81,12 @@ process cat_hashes {
   cat *_hash_reads_per_cell_txt > ${sample_name}_hash_reads_per_cell.txt
   cat *_umis_per_cell_txt > ${sample_name}_hash_umis_per_cell.txt
   cat *_hash_log > ${sample_name}_hash.log
+
+  #
+  # Calculate hash read rate.
+  #
+  grep '^Read_counts' ${sample_name}_hash.log | awk 'BEGIN{sum_reads=0; sum_hashes=0}{sum_reads+=\$2; sum_hashes+=\$3}END{printf(\"Total reads: %d\\nHash reads: %d\\nHash rate: %.4f\\n\", sum_reads, sum_hashes, sum_hashes/sum_reads);}' > ${sample_name}_hash_read_rate.txt
+
   """
 }
 
