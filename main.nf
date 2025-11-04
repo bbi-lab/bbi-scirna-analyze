@@ -318,7 +318,7 @@ workflow {
   **    tuple val(sample_name), path(cells), path(features), path(matrix)
   **    val(out_file)
   */
-  cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_umi_counts.out).join(sample_maps_split).set{make_cds_raw_in}
+  cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out.empty_drops_rds).join(make_umi_counts.out).join(sample_maps_split).set{make_cds_raw_in}
   make_cds_raw(make_cds_raw_in, 'counts_raw')
 
   /*
@@ -356,9 +356,9 @@ workflow {
   /*
   ** Run generate_qc.R.
   */
-  assign_hash_raw.out.mobs.join(run_empty_drops.out).join(sample_maps_split).set{make_generate_qc_hash_in}
+  assign_hash_raw.out.mobs.join(run_empty_drops.out.empty_drops_rds).join(sample_maps_split).set{make_generate_qc_hash_in}
   make_generate_qc_hash(make_generate_qc_hash_in, params.umi_cutoff)
-  make_cds_raw.out.cds.join(run_empty_drops.out).join(sample_maps_split).set{make_generate_qc_no_hash_in}
+  make_cds_raw.out.cds.join(run_empty_drops.out.empty_drops_rds).join(sample_maps_split).set{make_generate_qc_no_hash_in}
   make_generate_qc_no_hash(make_generate_qc_no_hash_in, params.umi_cutoff)
 }
 
