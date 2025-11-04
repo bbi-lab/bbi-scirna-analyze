@@ -675,8 +675,8 @@ fn main() {
   let mut writer = BufWriter::new(file);
   for i_dist in (0..hash_edit_distance+1) {
     writeln!(writer, "Hash UMIs detected with {} correction: {}", i_dist, hash_counts[i_dist]).expect("error writing log file");
-    writeln!(writer, "Read_counts: {} {} {:.4}", read_counts[0], read_counts[1], read_counts[1] as f64 / read_counts[0] as f64).expect("error writing log file");
   }
+  writeln!(writer, "Read_counts: {} {} {:.4}", read_counts[0], read_counts[1], read_counts[1] as f64 / read_counts[0] as f64).expect("error writing log file");
   let _ = writer.flush();
 
   /*
