@@ -32,12 +32,12 @@
   },
   "Human_10x": {
      "genes_bed": "/net/bbi/vol1/data/genomes_10x/human_grch38/GRCh38-v48/genes/latest.genes.bed",
-     "star_index": "/net/bbi/vol1/data/genomes_10x/human_grch38/GRCh38-v48/star",
+     "star_index": "/net/bbi/vol1/data/genomes_10x/human_grch38/GRCh38-v48/star_2_7_11b",
      "star_memory": 60
   },
   "Mouse_10x": {
      "genes_bed": "/net/bbi/vol1/data/genomes_10x/mouse_grcm39/GRCm39-vM37/genes/latest.genes.bed",
-     "star_index": "/net/bbi/vol1/data/genomes_10x/mouse_grcm39/GRCm39-vM37/star",
+     "star_index": "/net/bbi/vol1/data/genomes_10x/mouse_grcm39/GRCm39-vM37/star_2_7_11b",
      "star_memory": 47
   }
 }
