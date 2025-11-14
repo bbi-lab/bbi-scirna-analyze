@@ -2,23 +2,6 @@ def analyze_out = params.output_dir + '/analyze_out'
 
 /*
 ** Run generate_qc.R.
-** Need:
-**   o  cds_path (in raw cds output channel)
-**   o  umis_file (in make_umi_counts channel)
-**   o  sample_name (in raw cds output channel)
-**   o  empty_drops RDS (in run_empty_drops channel. Note: if not run, is not a data frame.)
-**   o  hash flag (in raw cds output channel)
-**   o  genome (in raw cds output channel)
-**   o  pipeline name (fixed)
-**   o  Notes:
-**        o  .join():
-**              o  cds channel
-**              o  emptydrops channel
-** make_cds.out.cds
-**   tuple val(sample_name), val(genome), path("*.filtered.mobs"), path(umi_counts), val(hash_file), emit: cds
-** run_empty_drops.out
-**   tuple val(sample_name), path("*_emptyDrops.RDS")
-**
 */
 
 /*
@@ -39,30 +22,21 @@ def analyze_out = params.output_dir + '/analyze_out'
 process make_generate_qc_hash {
   errorStrategy 'ignore'
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_umi.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_genes_by_umi.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_RT_barcode_pseudobulk_correlations.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_Ligation_plate_pseudobulk_correlations.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_P5_barcode_pseudobulk_correlations.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_pseudobulk_heatmap.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_pseudobulk_histogram.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_plots.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_knee_plot.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_umi_cutoff.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_no_collision.txt", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.png", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.txt", mode: 'copy'
 
   input:
-  tuple val(sample_name), val(genome), path(cds_raw_hash_mobs), path(umi_counts), val(hash_file), path(empty_drops_rds)
+  tuple val(sample_name), path(cds_raw_hash_mobs), path(umi_counts), path(empty_drops_rds), val(sample_map)
   val(umi_cutoff)
 
   output:
-  tuple val(sample_name), path("*_umi.png"), path("*_genes_by_umi.png"), path("*_RT_barcode_pseudobulk_correlations.txt"), path("*_Ligation_plate_pseudobulk_correlations.txt"), path("*_P5_barcode_pseudobulk_correlations.txt"), path("*_pseudobulk_heatmap.png"), path("*_pseudobulk_histogram.png"), path("*_hash_plots.png"), path("*_knee_plot.png"), path("*_umi_cutoff.txt"), path("*_no_collision.txt")
+  tuple val(sample_name), path("*.png"), path("*.txt")
 
   """
   # bash watch for errors
   set -ueo pipefail
 
-  generate_qc.R ${cds_raw_hash_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} ${hash_file} ${genome} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}
+  generate_qc.R ${cds_raw_hash_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} ${sample_map['hash_file']} ${sample_map['genome']} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}
   """
 }
 
@@ -70,31 +44,23 @@ process make_generate_qc_hash {
 process make_generate_qc_no_hash {
   errorStrategy 'ignore'
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_umi.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_genes_by_umi.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_RT_barcode_pseudobulk_correlations.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_Ligation_plate_pseudobulk_correlations.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_P5_barcode_pseudobulk_correlations.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_pseudobulk_heatmap.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_pseudobulk_histogram.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_knee_plot.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_umi_cutoff.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_no_collision.txt", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.png", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.txt", mode: 'copy'
 
   input:
-  tuple val(sample_name), val(genome), path(cds_raw_mobs), path(umi_counts), val(hash_file), path(empty_drops_rds)
+  tuple val(sample_name), path(cds_raw_mobs), path(umi_counts), path(empty_drops_rds), val(sample_map)
   val(umi_cutoff)
 
   output:
-  tuple val(sample_name), path("*_umi.png"), path("*_genes_by_umi.png"), path("*_RT_barcode_pseudobulk_correlations.txt"), path("*_Ligation_plate_pseudobulk_correlations.txt"), path("*_P5_barcode_pseudobulk_correlations.txt"), path("*_pseudobulk_heatmap.png"), path("*_pseudobulk_histogram.png"), path("*_knee_plot.png"), path("*_umi_cutoff.txt"), path("*_no_collision.txt")
+  tuple val(sample_name), path("*.png"), path("*.txt")
 
   script:
-  if(hash_file == '')
+  if(sample_map['hash_file'] == '')
     """
     # bash watch for errors
     set -ueo pipefail
 
-    generate_qc.R ${cds_raw_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} 'false' ${genome} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}
+    generate_qc.R ${cds_raw_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} 'false' ${sample_map['genome']} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}
     """
   else
     """

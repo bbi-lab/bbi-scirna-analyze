@@ -92,6 +92,7 @@ def get_data_file_dict(samplesheet_data, genomes_data):
       data_dict['genes_bed'] = genes_bed
       data_dict_list.append(data_dict)
       data_dict_dict[sample_name_full] = data_dict
+      sample_names_processed.append(sample_name_full)
     else:
       if(genome != data_dict_dict[sample_name_full]['genome']):
         print('Error: inconsistent genome values for %s' % (sample_name_full))

@@ -15,7 +15,6 @@ params.run_empty_drops = true
 
 
 demux_out = "${params.output_dir}/demux_out"
-star_genomes_file = "${params.bin_dir}/star_genomes.txt"
 genomes_data_file = "${params.bin_dir}/genomes_data.json"
 
 
@@ -42,7 +41,6 @@ params.object_map.cat_matrices_raw_map = [:]
 ** the parameters are accessible in the modules.
 */
 include { make_sample_map_json } from './modules/make_sample_map_json.nf'
-include { make_genome_files_json } from './modules/make_genome_files_json.nf'
 include { make_merge_demux_json } from './modules/make_merge_demux_json.nf'
 include { merge_demux } from './modules/merge_demux.nf'
 include { make_process_hashes_json } from './modules/make_process_hashes_json.nf'
@@ -59,7 +57,7 @@ include { split_starsolo_stats } from './modules/split_starsolo_stats.nf'
 include { cat_matrices_raw; cat_matrices_raw_function } from './modules/cat_matrices.nf'
 include { make_umi_counts_json } from './modules/make_umi_counts_json.nf'
 include { make_umi_counts; make_umi_counts_function} from './modules/make_umi_counts.nf'
-include { make_cds_raw; make_cds_raw_genomes_function } from './modules/make_cds.nf'
+include { make_cds_raw } from './modules/make_cds.nf'
 include { run_empty_drops } from './modules/run_empty_drops.nf'
 include { make_barnyard_json } from './modules/make_barnyard_json.nf'
 include { make_barnyard_plot; make_barnyard_plot_function } from './modules/make_barnyard_plot.nf'
@@ -74,6 +72,10 @@ samplesheet_file = channel.fromPath(params.samplesheet_json)
 /*
 ** Functions and closures.
 */
+
+/*
+** Set up channel from JSON map contents.
+*/
 def merge_demux_closure = {
   item -> 
           def sample_name = item['sample_name']
@@ -85,6 +87,32 @@ def merge_demux_closure = {
           [sample_name, out_name, in_file_list]
 }
 
+/*
+** Read JSON file into the corresponding lists + maps.
+*/
+def read_json(filename) {
+  def file_json = new File(filename.toString())
+  def json_text = file_json.getText()
+  def json_slurper = new groovy.json.JsonSlurper()
+  json_object = json_slurper.parseText(json_text) 
+  return(json_object)
+}
+
+/*
+** Convert a list of maps to a map of maps.
+*/
+def maps_list_to_maps_map(maps_list) {
+    def maps_map = [:]
+    maps_list.each{ inner_map ->
+      def sample_name = inner_map['sample_name']
+      maps_map[sample_name] = inner_map
+    }
+  return(maps_map)
+}
+
+/*
+** Convert a list of maps into a Nextflow channel.
+*/
 def sample_maps_split_closure = {
   item ->
          def sample_name = item['sample_name']
@@ -106,12 +134,8 @@ workflow {
   ** Make a JSON file with sample-specific values.
   */
   make_sample_map_json(samplesheet_file, genomes_data_file)
+  make_sample_map_json.out.sample_maps.map{maps_list_to_maps_map(read_json(it))}.set{sample_maps_map}
   make_sample_map_json.out.sample_maps.splitJson().map{sample_maps_split_closure(it)}.set{sample_maps_split}
-
-  /*
-  ** Make a JSON file with genome file paths by sample.
-  */
-  make_genome_files_json(samplesheet_file, star_genomes_file, make_merge_demux_json.out.collect())
 
   /*
   ** Here are some convolutions in order to pass
@@ -153,8 +177,8 @@ workflow {
   **      within a groovy function that sets up the
   **      channel.
   **   o  when the channel objects are tuples, one
-  **      must subscript 'path' to get the necessary
-  **      element.
+  **      must subscript the tuple variable to get the
+  **      necessary element.
   **   o  I would like to use a 'cleaner' way to do this
   **      but I cannot think of one at this time.
   */      
@@ -174,6 +198,11 @@ workflow {
 
   /*
   ** Check for hash read runs: set up JSON file, process reads, and make make output.
+  ** Notes:
+  **   o  use merge_demux.out.collect() so that this process
+  **      waits for completion of merge_demux. This is necessary
+  **      for finding the required paths in the work
+  **      directory.
   */
   make_process_hashes_json(samplesheet_file, merge_demux.out.collect())
   make_process_hashes_json.out.splitJson().filter{it.size() > 0}.map{process_hashes_function(it)}.set{process_hashes_channel_in}
@@ -186,14 +215,14 @@ workflow {
   calc_tot_hash_dup(cat_hashes.out.hash_dup_per_cell)
 
   /*
-  ** Set up and run bbduk.sh read trimming.
+  ** Set up and run (cutadapt) read trimming.
   */
   make_trim_bam_json(samplesheet_file, merge_demux.out.collect())
   make_trim_bam_json.out.splitJson().map{trim_bam_function(it)}.set{trim_bam_channel_in}
   trim_bams(trim_bam_channel_in)
 
   /*
-  ** Set up and run STAR aligner as STARsolo.
+  ** Set up and run STAR aligner in STARsolo mode.
   */
   trim_bams.out.trimmed_bams.subscribe onNext: {
     path -> {
@@ -202,8 +231,8 @@ workflow {
     }
   }
 
-  make_star_align_json(samplesheet_file, "${star_genomes_file}", trim_bams.out.trimmed_bams.collect())
-  make_star_align_json.out.splitJson().map{align_bam_function(it)}.set{align_bam_channel_in}
+  make_star_align_json(samplesheet_file, trim_bams.out.trimmed_bams.collect())
+  make_star_align_json.out.splitJson().map{align_bam_function(it)}.combine(sample_maps_split, by: 0).set{align_bam_channel_in}
   align_bams(align_bam_channel_in)
 
   /*
@@ -265,16 +294,16 @@ workflow {
 
   /*
   ** Make knee plot.
-  */
   make_knee_plot(cat_matrices_raw.out.raw_matrix)
+  */
 
   /*
-  ** Calculate mitochondrial UMIs per cell.
+  ** Calculate UMIs per cell.
   ** Need
   **   o  concatenated matrix
   **   o  genome info
   */
-  make_umi_counts_json(samplesheet_file, "${star_genomes_file}", cat_matrices_raw.out.raw_matrix.collect())
+  make_umi_counts_json(samplesheet_file, cat_matrices_raw.out.raw_matrix.collect())
   make_umi_counts_json.out.splitJson().map{make_umi_counts_function(it)}.join(sample_maps_split).set{make_umi_counts_in}
   make_umi_counts(make_umi_counts_in)
 
@@ -289,8 +318,7 @@ workflow {
   **    tuple val(sample_name), path(cells), path(features), path(matrix)
   **    val(out_file)
   */
-  make_genome_files_json.out.genome_files.splitJson().map{make_cds_raw_genomes_function(it)}.set{make_cds_genomes_in}
-  cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out).join(make_umi_counts.out).join(make_cds_genomes_in).join(sample_maps_split).set{make_cds_raw_in}
+  cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out.empty_drops_rds).join(make_umi_counts.out).join(sample_maps_split).set{make_cds_raw_in}
   make_cds_raw(make_cds_raw_in, 'counts_raw')
 
   /*
@@ -320,29 +348,17 @@ workflow {
 
   /*
   ** Make barnyard plots.
-  */
   make_barnyard_json(samplesheet_file, make_cds_raw.out.png.collect())
   make_barnyard_json.out.splitJson().map{make_barnyard_plot_function(it)}.set{make_barnyard_plot_in}
   make_barnyard_plot(make_barnyard_plot_in)
+  */
 
   /*
   ** Run generate_qc.R.
-  ** Need:
-  **   o  cds_path (in raw cds output channel)
-  **   o  umis_file (in make_umi_counts channel)
-  **   o  sample_name (in raw cds output channel)
-  **   o  empty_drops RDS (in run_empty_drops channel. Note: if not run, is not a data frame.)
-  **   o  hash flag (in raw cds output channel)
-  **   o  genome (in raw cds output channel)
-  **   o  pipeline name (fixed)
-  **   o  Notes:
-  **        o  .join():
-  **              o  cds channel
-  **              o  emptydrops channel
   */
-  assign_hash_raw.out.mobs.join(run_empty_drops.out).set{make_generate_qc_hash_in}
+  assign_hash_raw.out.mobs.join(run_empty_drops.out.empty_drops_rds).join(sample_maps_split).set{make_generate_qc_hash_in}
   make_generate_qc_hash(make_generate_qc_hash_in, params.umi_cutoff)
-  make_cds_raw.out.cds.join(run_empty_drops.out).set{make_generate_qc_no_hash_in}
+  make_cds_raw.out.cds.join(run_empty_drops.out.empty_drops_rds).join(sample_maps_split).set{make_generate_qc_no_hash_in}
   make_generate_qc_no_hash(make_generate_qc_no_hash_in, params.umi_cutoff)
 }
 

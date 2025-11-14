@@ -1,7 +1,10 @@
+def json_files_out = params.output_dir + '/json_files'
+
 process make_star_align_json {
+  publishDir path: "${json_files_out}", pattern: "star_align.json", mode: 'copy'
+
   input:
   path(samplesheet_file)
-  val(star_genomes_file)
   val(dummy)
 
   output:
@@ -12,6 +15,6 @@ process make_star_align_json {
   # bash watch for errors
   set -ueo pipefail
 
-  $workflow.projectDir/bin/make_star_align_json.py -i $samplesheet_file -g $star_genomes_file
+  $workflow.projectDir/bin/make_star_align_json.py -i $samplesheet_file
   """
 }

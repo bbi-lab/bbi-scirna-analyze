@@ -1,4 +1,8 @@
+def json_files_out = params.output_dir + '/json_files'
+
 process make_merge_align_json {
+  publishDir path: "${json_files_out}", pattern: "merge_align.json", mode: 'copy'
+
   input:
   path(samplesheet_file)
   val(dummy)

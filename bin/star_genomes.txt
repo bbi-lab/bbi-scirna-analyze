@@ -1,8 +1,0 @@
-Human /net/bbi/vol1/data/genomes_stage/human/human_star_2_7 60
-Mouse /net/bbi/vol1/data/genomes_stage/mouse/mouse_star_2_7 47
-Barnyard /net/bbi/vol1/data/genomes_stage/barnyard/barnyard_star_2_7 90
-Zebrafish /net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_star_2_7 32
-Fishbowl_seahub /net/bbi/vol1/data/genomes_stage/fishbowl_seahub/fishbowl_seahub_star_2_7 70
-Macaque /net/bbi/vol1/data/genomes_stage/macaque/macaque_star_2_7 110
-Human_10x /net/bbi/vol1/data/genomes_10x/human_grch38/GRCh38-v48/star 60
-Mouse_10x /net/bbi/vol1/data/genomes_10x/mouse_grcm39/GRCm39-vM37/star 47

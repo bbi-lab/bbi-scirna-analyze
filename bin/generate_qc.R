@@ -538,7 +538,7 @@ gen_barnyard_plot_mouse_human <- function(sample_name, cds) {
   
     collision_rate <- round(sum(pData(cds)$collision/nrow(pData(cds))) * 200, 1)
 
-  return(c(plot, collision_rate))
+  return(list(plot=plot, collision_rate=collision_rate))
 }
 
 
@@ -548,8 +548,8 @@ gen_barnyard_plot_mouse_human <- function(sample_name, cds) {
 
 gen_barnyard_plot_generic <- function(cds, sample_name, genome) {
   plot_type_dict = list('Barnyard' =          list('organism_1_tag' = 'Mouse',     'gene_1_tag' = 'ENSMUSG',    'organism_2_tag' = 'Human', 'gene_2_tag' = 'ENSG' ),
-                        'Fishbowl_seahub' =   list('organism_1_tag' = 'Zebrafish', 'gene_1_tag' = 'ZEBRAFISH_', 'organism_2_tag' = 'Mouse', 'gene_2_tag' = 'MOUSE_' ),
-                        'fishbowlGenomeGen' = list('organism_1_tag' = 'Zebrafish', 'gene_1_tag' = 'ZEBRA_',     'organism_2_tag' = 'Human', 'gene_2_tag' = 'HUMAN_' ))
+                        'Fishbowl_seahub' =   list('organism_1_tag' = 'Zebrafish', 'gene_1_tag' = 'ENSDARG',    'organism_2_tag' = 'Mouse', 'gene_2_tag' = 'ENSMUSG' ),
+                        'fishbowlGenomeGen' = list('organism_1_tag' = 'Zebrafish', 'gene_1_tag' = 'ENSDARG',    'organism_2_tag' = 'Human', 'gene_2_tag' = 'ENSG' ))
 
   organism_1_tag <- plot_type_dict[[genome]][['organism_1_tag']]
   organism_2_tag <- plot_type_dict[[genome]][['organism_2_tag']]
@@ -566,7 +566,7 @@ gen_barnyard_plot_generic <- function(cds, sample_name, genome) {
   pData(cds)$organism_2_perc <- pData(cds)[['organism_2_umi']] / pData(cds)$total_umi
   pData(cds)$collision <- ifelse(pData(cds)$organism_1_perc >= .9 | pData(cds)$organism_2_perc >= .9, FALSE, TRUE)
 
-  plot = ggplot(as.data.frame(pData(cds)), aes(organism_1_umi, organism_2_umi, color = collision)) +
+  plot <- ggplot(as.data.frame(pData(cds)), aes(organism_1_umi, organism_2_umi, color = collision)) +
     geom_point(size = .8) +
     theme_bw() +
     scale_color_manual(values = c("black", "red")) +
@@ -576,7 +576,7 @@ gen_barnyard_plot_generic <- function(cds, sample_name, genome) {
 
   collision_rate <- round(sum(pData(cds)$collision/nrow(pData(cds))) * 200, 1)
 
-  return(c(plot, collision_rate))
+  return(list(plot=plot, collision_rate=collision_rate))
 }
 
 
@@ -757,16 +757,17 @@ bbi_sci_gen_plots <- function(sample_name, sample_path, umis_file, emptydrops_fi
   #
   # Make barnyard plots.
   #
-  message('make barnyard plots')
   barnyard_flag <- c(genome) %in% c('Barnyard', 'Fishbowl_seahub', 'fishbowlGenomeGen')
   if(barnyard_flag) {
+    message('make barnyard plots')
     barnyard_plot <- gen_barnyard_plot_generic(samp_cds, sample_name, genome)
-    ggsave("Barnyard_plot.png", plot = barnyard_plot[1], units = "in", width = 3.5*1.3, height = 3.5)
-    collision_rate <- barnyard_plot[2]
+    ggsave("Barnyard_plot.png", plot = barnyard_plot$plot, units = "in", width = 3.5*1.3, height = 3.5)
+    collision_rate <- barnyard_plot$collision_rate
     fileConn<-file("Barnyard_collision.txt")
     writeLines(paste0(sample_name, "\t", collision_rate, "%"), fileConn)
     close(fileConn)
   } else {
+    message('no barnyard plots')
     fileConn<-file(paste0(sample_name, "_no_collision.txt"))
     writeLines(paste0(sample_name, "\t", "NA"), fileConn)
     close(fileConn)
@@ -794,6 +795,7 @@ umis_file <- args$umis_file
 sample_name <- args$sample_name
 emptydrops_filename <- args$empty_drops
 hash <- args$hash
+genome <- args$genome
 specify_cutoff <- args$specify_cutoff
 pipeline_name <- args$pipeline_name
 
