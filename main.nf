@@ -12,6 +12,7 @@ params.hash_umi_cutoff = 5
 params.hash_ratio = false
 params.hash_dup = false //Default is false. Other options are "p5" or "pcr_plate".
 params.run_empty_drops = true
+params.run_scrublet = true
 
 
 demux_out = "${params.output_dir}/demux_out"
@@ -320,6 +321,11 @@ workflow {
   */
   cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out.empty_drops_rds).join(make_umi_counts.out).join(sample_maps_split).set{make_cds_raw_in}
   make_cds_raw(make_cds_raw_in, 'counts_raw')
+
+  /*
+  ** Run scrublet.
+  */
+  run_scrublet(make_cds_raw.out.cds)
 
   /*
   ** Note:
