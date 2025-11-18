@@ -20,9 +20,16 @@ process run_scrublet {
 
   script:
   """
-  matrix_filename='scrublet_expression_matrix'
-  write_exression_matrix.R --sample_name $sample_name --monocle_objects $mobs --matrix_filename \$matrix_filename
-  run_scrublet.py --sample_name $sample_name --mat \$matrix_filename --run_scrublet $params.run_scrublet > run_scrublet.log
+  matrix_filename='scrublet_expression_matrix.mtx'
+  if [ "$params.run_scrublet" == "true" ]
+  then
+    run_scrublet='--run_scrublet'
+  else
+    run_scrublet=''
+  fi
+
+  write_expression_matrix.R $sample_name $mobs \$matrix_filename
+  run_scrublet.py --sample_name $sample_name --mat \$matrix_filename \${run_scrublet} > run_scrublet.log
   rm \$matrix_filename
   """
 }

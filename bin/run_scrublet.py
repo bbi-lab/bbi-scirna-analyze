@@ -10,11 +10,10 @@ import os
 import argparse
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser('Check sample sheet')
-
-    parser.add_argument('--sample_name', required=True, help='Sample name.')
-    parser.add_argument('--mat', required=True, help='Input matrix.')
-    parser.add_argument('--run_scrublet', action="store_true", default=False, help='Should scrublet be run?')
+    parser = argparse.ArgumentParser('Run scrublet.')
+    parser.add_argument('-s', '--sample_name', required=True, help='Sample name.')
+    parser.add_argument('-m', '--mat', required=True, help='Input matrix.')
+    parser.add_argument('-r', '--run_scrublet', action="store_true", default=False, help='Should scrublet be run?')
     args = parser.parse_args()
 
     if args.run_scrublet:

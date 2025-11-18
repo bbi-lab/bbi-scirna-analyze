@@ -59,6 +59,7 @@ include { cat_matrices_raw; cat_matrices_raw_function } from './modules/cat_matr
 include { make_umi_counts_json } from './modules/make_umi_counts_json.nf'
 include { make_umi_counts; make_umi_counts_function} from './modules/make_umi_counts.nf'
 include { make_cds_raw } from './modules/make_cds.nf'
+include { run_scrublet } from './modules/run_scrublet.nf'
 include { run_empty_drops } from './modules/run_empty_drops.nf'
 include { make_barnyard_json } from './modules/make_barnyard_json.nf'
 include { make_barnyard_plot; make_barnyard_plot_function } from './modules/make_barnyard_plot.nf'
