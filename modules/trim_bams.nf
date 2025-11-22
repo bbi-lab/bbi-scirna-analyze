@@ -23,7 +23,7 @@ process trim_bams {
 
   output:
   path("*.trimmed.bam"), emit: trimmed_bams
-  path("*.trimming_report.txt"), emit: trim_log
+  tuple val(sample_name), path("*.trimming_report.txt"), emit: trimmer_logs
 
   """
   # bash watch for errors
@@ -92,6 +92,28 @@ process trim_bams {
   rm tmp_trimmed.fq
   """
 }
+
+
+process aggregate_trimmer_logs {
+  errorStrategy 'retry'
+  maxRetries 2
+
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_trimgalore_counts.json", mode: 'copy'
+
+  input:
+  tuple val(sample_name), path(log_in)
+
+  output:
+  path("*_trimgalore_counts.json"), emit: trimgalore_counts
+
+  """
+  # bash watch for errors
+  set -ueo pipefail
+
+  trimgalore_counts.py -s ${sample_name} -i ${log_in} -o ${sample_name}_trimgalore_counts.json
+  """
+}
+
 
 /*
 ** Atrops trimming

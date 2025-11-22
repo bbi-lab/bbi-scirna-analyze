@@ -47,7 +47,7 @@ include { merge_demux } from './modules/merge_demux.nf'
 include { make_process_hashes_json } from './modules/make_process_hashes_json.nf'
 include { process_hashes; cat_hashes; process_hashes_function; hash_umi_knee_plot; calc_tot_hash_dup; assign_hash_raw } from './modules/process_hashes.nf'
 include { make_trim_bam_json } from './modules/make_trim_bam_json.nf'
-include { trim_bams; trim_bam_function } from './modules/trim_bams.nf'
+include { trim_bams; trim_bam_function; aggregate_trimmer_logs } from './modules/trim_bams.nf'
 include { make_star_align_json } from './modules/make_star_align_json.nf'
 include { align_bams; align_bam_function } from './modules/align_bams.nf'
 include { make_merge_align_json } from './modules/make_merge_align_json.nf'
@@ -222,6 +222,12 @@ workflow {
   make_trim_bam_json(samplesheet_file, merge_demux.out.collect())
   make_trim_bam_json.out.splitJson().map{trim_bam_function(it)}.set{trim_bam_channel_in}
   trim_bams(trim_bam_channel_in)
+
+  /*
+  ** Aggregate trimmer logs.
+  */
+  trim_bams.out.trimmer_logs.groupTuple().set { aggregate_trimmer_logs_channel_in }
+  aggregate_trimmer_logs(aggregate_trimmer_logs_channel_in)
 
   /*
   ** Set up and run STAR aligner in STARsolo mode.

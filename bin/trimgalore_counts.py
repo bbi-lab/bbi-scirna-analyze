@@ -12,8 +12,9 @@ import json
 program_version = '0.1.0'
 
 
-def initialize_counter_dict(file_list):
+def initialize_counter_dict(sample_name, file_list):
   counter_dict = dict()
+  counter_dict['sample_name'] = sample_name
   counter_dict['count_source'] = 'trimgalore log files' 
   counter_dict['input_files'] = file_list
   counter_dict['total_reads_in'] = 0
@@ -47,15 +48,17 @@ def make_trimgalore_json(counter_dict, filename_json):
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program gather counts from trimgalore log files.')
+  parser.add_argument('-s', '--sample_name', required=True, default=None, help='Input sample name (required string(s)).')
   parser.add_argument('-i', '--input', required=True, default=None, nargs='+', help='Input trimgalore log files (required string(s)).')
   parser.add_argument('-o', '--output', required=True, default=None, help='Output JSON filename (required string(s)).')
   parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
 
+  sample_name = args.sample_name
   file_list = args.input
   filename_json = args.output
  
-  counter_dict = initialize_counter_dict(file_list)
+  counter_dict = initialize_counter_dict(sample_name, file_list)
   for file in file_list:
     process_trimgalore_log(file, counter_dict)
 
