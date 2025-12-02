@@ -25,7 +25,7 @@ cds <- load_mm_data(mat_path = args$matrix, feature_anno_path = args$gene_data,
 
 #
 # Notes:
-#   o monocle3::load_mm_data() includes cells with >= umi_cutoff=100
+#   o monocle3::load_mm_data() includes cells with >= umi_cutoff=100 by default
 #   o emptyDrops excludes cells with <= 'ignore' UMI
 #
 ed_lower <-        60
@@ -57,8 +57,14 @@ emptyDrops_out <- emptyDrops(m=mat,
                              round=ed_round,
                              retain=ed_retain)
 
-metadata(emptyDrops_out)$ignore <-  ed_ignore
-metadata(emptyDrops_out)$round <-   ed_round
+metadata(emptyDrops_out)$ignore <- ed_ignore
+metadata(emptyDrops_out)$round  <- ed_round
 
 saveRDS(object=emptyDrops_out, file=args$output_file)
 
+#
+# Write a TSV file of barcode and FDR values for dashboard.
+#
+fdr_df <- data.frame(cell=row.names(emptyDrops_out), FDR=emptyDrops_out$FDR)
+filename_tsv <- paste0(sample_name, '_empty_drops_fdr.tsv')
+write.table(x=fdr_df, file=filename_tsv, sep='\t', quote=FALSE, row.names=FALSE)

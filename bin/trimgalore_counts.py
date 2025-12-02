@@ -47,7 +47,7 @@ def make_trimgalore_json(counter_dict, filename_json):
 
 
 if __name__ == '__main__':
-  parser = argparse.ArgumentParser(description='A program gather counts from trimgalore log files.')
+  parser = argparse.ArgumentParser(description='A program to gather counts from trimgalore log files.')
   parser.add_argument('-s', '--sample_name', required=True, default=None, help='Input sample name (required string(s)).')
   parser.add_argument('-i', '--input', required=True, default=None, nargs='+', help='Input trimgalore log files (required string(s)).')
   parser.add_argument('-o', '--output', required=True, default=None, help='Output JSON filename (required string(s)).')

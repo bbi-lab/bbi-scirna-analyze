@@ -11,6 +11,7 @@ process run_empty_drops {
 
   output:
   tuple val(sample_name), path("*_emptyDrops.RDS"), emit: empty_drops_rds
+  tuple val(sample_name), path("*_empty_drops_fdr.tsv"), emit: empty_drops_fdr
   path("*_emptyDrops.log"), emit: empty_drops_log
 
   /*
@@ -33,11 +34,13 @@ process run_empty_drops {
     else
       # make an empty emptyDrops.RDS file
       Rscript -e 'note <- "emptyDrops failed"; saveRDS(note, file="${sample_name}_emptyDrops.RDS")'
+      echo 'cell\tFDR' > ${sample_name}_empty_drops_fdr.tsv
       echo "emptyDrops failed with error code \$retVal" >> ${sample_name}_run_emptyDrops.log
     fi
   else
     # make an empty emptyDrops.RDS file
     Rscript -e 'note <- "emptyDrops was skipped"; saveRDS(note, file="${sample_name}_emptyDrops.RDS")'
+    echo 'cell\tFDR' > ${sample_name}_empty_drops_fdr.tsv
     echo "emptyDrops skipped by request" >> ${sample_name}_run_emptyDrops.log
   fi
   """

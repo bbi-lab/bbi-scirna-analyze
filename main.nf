@@ -8,6 +8,7 @@ import groovy.json.JsonSlurper
 params.bin_dir = workflow.projectDir + '/bin'
 params.align_cpus = 8
 params.umi_cutoff = 100
+params.fdr_cutoff = .01
 params.hash_umi_cutoff = 5
 params.hash_ratio = false
 params.hash_dup = false //Default is false. Other options are "p5" or "pcr_plate".
@@ -64,6 +65,8 @@ include { run_empty_drops } from './modules/run_empty_drops.nf'
 include { make_barnyard_json } from './modules/make_barnyard_json.nf'
 include { make_barnyard_plot; make_barnyard_plot_function } from './modules/make_barnyard_plot.nf'
 include { make_generate_qc_hash; make_generate_qc_no_hash } from './modules/make_generate_qc.nf'
+include { make_experiment_dashboard } from './modules/make_experiment_dashboard.nf'
+
 
 /*
 ** Set up channels.
@@ -120,6 +123,16 @@ def sample_maps_split_closure = {
          def sample_name = item['sample_name']
          [sample_name, item]
 }
+
+/*
+** Trim tuple by removing first element.
+*/
+def trim_tuple_closure = {
+  item ->
+   def trim_tuple = item.drop(1)
+   trim_tuple
+}
+
 
 /*
 ** Run pipeline.
@@ -326,8 +339,8 @@ workflow {
   **    tuple val(sample_name), path(cells), path(features), path(matrix)
   **    val(out_file)
   */
-  cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out.empty_drops_rds).join(make_umi_counts.out).join(sample_maps_split).set{make_cds_raw_in}
-  make_cds_raw(make_cds_raw_in, 'counts_raw')
+  cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out.empty_drops_rds).join(make_umi_counts.out.umi_counts_tsv).join(sample_maps_split).set{make_cds_raw_in}
+  make_cds_raw(make_cds_raw_in, 'counts_raw', params.umi_cutoff)
 
   /*
   ** Run scrublet.
@@ -373,6 +386,26 @@ workflow {
   make_generate_qc_hash(make_generate_qc_hash_in, params.umi_cutoff)
   make_cds_raw.out.cds.join(run_empty_drops.out.empty_drops_rds).join(sample_maps_split).set{make_generate_qc_no_hash_in}
   make_generate_qc_no_hash(make_generate_qc_no_hash_in, params.umi_cutoff)
+
+  /*
+  ** Make experiment dashboard.
+  ** Notes:
+  **   o  the merge_starsolo_reports.out.cell_reads_stats, make_umi_counts.out.umi_counts_tsv,
+  **      and run_empty_drops.out.empty_drops_fdr channels, each have a tuple consisting of a
+  **      val() and a single path() with one file.
+  **   o  the make_generate_qc_hash.out.qc_png and make_generate_qc_no_hash.out.qc_png channels
+  **      have a tuple consisting of a val() and a path() consisting of a list of files. I
+  **      need to extract the files from the path() list using flatMap{ it -> it[0] }. There
+  **      is likely a more succint strategy...
+  */
+  make_experiment_dashboard(merge_starsolo_reports.out.cell_reads_stats.map{ trim_tuple_closure(it) }.collect(),
+                            make_umi_counts.out.umi_counts_tsv.map{ trim_tuple_closure(it) }.collect(),
+                            run_empty_drops.out.empty_drops_fdr.map{ trim_tuple_closure(it) }.collect(),
+                            make_generate_qc_hash.out.qc_png.map{ trim_tuple_closure(it) }.flatMap{ it -> it[0] }.collect(),
+                            make_generate_qc_no_hash.out.qc_png.map{ trim_tuple_closure(it) }.flatMap{ it -> it[0] }.collect(),
+                            make_sample_map_json.out.sample_maps,
+                            params.umi_cutoff,
+                            params.fdr_cutoff)
 }
 
 

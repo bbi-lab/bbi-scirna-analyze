@@ -30,7 +30,8 @@ process make_generate_qc_hash {
   val(umi_cutoff)
 
   output:
-  tuple val(sample_name), path("*.png"), path("*.txt")
+  tuple val(sample_name), path("*.txt"), emit: qc_txt
+  tuple val(sample_name), path("*.png"), emit: qc_png
 
   """
   # bash watch for errors
@@ -52,7 +53,8 @@ process make_generate_qc_no_hash {
   val(umi_cutoff)
 
   output:
-  tuple val(sample_name), path("*.png"), path("*.txt")
+  tuple val(sample_name), path("*.txt"), emit: qc_txt
+  tuple val(sample_name), path("*.png"), emit: qc_png
 
   script:
   if(sample_map['hash_file'] == '')
