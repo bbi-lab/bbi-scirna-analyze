@@ -102,22 +102,39 @@ def make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_
 
 
 def make_run_data_dict(processing_directory, sample_name_list, sample_stats_dict):
+  #
+  # Calculate cell_counts.
+  #
   cell_counts = [0] * 2
   for sample_name in sample_name_list:
     cells_100_umis  = int(sample_stats_dict[sample_name]['Cells_100_UMIs'])
     cells_fdr_p01   = int(sample_stats_dict[sample_name]['Cells_FDR_p01'])
     cell_counts[0] += cells_100_umis if(not math.isnan(cells_100_umis)) else 0
-    cell_counts[1] += cells_fdr_p01  if(not math.isnan(cells_fdr_p01))  else 0
+    cell_counts[1] += cells_fdr_p01  if((not math.isnan(cells_fdr_p01)) and (cells_fdr_p01 >= 0))  else 0
 
   cell_counts_str = [''] * 2
   cell_counts_str[0] = '%d' % (cell_counts[0])
   cell_counts_str[1] = '%d' % (cell_counts[1])
 
+  #
+  # Set up run_data_dict, which becomes the data.js file.
+  #
   run_data_dict = dict()
   run_data_dict['run_name'] = processing_directory
   run_data_dict['cell_counts'] = cell_counts_str
   run_data_dict['sample_list'] = sample_name_list
   run_data_dict['barn_collision'] = None
+
+  #
+  # Edit stats_dict['Cells_FDR_p01'] there's no emptyDrops data:
+  #   o  umi_cell_statistics_dict[sample_name]['cell_counts_fdr'] is
+  #      set to -1 for missing emptyDrops data. Set stats_dict['Cells_FDR_p01']
+  #      to '-' in these cases.
+  #
+  for sample_name in sample_name_list:
+    if(int(sample_stats_dict[sample_name]['Cells_FDR_p01']) < 0):
+      sample_stats_dict[sample_name]['Cells_FDR_p01'] = '-'
+
   run_data_dict['sample_stats'] = sample_stats_dict
 
   return(run_data_dict)

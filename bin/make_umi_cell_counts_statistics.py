@@ -79,13 +79,19 @@ if __name__ == '__main__':
   umis_mito_median = int(umis_mito_median if( not math.isnan(umis_mito_median)) else 0.0)
 
   #
-  # Calculate
-  #   cells with empty cells FDR <= .01
+  # Calculate cells with empty cells FDR <= .01
+  # Set cell counts for FDR <= .01 to -1 when the
+  # the input_empty_drops_fdr file has no rows;
+  # that is, emptyDrops did not run.
   #
   empty_drops_fdr = pd.read_csv(filepath_or_buffer=empty_drops_fdr_filename, sep='\t', header=0, index_col='cell')
-  cell_umi_counts_joined = cell_umi_counts.join(other=empty_drops_fdr, on='cell', how='left')
-  cell_umi_counts_fdr = cell_umi_counts_joined.loc[cell_umi_counts_joined['FDR'] <= fdr_cutoff]
-  cell_counts_fdr = len(cell_umi_counts_fdr)
+
+  if(len(empty_drops_fdr) > 0):
+    cell_umi_counts_joined = cell_umi_counts.join(other=empty_drops_fdr, on='cell', how='left')
+    cell_umi_counts_fdr = cell_umi_counts_joined.loc[cell_umi_counts_joined['FDR'] <= fdr_cutoff]
+    cell_counts_fdr = len(cell_umi_counts_fdr)
+  else:
+    cell_counts_fdr = -1
 
   #
   # Set up output dictionary.

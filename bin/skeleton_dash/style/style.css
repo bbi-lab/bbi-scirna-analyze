@@ -78,10 +78,11 @@ pre {
     height: 275px;
 }
 .tab-content {
-	height: 78vh;
+	height: "auto";
 	padding: 10px;
-	overflow: auto;
+	overflow: visible;
 }
+
 /******** quick styles ***********/
 .clear{clear:both;}
 .right{float:right;}
