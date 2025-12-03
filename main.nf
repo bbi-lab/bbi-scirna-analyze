@@ -398,14 +398,13 @@ workflow {
   **      need to extract the files from the path() list using flatMap{ it -> it[0] }. There
   **      is likely a more succint strategy...
   */
+  make_generate_qc_hash.out.qc_png.concat(make_generate_qc_no_hash.out.qc_png).map{ trim_tuple_closure(it) }.flatMap{ it -> it[0] }.collect().set{ make_experiment_dashboard_png_channel_in }
   make_experiment_dashboard(merge_starsolo_reports.out.cell_reads_stats.map{ trim_tuple_closure(it) }.collect(),
                             make_umi_counts.out.umi_counts_tsv.map{ trim_tuple_closure(it) }.collect(),
                             run_empty_drops.out.empty_drops_fdr.map{ trim_tuple_closure(it) }.collect(),
-                            make_generate_qc_hash.out.qc_png.map{ trim_tuple_closure(it) }.flatMap{ it -> it[0] }.collect(),
-                            make_generate_qc_no_hash.out.qc_png.map{ trim_tuple_closure(it) }.flatMap{ it -> it[0] }.collect(),
+                            make_experiment_dashboard_png_channel_in,
                             make_sample_map_json.out.sample_maps,
                             params.umi_cutoff,
                             params.fdr_cutoff)
 }
-
 
