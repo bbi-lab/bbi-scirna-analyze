@@ -1,13 +1,9 @@
-def analyze_out = params.output_dir + '/analyze_out'
-def exp_dash_out = params.output_dir + '/exp_dash'
-
 
 process make_experiment_dashboard {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${exp_dash_out}", pattern: "js", mode: 'copy'
-  publishDir path: "${exp_dash_out}", pattern: "img", mode: 'copy'
+  publishDir path: "${params.output_dir}", pattern: "exp_dash", mode: 'copy'
 
   input:
     path("*") // merge_starsolo_reports.out.cell_reads_stats
@@ -19,7 +15,7 @@ process make_experiment_dashboard {
     val(fdr_cutoff)
 
   output:
-    tuple path(js), path(img)
+    path('exp_dash')
 
 
   script:
@@ -53,15 +49,17 @@ process make_experiment_dashboard {
   project_directory=`basename ${workflow.launchDir}`
   make_exp_dash_data_js.py -s sample_names.txt -p \${project_directory}
 
-  mkdir -p js
-  cp data.js js
-
-  mkdir -p img
-  cp *.png img
+  #
+  # Copy skeleton dashboard to exp_dash directory.
+  #
+  rm -rf ./exp_dash
+  cp -pr ${params.bin_dir}/skeleton_dash ./exp_dash
 
   #
-  # Make dashboard
+  # Copy data.js and *.png to exp_dash.
   #
+  cp data.js ./exp_dash/js
+  cp *.png ./exp_dash/img
   """
 }
 
