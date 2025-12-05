@@ -54,7 +54,6 @@ include { align_bams; align_bam_function } from './modules/align_bams.nf'
 include { make_merge_align_json } from './modules/make_merge_align_json.nf'
 include { merge_align; merge_align_function } from './modules/merge_align.nf'
 include { merge_starsolo_reports; merge_starsolo_reports_function } from './modules/merge_starsolo_reports.nf'
-include { make_knee_plot } from './modules/make_knee_plot.nf'
 include { split_starsolo_stats } from './modules/split_starsolo_stats.nf'
 include { cat_matrices_raw; cat_matrices_raw_function } from './modules/cat_matrices.nf'
 include { make_umi_counts_json } from './modules/make_umi_counts_json.nf'
@@ -62,8 +61,6 @@ include { make_umi_counts; make_umi_counts_function} from './modules/make_umi_co
 include { make_cds_raw } from './modules/make_cds.nf'
 include { run_scrublet } from './modules/run_scrublet.nf'
 include { run_empty_drops } from './modules/run_empty_drops.nf'
-include { make_barnyard_json } from './modules/make_barnyard_json.nf'
-include { make_barnyard_plot; make_barnyard_plot_function } from './modules/make_barnyard_plot.nf'
 include { make_generate_qc_hash; make_generate_qc_no_hash } from './modules/make_generate_qc.nf'
 include { make_experiment_dashboard } from './modules/make_experiment_dashboard.nf'
 
@@ -314,11 +311,6 @@ workflow {
   }
 
   /*
-  ** Make knee plot.
-  make_knee_plot(cat_matrices_raw.out.raw_matrix)
-  */
-
-  /*
   ** Calculate UMIs per cell.
   ** Need
   **   o  concatenated matrix
@@ -371,13 +363,6 @@ workflow {
   */
   cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join(make_cds_raw.out.cds).set{assign_hash_raw_channel_in}
   assign_hash_raw(assign_hash_raw_channel_in)
-
-  /*
-  ** Make barnyard plots.
-  make_barnyard_json(samplesheet_file, make_cds_raw.out.png.collect())
-  make_barnyard_json.out.splitJson().map{make_barnyard_plot_function(it)}.set{make_barnyard_plot_in}
-  make_barnyard_plot(make_barnyard_plot_in)
-  */
 
   /*
   ** Run generate_qc.R.
