@@ -9,7 +9,6 @@ This *bbi-scirna-analyze* pipeline reads the unaligned BAM files from the *bbi-s
 Install the following software
 
 - Nextflow
-- bbduk.sh
 
 You may also need to build and install
 
@@ -88,14 +87,6 @@ in the *STAR-2.7.11b/source* directory. Copy the resulting *STAR* executable fil
 
 Notes:
 - the STAR compilation failed when the samtools/1.19 module was loaded. I believe that the linker was using the samtools htslib rather than the STAR htslib.
-
-### Install bbduk.sh
-
-See the BBMap installation instructions at
-
-https://github.com/BioInfoTools/BBMap
-
-You will need to edit the *bbi-scirna-analyze/nextflow.config* file by setting the value *ext.bbduk_path* to the *bbduk.sh* program that you installed.
 
 ## Run bbi-scirna-analyze
 
