@@ -8,10 +8,12 @@ import groovy.json.JsonSlurper
 params.bin_dir = workflow.projectDir + '/bin'
 params.align_cpus = 8
 params.umi_cutoff = 100
+params.fdr_cutoff = .01
 params.hash_umi_cutoff = 5
 params.hash_ratio = false
 params.hash_dup = false //Default is false. Other options are "p5" or "pcr_plate".
 params.run_empty_drops = true
+params.run_scrublet = true
 
 
 demux_out = "${params.output_dir}/demux_out"
@@ -46,22 +48,22 @@ include { merge_demux } from './modules/merge_demux.nf'
 include { make_process_hashes_json } from './modules/make_process_hashes_json.nf'
 include { process_hashes; cat_hashes; process_hashes_function; hash_umi_knee_plot; calc_tot_hash_dup; assign_hash_raw } from './modules/process_hashes.nf'
 include { make_trim_bam_json } from './modules/make_trim_bam_json.nf'
-include { trim_bams; trim_bam_function } from './modules/trim_bams.nf'
+include { trim_bams; trim_bam_function; aggregate_trimmer_logs } from './modules/trim_bams.nf'
 include { make_star_align_json } from './modules/make_star_align_json.nf'
 include { align_bams; align_bam_function } from './modules/align_bams.nf'
 include { make_merge_align_json } from './modules/make_merge_align_json.nf'
 include { merge_align; merge_align_function } from './modules/merge_align.nf'
 include { merge_starsolo_reports; merge_starsolo_reports_function } from './modules/merge_starsolo_reports.nf'
-include { make_knee_plot } from './modules/make_knee_plot.nf'
 include { split_starsolo_stats } from './modules/split_starsolo_stats.nf'
 include { cat_matrices_raw; cat_matrices_raw_function } from './modules/cat_matrices.nf'
 include { make_umi_counts_json } from './modules/make_umi_counts_json.nf'
 include { make_umi_counts; make_umi_counts_function} from './modules/make_umi_counts.nf'
 include { make_cds_raw } from './modules/make_cds.nf'
+include { run_scrublet } from './modules/run_scrublet.nf'
 include { run_empty_drops } from './modules/run_empty_drops.nf'
-include { make_barnyard_json } from './modules/make_barnyard_json.nf'
-include { make_barnyard_plot; make_barnyard_plot_function } from './modules/make_barnyard_plot.nf'
 include { make_generate_qc_hash; make_generate_qc_no_hash } from './modules/make_generate_qc.nf'
+include { make_experiment_dashboard } from './modules/make_experiment_dashboard.nf'
+
 
 /*
 ** Set up channels.
@@ -118,6 +120,16 @@ def sample_maps_split_closure = {
          def sample_name = item['sample_name']
          [sample_name, item]
 }
+
+/*
+** Trim tuple by removing first element.
+*/
+def trim_tuple_closure = {
+  item ->
+   def trim_tuple = item.drop(1)
+   trim_tuple
+}
+
 
 /*
 ** Run pipeline.
@@ -222,6 +234,12 @@ workflow {
   trim_bams(trim_bam_channel_in)
 
   /*
+  ** Aggregate trimmer logs.
+  */
+  trim_bams.out.trimmer_logs.groupTuple().set { aggregate_trimmer_logs_channel_in }
+  aggregate_trimmer_logs(aggregate_trimmer_logs_channel_in)
+
+  /*
   ** Set up and run STAR aligner in STARsolo mode.
   */
   trim_bams.out.trimmed_bams.subscribe onNext: {
@@ -293,11 +311,6 @@ workflow {
   }
 
   /*
-  ** Make knee plot.
-  make_knee_plot(cat_matrices_raw.out.raw_matrix)
-  */
-
-  /*
   ** Calculate UMIs per cell.
   ** Need
   **   o  concatenated matrix
@@ -318,8 +331,13 @@ workflow {
   **    tuple val(sample_name), path(cells), path(features), path(matrix)
   **    val(out_file)
   */
-  cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out.empty_drops_rds).join(make_umi_counts.out).join(sample_maps_split).set{make_cds_raw_in}
-  make_cds_raw(make_cds_raw_in, 'counts_raw')
+  cat_matrices_raw.out.raw_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_empty_drops.out.empty_drops_rds).join(make_umi_counts.out.umi_counts_tsv).join(sample_maps_split).set{make_cds_raw_in}
+  make_cds_raw(make_cds_raw_in, 'counts_raw', params.umi_cutoff)
+
+  /*
+  ** Run scrublet.
+  */
+  run_scrublet(make_cds_raw.out.cds)
 
   /*
   ** Note:
@@ -347,19 +365,33 @@ workflow {
   assign_hash_raw(assign_hash_raw_channel_in)
 
   /*
-  ** Make barnyard plots.
-  make_barnyard_json(samplesheet_file, make_cds_raw.out.png.collect())
-  make_barnyard_json.out.splitJson().map{make_barnyard_plot_function(it)}.set{make_barnyard_plot_in}
-  make_barnyard_plot(make_barnyard_plot_in)
-  */
-
-  /*
   ** Run generate_qc.R.
   */
   assign_hash_raw.out.mobs.join(run_empty_drops.out.empty_drops_rds).join(sample_maps_split).set{make_generate_qc_hash_in}
   make_generate_qc_hash(make_generate_qc_hash_in, params.umi_cutoff)
   make_cds_raw.out.cds.join(run_empty_drops.out.empty_drops_rds).join(sample_maps_split).set{make_generate_qc_no_hash_in}
   make_generate_qc_no_hash(make_generate_qc_no_hash_in, params.umi_cutoff)
-}
 
+  /*
+  ** Make experiment dashboard.
+  ** Notes:
+  **   o  the merge_starsolo_reports.out.cell_reads_stats, make_umi_counts.out.umi_counts_tsv,
+  **      and run_empty_drops.out.empty_drops_fdr channels, each have a tuple consisting of a
+  **      val() and a single path() with one file.
+  **   o  the make_generate_qc_hash.out.qc_png and make_generate_qc_no_hash.out.qc_png channels
+  **      have a tuple consisting of a val() and a path() consisting of a list of files. I
+  **      need to extract the files from the path() list using flatMap{ it -> it[0] }. There
+  **      is likely a more succint strategy...
+  */
+  make_generate_qc_hash.out.qc_png.concat(make_generate_qc_no_hash.out.qc_png).map{ trim_tuple_closure(it) }.flatMap{ it -> it[0] }.collect().set{ make_experiment_dashboard_png_channel_in }
+  make_generate_qc_hash.out.qc_txt.concat(make_generate_qc_no_hash.out.qc_txt).map{ trim_tuple_closure(it) }.flatMap{ it -> it[0] }.collect().set{ make_experiment_dashboard_txt_channel_in }
+  make_experiment_dashboard(merge_starsolo_reports.out.cell_reads_stats.map{ trim_tuple_closure(it) }.collect(),
+                            make_umi_counts.out.umi_counts_tsv.map{ trim_tuple_closure(it) }.collect(),
+                            run_empty_drops.out.empty_drops_fdr.map{ trim_tuple_closure(it) }.collect(),
+                            make_experiment_dashboard_png_channel_in,
+                            make_experiment_dashboard_txt_channel_in,
+                            make_sample_map_json.out.sample_maps,
+                            params.umi_cutoff,
+                            params.fdr_cutoff)
+}
 

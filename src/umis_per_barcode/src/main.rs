@@ -12,9 +12,9 @@ use std::io::Write;
 ** Define command line arguments.
 */
 fn set_cl_options() -> Result<clap::Command, Box<dyn std::error::Error>> {
-  let cl_options = Command::new("process_hashes")
+  let cl_options = Command::new("umis_per_barcode")
         .version(env!("CARGO_PKG_VERSION"))
-        .about("Finds hash sequence reads in BAM file.")
+        .about("Calculate UMIs per barcode.")
         .arg(Arg::new("matrix_file")  // required=true, no default
                   .required(true)
                   .short('m')

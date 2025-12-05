@@ -19,7 +19,8 @@ process make_umi_counts {
   tuple val(sample_name), val(out_file), path(in_matrix), path(in_features), path(in_barcodes), val(sample_map)
 
   output:
-  tuple val(sample_name), path("*_umi_counts.tsv")
+  tuple val(sample_name), path("*_umi_counts.tsv"), emit: umi_counts_tsv
+
 
   """
   # bash watch for errors
@@ -28,4 +29,3 @@ process make_umi_counts {
   mito_umis -m ${in_matrix} -f ${in_features} -b ${in_barcodes} -a ${sample_map['genes_bed']} -o ${out_file}
   """
 }
-

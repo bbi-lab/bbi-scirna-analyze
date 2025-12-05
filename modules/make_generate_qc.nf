@@ -30,7 +30,8 @@ process make_generate_qc_hash {
   val(umi_cutoff)
 
   output:
-  tuple val(sample_name), path("*.png"), path("*.txt")
+  tuple val(sample_name), path("*.txt"), emit: qc_txt
+  tuple val(sample_name), path("*.png"), emit: qc_png
 
   """
   # bash watch for errors
@@ -52,7 +53,8 @@ process make_generate_qc_no_hash {
   val(umi_cutoff)
 
   output:
-  tuple val(sample_name), path("*.png"), path("*.txt")
+  tuple val(sample_name), path("*.txt"), emit: qc_txt
+  tuple val(sample_name), path("*.png"), emit: qc_png
 
   script:
   if(sample_map['hash_file'] == '')
@@ -72,28 +74,3 @@ process make_generate_qc_no_hash {
 }
 
 
-/*
-**  parser = argparse::ArgumentParser(description='Script to generate qc plots.')
-**  parser$add_argument('cds_path', help='File with cds.')
-**  parser$add_argument('umis_file', help='File with umis_per_barcode.')
-**  parser$add_argument('sample_name', help='Sample name.')
-**  parser$add_argument('empty_drops', help='RDS file from emptyDrops.')
-**  parser$add_argument('hash', help='hash run or not.')
-**  parser$add_argument('genome', help='Genome name - used by Barnyard plot.')
-**  parser$add_argument('pipeline_name', help='"bbi-sci" or "bbi-scirna-analyze"')
-**  parser$add_argument('--specify_cutoff', type='integer', default=NULL, help='Optional. Specifies a cutoff rather than choosing a UMI cutoff automatically.')
-*/
-
-/*
-**  -rw-r--r-- 1 bge bbi  446060 Oct 13 11:52 SeahubZ01-001_umi.png
-**  -rw-r--r-- 1 bge bbi 1420808 Oct 13 11:52 SeahubZ01-001_genes_by_umi.png
-**  -rw-r--r-- 1 bge bbi 4583384 Oct 13 11:53 SeahubZ01-001_RT_barcode_pseudobulk_correlations.txt
-**  -rw-r--r-- 1 bge bbi     406 Oct 13 11:53 SeahubZ01-001_Ligation_plate_pseudobulk_correlations.txt
-**  -rw-r--r-- 1 bge bbi      64 Oct 13 11:53 SeahubZ01-001_P5_barcode_pseudobulk_correlations.txt
-**  -rw-r--r-- 1 bge bbi  726504 Oct 13 11:53 SeahubZ01-001_pseudobulk_heatmap.png
-**  -rw-r--r-- 1 bge bbi  421581 Oct 13 11:53 SeahubZ01-001_pseudobulk_histogram.png
-**  -rw-r--r-- 1 bge bbi   46560 Oct 13 11:53 SeahubZ01-001_hash_plots.png
-**  -rw-r--r-- 1 bge bbi   80498 Oct 13 11:53 SeahubZ01-001_knee_plot.png
-**  -rw-r--r-- 1 bge bbi       4 Oct 13 11:53 SeahubZ01-001_umi_cutoff.txt
-**  -rw-r--r-- 1 bge bbi      17 Oct 13 11:53 SeahubZ01-001_no_collision.txt
-*/

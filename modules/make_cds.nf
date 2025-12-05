@@ -9,6 +9,7 @@ process make_cds_raw {
   input:
   tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells), path(counts_per_cell), path(empty_drops), path(umi_counts), val(sample_map)
   val(out_file)
+  val(umi_cutoff)
 
   output:
   tuple val(sample_name), path("*.raw.mobs"), path(umi_counts),  emit: cds
@@ -27,7 +28,7 @@ process make_cds_raw {
   ${cell_tsv} \
   ${barcode_to_wells} \
   ${umi_counts} \
-  ${params.umi_cutoff} \
+  ${umi_cutoff} \
   ${counts_per_cell} \
   ${sample_map['genes_bed']} \
   ${empty_drops}
@@ -45,6 +46,7 @@ process make_cds_filtered {
 //  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells)
   tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells), path(counts_per_cell), path(umi_counts), val(genome), path(latest_genes_bed), val(hash_file), val(sample_map)
   val(out_file)
+  val(umi_cutoff)
 
   output:
   tuple val(sample_name), val(genome), path("*.filtered.mobs"), path(umi_counts), val(hash_file), emit: cds
@@ -63,7 +65,7 @@ process make_cds_filtered {
   ${cell_tsv} \
   ${barcode_to_wells} \
   ${umi_counts} \
-  ${params.umi_cutoff} \
+  ${umi_cutoff} \
   ${counts_per_cell} \
   ${sample_map['genes_bed']} \
   ${empty_drops}

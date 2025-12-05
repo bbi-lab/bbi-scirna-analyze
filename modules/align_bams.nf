@@ -67,8 +67,7 @@ process align_bams {
       --outSAMtype BAM SortedByCoordinate \
       --outSAMattributes NH HI nM AS GX GN sM \
       --outSJtype None \
-      --outSAMmultNmax 1 \
-      --outSAMstrandField intronMotif \
+      --outFilterMultimapNmax 6 \
       --soloUMIdedup 1MM_All \
       --soloCellReadStats Standard \
       --soloStrand Forward \
