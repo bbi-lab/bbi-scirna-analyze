@@ -434,7 +434,7 @@ function PseudobulkPane(props) {
     "div",
     {
       className: "tab-pane fade",
-      id: "nav" + safe_name + "-umis",
+      id: "nav" + safe_name + "-pseudobulk",
       role: "tabpanel", "aria-labelledby": "nav" + safe_name + "-pseudobulk_tab" },
     React.createElement("img", {
       src: "img/" + props.sample_id + "_pseudobulk_heatmap.png",
