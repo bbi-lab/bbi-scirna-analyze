@@ -10,6 +10,7 @@ process make_experiment_dashboard {
     path("*") // make_umi_counts.out.umi_counts_tsv
     path("*") // run_empty_drops.out.empty_drops_fdr
     path("*") // make_experiment_dashboard_png_channel_in
+    path("*") // make_experiment_dashboard_txt_channel_in
     path(sample_maps_json)
     val(umi_cutoff)
     val(fdr_cutoff)
@@ -47,7 +48,7 @@ process make_experiment_dashboard {
   # Make data.js file for dashboard.
   #
   project_directory=`basename ${workflow.launchDir}`
-  make_exp_dash_data_js.py -s sample_names.txt -p \${project_directory}
+  make_exp_dash_data_js.py -s ${sample_maps_json} -p \${project_directory}
 
   #
   # Copy skeleton dashboard to exp_dash directory.

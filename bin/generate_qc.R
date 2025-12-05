@@ -760,10 +760,22 @@ bbi_sci_gen_plots <- function(sample_name, sample_path, umis_file, emptydrops_fi
   barnyard_flag <- c(genome) %in% c('Barnyard', 'Fishbowl_seahub', 'fishbowlGenomeGen')
   if(barnyard_flag) {
     message('make barnyard plots')
+    if(pipeline_name == 'bbi-sci') {
+      filename_prefix <- 'Barnyard'
+    }
+    else
+    if(pipeline_name == 'bbi-scirna-analyze') {
+      filename_prefix <- paste0(sample_name, '_barnyard')
+    }
+    else {
+      message('Error: unrecognized pipeline_name value')
+    }
     barnyard_plot <- gen_barnyard_plot_generic(samp_cds, sample_name, genome)
-    ggsave("Barnyard_plot.png", plot = barnyard_plot$plot, units = "in", width = 3.5*1.3, height = 3.5)
+    filename <- paste0(filename_prefix, '_plot.png')
+    ggsave(filename, plot = barnyard_plot$plot, units = "in", width = 3.5*1.3, height = 3.5)
     collision_rate <- barnyard_plot$collision_rate
-    fileConn<-file("Barnyard_collision.txt")
+    filename <- paste0(filename_prefix, '_collision.txt')
+    fileConn<-file(filename)
     writeLines(paste0(sample_name, "\t", collision_rate, "%"), fileConn)
     close(fileConn)
   } else {

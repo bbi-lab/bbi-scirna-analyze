@@ -13,23 +13,32 @@ import math
 program_version = '0.1.0'
 
 
-def read_sample_name_file(filename):
-
-  with open(filename, 'r') as fp:
-    sample_name_list = []
-    for line in fp:
-      sample_name = line.strip()
-      sample_name_list.append(sample_name)
-  return(sample_name_list)
-
-
 #
-# Read samplesheet json file.
+# Read json file.
 #
 def read_json(filename):
   with open(filename, 'r') as fh:
     json_data = json.load(fh)
   return(json_data)
+
+
+def get_sample_name_list(sample_map):
+  sample_name_list = list()
+  for sample_dict in sample_map:
+    sample_name = sample_dict['sample_name']
+    sample_name_list.append(sample_name)
+  return(sample_name_list)
+
+
+def get_barnyard_sample_name(sample_map):
+  barnyard_sample_name = None
+  for sample_dict in sample_map:
+    sample_flags = sample_dict['sample_flags']
+    if('B' in sample_flags):
+      sample_name = sample_dict['sample_name']
+      barnyard_sample_name = sample_name
+      break
+  return(barnyard_sample_name)
 
 
 def read_cellread_statistics(sample_name_list):
@@ -101,7 +110,7 @@ def make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_
   return(sample_stats_dict)
 
 
-def make_run_data_dict(processing_directory, sample_name_list, sample_stats_dict):
+def make_run_data_dict(processing_directory, sample_name_list, sample_stats_dict, barnyard_sample_name):
   #
   # Calculate cell_counts.
   #
@@ -117,13 +126,25 @@ def make_run_data_dict(processing_directory, sample_name_list, sample_stats_dict
   cell_counts_str[1] = '%d' % (cell_counts[1])
 
   #
+  # Read barnyard collision rate.
+  #
+  barn_collision = None
+  if(barnyard_sample_name != None):
+    filename = '%s_barnyard_collision.txt' % (barnyard_sample_name)
+    with open(filename, 'r') as fp:
+      text_line = fp.readline()
+      if(len(text_line) > 0):
+        barn_collision = text_line
+
+  #
   # Set up run_data_dict, which becomes the data.js file.
   #
   run_data_dict = dict()
   run_data_dict['run_name'] = processing_directory
   run_data_dict['cell_counts'] = cell_counts_str
   run_data_dict['sample_list'] = sample_name_list
-  run_data_dict['barn_collision'] = None
+  run_data_dict['barn_collision'] = barn_collision
+  run_data_dict['barnyard_sample_name'] = barnyard_sample_name
 
   #
   # Edit stats_dict['Cells_FDR_p01'] there's no emptyDrops data:
@@ -154,12 +175,17 @@ def write_data_js(run_data_dict):
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program .')
-  parser.add_argument('-s', '--sample_name_file', required=True, default=None, help='Input sample name file (required string(s)).')
+  parser.add_argument('-s', '--sample_map_file', required=True, default=None, help='Input sample map file (required string(s)).')
   parser.add_argument('-p', '--processing_directory', required=True, default=None, help='Input processing directory name (required string(s)).')
   parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
 
-  sample_name_list = read_sample_name_file(args.sample_name_file)
+  # sample_name_list = read_sample_name_file(args.sample_name_file)
+  sample_map  = read_json(args.sample_map_file) 
+
+  sample_name_list = get_sample_name_list(sample_map)
+
+  barnyard_sample_name = get_barnyard_sample_name(sample_map)
 
   #
   # Read sample cellreads statistics.
@@ -184,7 +210,7 @@ if __name__ == '__main__':
   #
   # Make run data.
   #
-  run_data_dict = make_run_data_dict(args.processing_directory, sample_name_list, sample_stats_dict)
+  run_data_dict = make_run_data_dict(args.processing_directory, sample_name_list, sample_stats_dict, barnyard_sample_name)
 
   #
   # Write data.js file.
