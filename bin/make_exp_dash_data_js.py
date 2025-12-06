@@ -95,13 +95,18 @@ def make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_
     cells_100_umis           = umi_cell_statistics_dict[sample_name]['cell_counts_umi']
     cells_fdr_p01            = umi_cell_statistics_dict[sample_name]['cell_counts_fdr']
 
+    if(median_umis > 0):
+      median_mitochondrial_umis_percent = (float(median_mitochondial_umis) / float(median_umis)) * 100.0
+    else:
+      median_mitochondrial_umis_percent = 0.0
+
     stats_dict = dict()
     stats_dict['Sample']                            = sample_name
     stats_dict['Total_reads']                       = '%8d' % total_reads
     stats_dict['Total_UMIs']                        = '%8d' % total_umis
     stats_dict['Duplication_rate']                  = '%.1f' % duplication_rate
     stats_dict['Median_UMIs']                       = '%8d' % median_umis
-    stats_dict['Median_Mitochondrial_UMIs_Percent'] = '%.1f' % ((float(median_mitochondial_umis) / float(median_umis)) * 100.0)
+    stats_dict['Median_Mitochondrial_UMIs_Percent'] = '%.1f' % median_mitochondrial_umis_percent
     stats_dict['Cells_100_UMIs']                    = '%d' % cells_100_umis
     stats_dict['Cells_FDR_p01']                     = '%d' % cells_fdr_p01
 
