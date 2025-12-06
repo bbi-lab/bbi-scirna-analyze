@@ -34,7 +34,7 @@ params.object_map.merge_bam_map = [:]
 params.object_map.process_hashes_map = [:]
 params.object_map.trim_bam_map = [:]
 params.object_map.merge_align_bam_map = [:]
-params.object_map.make_cds_raw_cds_map = [:]
+params.object_map.run_scrublet_cds_map = [:]
 params.object_map.cat_matrices_raw_map = [:]
 
 
@@ -341,27 +341,32 @@ workflow {
 
   /*
   ** Note:
-  **   o  the make_cds_raw.out.cds channel is a tuple
+  **   o  the run_scrublet.out.cds channel is a tuple
   **      so it's necessary to select the path element.
   **
-  **   o  make_cds_raw.out.cds channel is
+  **   o  run_scrublet.out.cds channel is
   **
   **        tuple val(sample_name), path("*.raw.mobs"), emit: cds
   */
-  make_cds_raw.out.cds.subscribe onNext: {
+  run_scrublet.out.cds.subscribe onNext: {
     def tup -> {
       def path = tup[1]
       def file_base_name = path.toString().tokenize('/').last()
 //      println "file base name: " + file_base_name
 //      println "path: " + path
-      params.object_map.make_cds_raw_cds_map[file_base_name] = path
+      params.object_map.run_scrublet_cds_map[file_base_name] = path
     }
   }
+
+/*
+params.object_map.make_cds_raw_cds_map
+params.object_map.run_scrublet_cds_map
+*/
 
   /*
   ** Assign hashes to cells and update cds.
   */
-  cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join(make_cds_raw.out.cds).set{assign_hash_raw_channel_in}
+  cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_scrublet.out.cds).set{assign_hash_raw_channel_in}
   assign_hash_raw(assign_hash_raw_channel_in)
 
   /*
@@ -369,7 +374,7 @@ workflow {
   */
   assign_hash_raw.out.mobs.join(run_empty_drops.out.empty_drops_rds).join(sample_maps_split).set{make_generate_qc_hash_in}
   make_generate_qc_hash(make_generate_qc_hash_in, params.umi_cutoff)
-  make_cds_raw.out.cds.join(run_empty_drops.out.empty_drops_rds).join(sample_maps_split).set{make_generate_qc_no_hash_in}
+  run_scrublet.out.cds.join(run_empty_drops.out.empty_drops_rds).join(sample_maps_split).set{make_generate_qc_no_hash_in}
   make_generate_qc_no_hash(make_generate_qc_no_hash_in, params.umi_cutoff)
 
   /*

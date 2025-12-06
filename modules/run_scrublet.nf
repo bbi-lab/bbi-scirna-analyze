@@ -10,7 +10,8 @@ process run_scrublet {
   tuple val(sample_name), path(mobs), path(umi_counts)
 
   output:
-  tuple val(sample_name), path("*scrublet_out.csv"), path("*.png"), path('run_scrublet.log')
+  tuple val(sample_name), path("*scrublet_out.csv"), path("*.png"), path('run_scrublet.log'), emit: scrublet_out
+  tuple val(sample_name), path("${sample_name}_cds.raw.mobs", includeInputs: true), path(umi_counts), emit: cds
 
   /*
   ** Don't exit on error. Continue so that
@@ -20,17 +21,29 @@ process run_scrublet {
 
   script:
   """
+
+  #
+  # Move the input mobs directory.
+  #
+
   matrix_filename='scrublet_expression_matrix.mtx'
   if [ "$params.run_scrublet" == "true" ]
   then
-    run_scrublet='--run_scrublet'
+    mv ${mobs} tmp.in.mobs
+    write_expression_matrix.R $sample_name tmp.in.mobs \$matrix_filename
+    run_scrublet.py --sample_name $sample_name --mat \$matrix_filename --run_scrublet > run_scrublet.log
+    rm \$matrix_filename
+    #
+    # Note:
+    #   add_scrublet_to_cds.R writes a .mobs directory that has the
+    #   name ${sample_name}_cds.raw.mobs. This mobs cds has the
+    #   scrublet scores.
+    #
+    add_scrublet_to_cds.R ${sample_name} tmp.in.mobs ${sample_name}_scrublet_out.csv
   else
-    run_scrublet=''
+    run_scrublet.py --sample_name $sample_name --mat \$matrix_filename > run_scrublet.log 
   fi
 
-  write_expression_matrix.R $sample_name $mobs \$matrix_filename
-  run_scrublet.py --sample_name $sample_name --mat \$matrix_filename \${run_scrublet} > run_scrublet.log
-  rm \$matrix_filename
   """
 }
 
