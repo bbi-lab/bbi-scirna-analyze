@@ -30,15 +30,24 @@ process make_generate_qc_hash {
   val(umi_cutoff)
 
   output:
-  tuple val(sample_name), path("*.txt"), emit: qc_txt
-  tuple val(sample_name), path("*.png"), emit: qc_png
+  tuple val(sample_name), path("*.txt"), optional: true, emit: qc_txt
+  tuple val(sample_name), path("*.png"), optional: true, emit: qc_png
 
-  """
-  # bash watch for errors
-  set -ueo pipefail
+  script:
+  if(sample_map['hash_file'] == '')
+    """
+    # bash watch for errors
+    set -ueo pipefail
 
-  generate_qc.R ${cds_raw_hash_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} ${sample_map['hash_file']} ${sample_map['genome']} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}
-  """
+    echo 'Not hash sample: skip make_generate_qc_hash'
+    """
+  else
+    """
+    # bash watch for errors
+    set -ueo pipefail
+
+    generate_qc.R ${cds_raw_hash_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} ${sample_map['hash_file']} ${sample_map['genome']} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}
+    """
 }
 
 
@@ -53,8 +62,8 @@ process make_generate_qc_no_hash {
   val(umi_cutoff)
 
   output:
-  tuple val(sample_name), path("*.txt"), emit: qc_txt
-  tuple val(sample_name), path("*.png"), emit: qc_png
+  tuple val(sample_name), path("*.txt"), optional: true, emit: qc_txt
+  tuple val(sample_name), path("*.png"), optional: true, emit: qc_png
 
   script:
   if(sample_map['hash_file'] == '')
@@ -69,7 +78,7 @@ process make_generate_qc_no_hash {
     # bash watch for errors
     set -ueo pipefail
 
-    echo 'Hash sample: skip'
+    echo 'Hash sample: skip make_generate_qc_no_hash'
     """
 }
 
