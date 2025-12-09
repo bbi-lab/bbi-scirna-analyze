@@ -5,7 +5,7 @@ process run_scrublet {
 
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_scrublet_out.csv", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "run_scrublet.lot", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "${sample_name}_cds.raw.mobs", mode: 'copy', overwrite: true, enabled: "${sample_map['hash_file']} == ''"
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "${sample_name}_cds.raw.mobs", mode: 'copy', overwrite: true, enabled: "${params.run_scrublet}"
 
   input:
   tuple val(sample_name), path(mobs), path(umi_counts), val(sample_map)
