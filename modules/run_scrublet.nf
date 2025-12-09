@@ -5,9 +5,10 @@ process run_scrublet {
 
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_scrublet_out.csv", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "run_scrublet.lot", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "${sample_name}_cds.raw.mobs", mode: 'copy', overwrite: true, enabled: "${sample_map['hash_file']} == ''"
 
   input:
-  tuple val(sample_name), path(mobs), path(umi_counts)
+  tuple val(sample_name), path(mobs), path(umi_counts), val(sample_map)
 
   output:
   tuple val(sample_name), path("*scrublet_out.csv"), path("*.png"), path('run_scrublet.log'), emit: scrublet_out
@@ -43,7 +44,6 @@ process run_scrublet {
   else
     run_scrublet.py --sample_name $sample_name --mat \$matrix_filename > run_scrublet.log 
   fi
-
   """
 }
 

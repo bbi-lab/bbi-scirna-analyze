@@ -337,7 +337,7 @@ workflow {
   /*
   ** Run scrublet.
   */
-  run_scrublet(make_cds_raw.out.cds)
+  run_scrublet(make_cds_raw.out.cds.join(sample_maps_split))
 
   /*
   ** Note:
@@ -352,16 +352,9 @@ workflow {
     def tup -> {
       def path = tup[1]
       def file_base_name = path.toString().tokenize('/').last()
-//      println "file base name: " + file_base_name
-//      println "path: " + path
       params.object_map.run_scrublet_cds_map[file_base_name] = path
     }
   }
-
-/*
-params.object_map.make_cds_raw_cds_map
-params.object_map.run_scrublet_cds_map
-*/
 
   /*
   ** Assign hashes to cells and update cds.
