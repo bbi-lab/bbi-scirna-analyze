@@ -3,7 +3,6 @@ def analyze_out = params.output_dir + '/analyze_out'
 process make_cds_raw {
   errorStrategy 'ignore'
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.raw.mobs", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*.png", mode: 'copy'
 
   input:
