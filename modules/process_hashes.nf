@@ -57,8 +57,9 @@ process cat_hashes {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash.log", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_read_rate.txt", mode: 'copy'
 
+
   input:
-  tuple val(sample_name), path("???_hashumis.mtx"), path("???_hashumis_cells.txt"), path("???_hashumis_hashes.txt"), path("???_hash_umis_per_cell_txt"), path("???_hash_dup_per_cell_txt"), path("???_hash_reads_per_cell_txt"), path("???_hash_assigned_table_txt"), path("???_hash_log")
+  tuple val(sample_name), path("*_hashumis.mtx"), path("*_hashumis_cells.txt"), path("*_hashumis_hashes.txt"), path("*_hash_umis_per_cell_txt"), path("*_hash_dup_per_cell_txt"), path("*_hash_reads_per_cell_txt"), path("*_hash_assigned_table_txt"), path("*_hash_log")
 
   output:
   tuple val(sample_name), path("*_hash_umis_per_cell.txt"), emit: hash_umis_per_cell
@@ -71,6 +72,29 @@ process cat_hashes {
 
   script:
   """
+  # bash watch for errors
+  set -ueo pipefail
+
+  #
+  # Check that groupTuple grouped files correctly by
+  # ensuring that the last hash directory is consistent
+  # for each file set.
+  #
+  lprefix=`ls *_hashumis_hashes.txt | awk 'BEGIN{FS="_"}{print\$1}'`
+
+  for prefix in \$lprefix
+  do
+    nhash=`readlink \${prefix}_* | awk 'BEGIN{FS="/"}{print \$(NF-1)}' | uniq | wc -l`
+    if [ "\$nhash" !=  "1" ]
+    then
+      echo "Error: inconsistent work directories in input grouped files (symbolic links)."
+      exit -1
+    fi
+  done
+
+  #
+  # Concatenate matrices etc.
+  #
   cat_sparse_matrix.py -i *_hashumis.mtx -m hashumis.mtx -f hashumis_hashes.txt -c hashumis_cells.txt -o "${sample_name}"
   mv ${sample_name}.matrix.mtx ${sample_name}.hashumis.mtx
   mv ${sample_name}.cells.tsv ${sample_name}.hashumis_cells.txt

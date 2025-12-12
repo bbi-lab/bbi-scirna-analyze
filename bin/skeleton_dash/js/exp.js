@@ -226,8 +226,8 @@ function RegRow(props) {
 
 function StatsPane(props) {
   var sample_stat = props.sample_stats[props.sample_id];
-  // const stats_list = ["Total Reads", "Total UMIs", "Median UMIs", "Median Mitochondrial UMIs", "Duplication Rate", "Cells with >100 UMIs", "Cells with >1000 UMIs", "Cells with FDR<=.01", "Cells with FDR<=.001"]
-  var stats_list = ["Total Reads", "Total UMIs", "Median UMIs", "Median Mitochondrial UMIs", "Duplication Rate", "Cells with >100 UMIs", "Cells with FDR<=.01"];
+  // const stats_list = ["Total Reads", "Total UMIs", "Median UMIs", "Median Mitochondrial UMIs", "Duplication Rate", "Cells with >=100 UMIs", "Cells with >=1000 UMIs", "Cells with FDR<=.01", "Cells with FDR<=.001"]
+  var stats_list = ["Total Reads", "Total UMIs", "Median UMIs", "Median Mitochondrial UMIs", "Duplication Rate", "Cells with >=100 UMIs", "Cells with FDR<=.01"];
 
   var safe_name = "hp" + props.sample_id.replace(/[.]/g, "");
   return React.createElement(
@@ -865,7 +865,7 @@ var Table = function (_React$Component) {
               React.createElement(
                 "th",
                 null,
-                "Cells with >100 UMIs",
+                "Cells with >=100 UMIs",
                 React.createElement(
                   "button",
                   { onClick: this.onSortc100, className: "sort_button" },
