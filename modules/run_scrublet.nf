@@ -1,7 +1,8 @@
 def analyze_out = params.output_dir + '/analyze_out'
 
 process run_scrublet {
-  errorStrategy 'ignore'
+  errorStrategy 'retry'
+  maxRetries 2
 
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_scrublet_out.csv", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "run_scrublet.lot", mode: 'copy'
