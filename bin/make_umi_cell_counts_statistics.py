@@ -59,9 +59,14 @@ if __name__ == '__main__':
   # Remove low UMI barcodes and join with umi_counts_sums.
   # Notes:
   #   o  filter to save memory use
-  #
+  #   o  filter on umi_cutoff
+  #   o  filter on 100 umi cutoff
+  #   o  filter on 1000 umi cutoff
   cell_umi_counts_sums = barcode_umi_counts_sums.loc[barcode_umi_counts_sums['umi_all'] >= umi_cutoff]
   cell_umi_counts = cell_umi_counts_sums.join(other=barcode_umi_counts_in, on='cell', how='inner')
+
+  cell_umi_counts_sums_100_umi_cutoff  = barcode_umi_counts_sums.loc[barcode_umi_counts_sums['umi_all'] >= 100]
+  cell_umi_counts_sums_1000_umi_cutoff = barcode_umi_counts_sums.loc[barcode_umi_counts_sums['umi_all'] >= 1000]
 
   #
   # Calculate
@@ -69,10 +74,13 @@ if __name__ == '__main__':
   #   median umis (filtered barcodes)
   #   median mitochondrial umis (filtered barcodes)
   #   cells (filtered barcodes)
-  umis_total       = barcode_umi_counts_sums.loc[ :, ['umi_all']].sum().iloc[0]
-  umis_median      = cell_umi_counts_sums.median().iloc[0]
-  umis_mito_median = cell_umi_counts.loc[ :, ['umi_mito']].median().iloc[0]
-  cell_counts_umi  = len(cell_umi_counts_sums)
+  umis_total                      = barcode_umi_counts_sums.loc[ :, ['umi_all']].sum().iloc[0]
+  umis_median                     = cell_umi_counts_sums.median().iloc[0]
+  umis_mito_median                = cell_umi_counts.loc[ :, ['umi_mito']].median().iloc[0]
+  cell_counts_umi                 = len(cell_umi_counts_sums)
+  cell_counts_umi_100_umi_cutoff  = len(cell_umi_counts_sums_100_umi_cutoff)
+  cell_counts_umi_1000_umi_cutoff = len(cell_umi_counts_sums_1000_umi_cutoff)
+
 
   umis_total = int(umis_total if( not math.isnan(umis_total)) else 0.0)
   umis_median = int(umis_median if( not math.isnan(umis_median)) else 0.0)
@@ -97,14 +105,16 @@ if __name__ == '__main__':
   # Set up output dictionary.
   #
   umi_cell_counts_dict = dict()
-  umi_cell_counts_dict['sample_name']            = sample_name
-  umi_cell_counts_dict['umi_cutoff']             = umi_cutoff
-  umi_cell_counts_dict['empty_drops_fdr_cutoff'] = fdr_cutoff
-  umi_cell_counts_dict['umis_total']             = umis_total
-  umi_cell_counts_dict['umis_median']            = umis_median
-  umi_cell_counts_dict['umis_mito_median']       = umis_mito_median
-  umi_cell_counts_dict['cell_counts_umi']        = cell_counts_umi
-  umi_cell_counts_dict['cell_counts_fdr']        = cell_counts_fdr
+  umi_cell_counts_dict['sample_name']                     = sample_name
+  umi_cell_counts_dict['umi_cutoff']                      = umi_cutoff
+  umi_cell_counts_dict['empty_drops_fdr_cutoff']          = fdr_cutoff
+  umi_cell_counts_dict['umis_total']                      = umis_total
+  umi_cell_counts_dict['umis_median']                     = umis_median
+  umi_cell_counts_dict['umis_mito_median']                = umis_mito_median
+  umi_cell_counts_dict['cell_counts_umi']                 = cell_counts_umi
+  umi_cell_counts_dict['cell_counts_fdr']                 = cell_counts_fdr
+  umi_cell_counts_dict['cell_counts_umi_100_umi_cutoff']  = cell_counts_umi_100_umi_cutoff
+  umi_cell_counts_dict['cell_counts_umi_1000_umi_cutoff'] = cell_counts_umi_1000_umi_cutoff
 
   #
   # Write output JSON file.
