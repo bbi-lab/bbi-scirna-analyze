@@ -110,6 +110,7 @@ def make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_
     stats_dict['Median_UMIs']                       = '%8d' % median_umis
     stats_dict['Median_Mitochondrial_UMIs_Percent'] = '%.1f' % median_mitochondrial_umis_percent
     stats_dict['Cells_100_UMIs']                    = '%d' % cells_100_umis
+    stats_dict['Cells_1000_UMIs']                   = '%d' % cells_1000_umis
     stats_dict['Cells_FDR_p01']                     = '%d' % cells_fdr_p01
 
     sample_stats_dict[sample_name] = stats_dict

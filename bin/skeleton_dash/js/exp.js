@@ -104,7 +104,7 @@ function Sample(props) {
             "data-toggle": "tab", href: "#nav" + safe_name + "-genes",
             role: "tab", "aria-controls": "nav" + safe_name + "-genes",
             "aria-selected": "false" },
-          "Genes BY UMIs"
+          "Genes By UMIs"
         ),
         React.createElement(
           "a",
@@ -226,8 +226,9 @@ function RegRow(props) {
 
 function StatsPane(props) {
   var sample_stat = props.sample_stats[props.sample_id];
-  // const stats_list = ["Total Reads", "Total UMIs", "Median UMIs", "Median Mitochondrial UMIs", "Duplication Rate", "Cells with >=100 UMIs", "Cells with >=1000 UMIs", "Cells with FDR<=.01", "Cells with FDR<=.001"]
-  var stats_list = ["Total Reads", "Total UMIs", "Median UMIs", "Median Mitochondrial UMIs", "Duplication Rate", "Cells with >=100 UMIs", "Cells with FDR<=.01"];
+   // const stats_list = ["Total Reads", "Total UMIs", "Median UMIs", "Median Mitochondrial UMIs", "Duplication Rate", "Cells with >=100 UMIs", "Cells with >=1000 UMIs", "Cells with FDR<=.01"]
+  //var stats_list = ["Total Reads", "Total UMIs", "Median UMIs", "Median Mitochondrial UMIs", "Duplication Rate", "Cells with >=100 UMIs", "Cells with FDR<=.01"];
+   var stats_list = ["Total Reads", "Total UMIs", "Median UMIs", "Median Mitochondrial UMIs", "Duplication Rate", "Cells with >=100 UMIs", "Cells with >=1000 UMIs", "Cells with FDR<=.01"]
 
   var safe_name = "hp" + props.sample_id.replace(/[.]/g, "");
   return React.createElement(
@@ -265,6 +266,7 @@ function StatsPane(props) {
           React.createElement(RegRow, { val: sample_stat.Median_Mitochondrial_UMIs_Percent }),
           React.createElement(RegRow, { val: sample_stat.Duplication_rate }),
           React.createElement(RegRow, { val: sample_stat.Cells_100_UMIs }),
+          React.createElement(RegRow, { val: sample_stat.Cells_1000_UMIs }),
           React.createElement(RegRow, { val: sample_stat.Cells_FDR_p01 })
         )
       )
@@ -716,6 +718,16 @@ var Table = function (_React$Component) {
       _this.setState({
         currentSort: nextSort
       });
+    }, _this.onSortc1000 = function () {
+      var currentSort = _this.state.currentSort;
+
+      var nextSort = void 0;
+
+      if (currentSort === 'c1000_down') nextSort = 'c1000_up';else if (currentSort === 'c1000_up') nextSort = 'c1000_down';else nextSort = 'c1000_up';
+
+      _this.setState({
+        currentSort: nextSort
+      });
     }, _this.onSortfdr_p01 = function () {
       var currentSort = _this.state.currentSort;
 
@@ -875,6 +887,16 @@ var Table = function (_React$Component) {
               React.createElement(
                 "th",
                 null,
+                "Cells with >=1000 UMIs",
+                React.createElement(
+                  "button",
+                  { onClick: this.onSortc100, className: "sort_button" },
+                  React.createElement("i", { className: "fas fa-sort" })
+                )
+              ),
+              React.createElement(
+                "th",
+                null,
                 "Cells with FDR <=.01",
                 React.createElement(
                   "button",
@@ -926,6 +948,12 @@ var Table = function (_React$Component) {
                   null,
                   p.Cells_100_UMIs
                 ),
+                React.createElement(
+                  "td",
+                  null,
+                  p.Cells_1000_UMIs
+                ),
+
                 React.createElement(
                   "td",
                   null,
