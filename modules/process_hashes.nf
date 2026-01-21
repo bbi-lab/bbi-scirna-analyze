@@ -163,11 +163,8 @@ process calc_tot_hash_dup {
 
 
 process assign_hash_raw {
-  errorStrategy 'ignore'
-/*
   errorStrategy 'retry'
   maxRetries 1
-*/
 
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_table.raw.csv", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_cds.raw.mobs", mode: 'copy'
@@ -192,6 +189,20 @@ process assign_hash_raw {
   # and pass the converted cell names to assign_hash.R.
   #
   well_to_barcode.py -i ${hashumis_cells_txt} -o hashumis_cells.tmp1
+
+  #
+  # Sanity test.
+  #
+  awk '{print \$1}' hashumis_cells.tmp1 > hashumis_cells.tmp3
+  diff ${hashumis_cells_txt} hashumis_cells.tmp3
+  exit_value=\$?
+  if [ \$exit_value -eq 1 ]
+  then
+    echo 'Error: inconsistent cell names in well_to_barcode.py output file.'
+    exit -1
+  fi
+  rm hashumis_cells.tmp3
+
   awk '{print \$2}' hashumis_cells.tmp1 > hashumis_cells.tmp2
 
   assign_hash.R \

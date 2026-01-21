@@ -171,7 +171,7 @@ fwrite(corrected_hash_table, file=paste0(sample_name, "_hash_table.", args$matri
 # merge hash table with cds to assign to cells
 # If hash table is empty, put NA for each hash column 
 message(paste0('corrected hash table dim: ', dim(corrected_hash_table), '\n'))
-message(corrected_hash_table)
+# message(corrected_hash_table)
 if (dim(corrected_hash_table)[1] != 0) {
 #   merged = as.data.table(merge(x=corrected_hash_table, y=colData(cds), by = "cell",all.x=FALSE, all.y=TRUE))
 #   merged <- merged %>% mutate_at(vars("hash_umis"), ~replace_na(., 0)) # add 0 if a cell has no hash
