@@ -548,6 +548,7 @@ gen_barnyard_plot_mouse_human <- function(sample_name, cds) {
 
 gen_barnyard_plot_generic <- function(cds, sample_name, genome) {
   plot_type_dict = list('Barnyard' =          list('organism_1_tag' = 'Mouse',     'gene_1_tag' = 'ENSMUSG',    'organism_2_tag' = 'Human', 'gene_2_tag' = 'ENSG' ),
+                        'Barnyard_bcp' =      list('organism_1_tag' = 'Mouse',     'gene_1_tag' = 'ENSMUSG',    'organism_2_tag' = 'Human', 'gene_2_tag' = 'ENSG' ),
                         'Fishbowl_seahub' =   list('organism_1_tag' = 'Zebrafish', 'gene_1_tag' = 'ENSDARG',    'organism_2_tag' = 'Mouse', 'gene_2_tag' = 'ENSMUSG' ),
                         'fishbowlGenomeGen' = list('organism_1_tag' = 'Zebrafish', 'gene_1_tag' = 'ENSDARG',    'organism_2_tag' = 'Human', 'gene_2_tag' = 'ENSG' ))
 
@@ -757,7 +758,7 @@ bbi_sci_gen_plots <- function(sample_name, sample_path, umis_file, emptydrops_fi
   #
   # Make barnyard plots.
   #
-  barnyard_flag <- c(genome) %in% c('Barnyard', 'Fishbowl_seahub', 'fishbowlGenomeGen')
+  barnyard_flag <- c(genome) %in% c('Barnyard', 'Barnyard_bcp', 'Fishbowl_seahub', 'fishbowlGenomeGen')
   if(barnyard_flag) {
     message('make barnyard plots')
     if(pipeline_name == 'bbi-sci') {
