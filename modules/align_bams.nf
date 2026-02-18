@@ -54,6 +54,38 @@ process align_bams {
   \${STAR_ALIGNER} \
       --runThreadN ${align_cpus} \
       --genomeDir ${sample_map['star_index']} \
+      --soloType CB_UMI_Simple \
+      --soloBarcodeReadLength 0 \
+      --soloCBwhitelist None \
+      --soloCBtype String \
+      --soloInputSAMattrBarcodeSeq CB UB \
+      --outSAMtype BAM SortedByCoordinate \
+      --outSAMattributes NH HI nM AS GX GN sM \
+      --outSJtype None \
+      --outFilterMultimapNmax 6 \
+      --soloUMIdedup 1MM_All \
+      --soloCellReadStats Standard \
+      --soloStrand Forward \
+      --soloFeatures GeneFull_Ex50pAS \
+      --soloMultiMappers PropUnique \
+      --soloCellFilter None \
+      --readFilesType SAM SE \
+      --readFilesIn \
+        ${bam_in} \
+      --readFilesCommand samtools view \
+      --outFileNamePrefix "${out_dir}/"
+  """
+}
+
+/*
+**
+** soloCBtype = Sequence
+** This was the standard until today (20260217) when I
+** change soloCBtype to String.
+**
+ \${STAR_ALIGNER} \
+      --runThreadN ${align_cpus} \
+      --genomeDir ${sample_map['star_index']} \
       --soloCBmatchWLtype Exact \
       --soloType CB_UMI_Simple \
       --soloBarcodeMate 0 \
@@ -79,8 +111,8 @@ process align_bams {
         ${bam_in} \
       --readFilesCommand samtools view \
       --outFileNamePrefix "${out_dir}/"
-  """
-}
+*/
+
 
 /*
 ** Ss barcode+umi tag

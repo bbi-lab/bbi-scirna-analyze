@@ -23,7 +23,7 @@
 #
 
 
-program_version = "0.1.1"
+program_version = "0.1.2"
 
 
 import sys
@@ -130,28 +130,45 @@ def matrix_concatenation(file_name_list, matrix_dimension_list, data_type, out_r
     sum_elem += matrix_dim[2]
 
   print('%%%%MatrixMarket matrix coordinate %s general' % data_type, file=ofh)
-#  print('%', file=ofh)
+  print('%', file=ofh)
   print('%d %d %d' % (matrix_dimension_list[0][0], sum_col, sum_elem), file=ofh)
 
   #
-  # It makes sense to process the comments and counts line
-  # outside the main loop, when there is time to work on it.
+  # Process the comments and dimension line
+  # outside the main loop.
   #
   cum_barcode_count = 0
+  cum_nonzero_elem = 0
   for ifile, file_names in enumerate(file_name_list):
     in_matrix_name = file_names[0]
 #    print('==== %s' % (in_matrix_name), file=ofh)
     with open(in_matrix_name, 'r') as ifh:
-      num_data = 0
+      for i, line in enumerate(ifh):
+        if(i == 0):
+          # Skip header line.
+          continue
+        elif(re.match(r'%', line)):
+          # Skip comment lines.
+          continue
+        else:
+          # This is the dimension line.
+          # The next line is the start of the coordinate data.
+          break
+
+      # These are the data lines.
       for line in ifh:
-        if(re.match(r'%', line)):
-          continue
-        num_data += 1
-        if(num_data == 1):
-          continue
+        cum_nonzero_elem += 1
         toks = line.split()
         print('%s %d %s' % (toks[0], int(toks[1]) + cum_barcode_count, toks[2]), file=ofh)
     cum_barcode_count += matrix_dimension_list[ifile][1]
+
+  if(cum_barcode_count != sum_col):
+    print('Error: inconsistent cell count in concatenation.', file=sys.stderr)
+    sys.exit(-1)
+
+  if(cum_nonzero_elem != sum_elem):
+    print('Error: inconsistent non-zero element count in concatenation.', file=sys.stderr)
+    sys.exit(-1)
 
   #
   # Copy cell names to a file.
@@ -179,14 +196,20 @@ def matrix_concatenation(file_name_list, matrix_dimension_list, data_type, out_r
   #
   # Check for duplicate cell names.
   #
+  num_cell_name_file = 0
   with open(out_barcodes_name, 'r') as ifh:
     cell_name_set = set()
     for line in ifh:
+      num_cell_name_file += 1
       cell_name = line.strip()
       if(cell_name in cell_name_set):
         print('Error: duplicate cell names in count matrix.', file=sys.stderr)
         sys.exit(-1)
       cell_name_set.add(cell_name)
+
+  if(num_cell_name_file != sum_col):
+    print('Error: inconsistent cell name count in cell name file.', file=sys.stderr)
+    sys.exit(-1)
 
   #
   # Copy features to a file.

@@ -109,9 +109,15 @@ def make_barcode_decoder(max_index):
 #       p5_well_dict[encoded4_index] = 'P%02d-%s' % (ipl+1, swell)
 
     (ipl, swell) = index_to_well(index-1, True)
-    p7_well_dict[encoded4_index] = 'P%02d-%s' % (ipl+1, swell)
+    if(swell != 'none'):
+      p7_well_dict[encoded4_index] = 'P%02d-%s' % (ipl+1, swell)
+    else:
+      p7_well_dict[encoded4_index] = '%s' % (swell)
     (ipl, swell) = index_to_well(index-1, False)
-    p5_well_dict[encoded4_index] = 'P%02d-%s' % (ipl+1, swell)
+    if(swell != 'none'):
+      p5_well_dict[encoded4_index] = 'P%02d-%s' % (ipl+1, swell)
+    else:
+      p5_well_dict[encoded4_index] = '%s' % (swell)
 
   return((rt_well_dict, lig_well_dict, p7_well_dict, p5_well_dict))
 
