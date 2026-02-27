@@ -168,6 +168,7 @@ process assign_hash_raw {
 
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_table.raw.csv", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_cds.raw.mobs", mode: 'copy'
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_cds.raw.col_data.tsv", mode: 'copy'
 
   input:
   tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(counts_per_cell), path(mobs), path(umi_counts)
@@ -175,6 +176,7 @@ process assign_hash_raw {
   output:
   path("*hash_table.raw.csv"), emit: hash_table
   tuple val(sample_name), path("*hash_cds.raw.mobs"), path(umi_counts), emit: mobs
+  tuple val(sample_name), path("*_hash_cds.raw.col_data.tsv"), emit: col_data
 
   script:
   """
@@ -215,6 +217,8 @@ process assign_hash_raw {
     ${counts_per_cell} \
     ${params.hash_umi_cutoff} \
     ${params.hash_ratio}
+
+  write_col_data.R ${sample_name}_hash_cds.raw.mobs ${sample_name}_hash_cds.raw.col_data.tsv
 
   rm hashumis_cells.tmp1 hashumis_cells.tmp2
   rm -r tmp_dir
