@@ -62,13 +62,14 @@ process cat_hashes {
   tuple val(sample_name), path("*_hashumis.mtx"), path("*_hashumis_cells.txt"), path("*_hashumis_hashes.txt"), path("*_hash_umis_per_cell_txt"), path("*_hash_dup_per_cell_txt"), path("*_hash_reads_per_cell_txt"), path("*_hash_assigned_table_txt"), path("*_hash_log")
 
   output:
+  tuple val(sample_name), path("*.hashumis.mtx"), path("*.hashumis_cells.txt"), path("*.hashumis_hashes.txt"), emit: hash_matrix
+
   tuple val(sample_name), path("*_hash_umis_per_cell.txt"), emit: hash_umis_per_cell
   tuple val(sample_name), path("*_hash_dup_per_cell.txt"), emit: hash_dup_per_cell
-  tuple val(sample_name), path("*.hashumis.mtx"), path("*.hashumis_cells.txt"), path("*.hashumis_hashes.txt"), emit: hash_matrix
+  tuple val(sample_name), path("*_hash_read_rate.txt"), emit: hash_read_rate
   path("*_hash.log")
   path("*_hash_assigned_table.txt")
   path("*_hash_reads_per_cell.txt")
-  path("*_hash_read_rate.txt")
 
   script:
   """

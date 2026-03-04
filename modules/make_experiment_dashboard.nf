@@ -9,6 +9,7 @@ process make_experiment_dashboard {
     path("*") // merge_starsolo_reports.out.cell_reads_stats
     path("*") // make_umi_counts.out.umi_counts_tsv
     path("*") // run_empty_drops.out.empty_drops_fdr
+    path("*") // cat_hashes.out.hash_read_rate
     path("*") // make_experiment_dashboard_png_channel_in
     path("*") // make_experiment_dashboard_txt_channel_in
     path(sample_maps_json)

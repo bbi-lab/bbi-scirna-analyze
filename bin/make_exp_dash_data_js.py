@@ -10,7 +10,7 @@ import math
 #
 # Program version string.
 #
-program_version = '0.1.0'
+program_version = '0.2.0'
 
 
 #
@@ -59,6 +59,38 @@ def read_umi_cell_statistics(sample_name_list):
   return(umi_cell_statistics_dict)
 
 
+# [
+#   ...
+#   {
+#     "sample_name": "SeahubZ01-001",
+#     "genome": "Zebrafish",
+#     "hash_file": "/net/bbi/vol2/home/bge/bbi/tests/nobackup/RNA3-72-a.bbi_scirna_analyze.20260303.exp_dash_hash_read_rate/timecourse_hash2.txt",
+#     "sample_flags": "",
+#     "star_index": "/net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_star_2_7",
+#     "star_memory": 40,
+#     "genes_bed": "/net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_star_2_7/latest.genes.bed"
+#   },
+#   ...
+# ]
+def read_hash_read_rates(sample_map_list):
+  hash_read_rate_dict = dict()
+  for sample_map in sample_map_list:
+    sample_name = sample_map['sample_name']
+    hash_read_rate = 'NA'
+    if(sample_map['hash_file'] != None):
+      hash_file = sample_map['hash_file']
+      if(len(hash_file) > 0):
+        filename = '%s_hash_read_rate.txt' % (sample_name)
+        with open(filename, 'r') as ifh:
+          for line in ifh:
+            mobj = re.match('Hash rate: ([0-9.]+)', line)
+            if(mobj != None):
+              hash_read_rate = mobj.group(1)
+              break
+    hash_read_rate_dict[sample_name] = hash_read_rate
+  return(hash_read_rate_dict)
+
+
 #
 # const run_data =
 # {
@@ -84,7 +116,7 @@ def read_umi_cell_statistics(sample_name_list):
 #       "Cells_FDR_p01": "-"
 #     },
 # 
-def make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_statistics_dict):
+def make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_statistics_dict, hash_read_rate_dict):
   sample_stats_dict = dict()
   for sample_name in sample_name_list:
     total_reads              = cellread_statistics_dict[sample_name]['sum_counted_reads_unique'] + cellread_statistics_dict[sample_name]['sum_counted_reads_multi']
@@ -96,6 +128,7 @@ def make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_
     cells_1000_umis          = umi_cell_statistics_dict[sample_name]['cell_counts_umi_1000_umi_cutoff']
     cells_fdr_p01            = umi_cell_statistics_dict[sample_name]['cell_counts_fdr']
 #    cells_100_umis           = umi_cell_statistics_dict[sample_name]['cell_counts_umi']
+    hash_read_rate           = hash_read_rate_dict[sample_name]
 
     if(median_umis > 0):
       median_mitochondrial_umis_percent = (float(median_mitochondial_umis) / float(median_umis)) * 100.0
@@ -112,6 +145,7 @@ def make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_
     stats_dict['Cells_100_UMIs']                    = '%d' % cells_100_umis
     stats_dict['Cells_1000_UMIs']                   = '%d' % cells_1000_umis
     stats_dict['Cells_FDR_p01']                     = '%d' % cells_fdr_p01
+    stats_dict['Hash_Read_Rate']                    = '%.2f' % float(hash_read_rate) if(hash_read_rate != 'NA') else 'NA'
 
     sample_stats_dict[sample_name] = stats_dict
 
@@ -209,11 +243,15 @@ if __name__ == '__main__':
   umi_cell_statistics_dict = read_umi_cell_statistics(sample_name_list)
   # print(json.dumps(umi_cell_statistics, indent=2))
 
+  #
+  # Read hash read rates.
+  #
+  hash_read_rate_dict = read_hash_read_rates(sample_map)
 
   #
   # Make sample data.
   #
-  sample_stats_dict = make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_statistics_dict)
+  sample_stats_dict = make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_statistics_dict, hash_read_rate_dict)
 
   #
   # Make run data.
