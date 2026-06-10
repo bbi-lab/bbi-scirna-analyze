@@ -4,6 +4,7 @@ def make_umi_counts_function(item) {
   def in_features = params.object_map.cat_matrices_raw_map[item['in_features']]
   def in_barcodes = params.object_map.cat_matrices_raw_map[item['in_barcodes']]
   def out_file = item['out_file']
+
   return([sample_name, out_file, in_matrix, in_features, in_barcodes])
 }
 
@@ -22,6 +23,7 @@ process make_umi_counts {
   tuple val(sample_name), path("*_umi_counts.tsv"), emit: umi_counts_tsv
 
 
+  script:
   """
   # bash watch for errors
   set -ueo pipefail

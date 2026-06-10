@@ -25,6 +25,7 @@ process trim_bams {
   path("*.trimmed.bam"), emit: trimmed_bams
   tuple val(sample_name), path("*.trimming_report.txt"), emit: trimmer_logs
 
+  script:
   """
   # bash watch for errors
   set -ueo pipefail
@@ -106,6 +107,7 @@ process aggregate_trimmer_logs {
   output:
   path("*_trimgalore_counts.json"), emit: trimgalore_counts
 
+  script:
   """
   # bash watch for errors
   set -ueo pipefail

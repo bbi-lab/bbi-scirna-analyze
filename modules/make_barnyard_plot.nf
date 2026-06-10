@@ -4,6 +4,7 @@ def make_barnyard_plot_function(item) {
   def mobs_path = params.object_map.run_scrublet_cds_map[item['in_mobs']]
   def genome = item['genome']
   def barnyard_flag = item['barnyard_flag']
+
   return([sample_name, out_file, mobs_path, genome, barnyard_flag])
 }
 

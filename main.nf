@@ -16,8 +16,8 @@ params.run_empty_drops = true
 params.run_scrublet = true
 
 
-demux_out = "${params.output_dir}/demux_out"
-genomes_data_file = "${params.bin_dir}/genomes_data.json"
+def demux_out = "${params.output_dir}/demux_out"
+def genomes_data_file = "${params.bin_dir}/genomes_data.json"
 
 
 /*
@@ -28,7 +28,7 @@ params.object_map = [:]
 /*
 ** Dummy channel path file.
 */
-dummy_file = "${params.bin_dir}/channel_dummy.xxx"
+def dummy_file = "${params.bin_dir}/channel_dummy.xxx"
 
 /*
 ** For the maps below, the keys are filenames
@@ -88,7 +88,7 @@ def merge_demux_closure = {
           def sample_name = item['sample_name']
           def out_name = item['out_file']
           def in_file_list = []
-          for(in_file in item['in_file_list']) {
+          for(def in_file in item['in_file_list']) {
             in_file_list.add(file(in_file))
           }
           [sample_name, out_name, in_file_list]
@@ -101,7 +101,7 @@ def read_json(filename) {
   def file_json = new File(filename.toString())
   def json_text = file_json.getText()
   def json_slurper = new groovy.json.JsonSlurper()
-  json_object = json_slurper.parseText(json_text) 
+  def json_object = json_slurper.parseText(json_text) 
   return(json_object)
 }
 
