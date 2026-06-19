@@ -579,7 +579,7 @@ fn main() {
   */
   let hash_lookup = barcode_utils::read_barcode_file(&hash_sheet).unwrap();
   let barcodes: Vec<String> = hash_lookup.keys().cloned().collect();
-  let hash_whitelist: Vec<HashMap<String, String>> = barcode_utils::construct_mismatch_to_whitelist_map(barcodes, 1, true).unwrap();
+  let hash_whitelist: Vec<HashMap<String, String>> = barcode_utils::construct_mismatch_to_whitelist_map(barcodes, hash_edit_distance, true).unwrap();
 
   /*
   ** Initialize counters...

@@ -1,0 +1,26 @@
+[
+  {
+    "sample_name": "Sample01-001",
+    "out_file": "Sample01-001.aligned.bam",
+    "in_dir_list": [
+      "Sample01-001_011_013.trimmed",
+      "Sample01-001_012_013.trimmed"
+    ]
+  },
+  {
+    "sample_name": "Sample02-002",
+    "out_file": "Sample02-002.aligned.bam",
+    "in_dir_list": [
+      "Sample02-002_011_014.trimmed",
+      "Sample02-002_012_014.trimmed"
+    ]
+  },
+  {
+    "sample_name": "Sample03-003",
+    "out_file": "Sample03-003.aligned.bam",
+    "in_dir_list": [
+      "Sample03-003_011_015.trimmed",
+      "Sample03-003_012_015.trimmed"
+    ]
+  }
+]
