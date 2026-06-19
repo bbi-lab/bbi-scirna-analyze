@@ -70,10 +70,6 @@ include { make_generate_qc_hash; make_generate_qc_no_hash } from './modules/make
 include { make_experiment_dashboard } from './modules/make_experiment_dashboard.nf'
 
 
-/*
-** Set up channels.
-*/
-samplesheet_file = channel.fromPath(params.samplesheet_json)
 
 
 /*
@@ -140,6 +136,8 @@ def trim_tuple_closure = {
 ** Run pipeline.
 */
 workflow {
+  def samplesheet_file = channel.fromPath(params.samplesheet_json)
+
   /*
   ** Set up and run samtools to merge (unaligned) input BAM files.
   */
@@ -200,17 +198,15 @@ workflow {
   **      but I cannot think of one at this time.
   */      
   merge_demux.out.subscribe onNext: {
-    path -> {
+    path ->
       def file_base_name = path.toString().tokenize('/').last()
       params.object_map.merge_bam_map[file_base_name] = path
-    }
   }
 
   merge_demux.out.subscribe onNext: {
-    path -> {
+    path ->
       def file_base_name = path.toString().tokenize('/').last()
       params.object_map.process_hashes_map[file_base_name] = path
-    }
   }
 
   /*
