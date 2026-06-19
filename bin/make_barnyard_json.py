@@ -79,7 +79,7 @@ def make_barnyard_file_json(barnyard_dict):
     json.dump(barnyard_plot_list, fh, indent=2)
   except:
     print('Error: unable to write output file \"%s\"' % (filename_json), file=sys.stderr)
-    sys.exit(-1)
+    sys.exit(1)
 
 
 if __name__ == '__main__':
