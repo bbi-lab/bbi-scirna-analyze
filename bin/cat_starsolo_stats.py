@@ -32,7 +32,7 @@ def process_files(in_filenames, out_filename, delimiter ):
       header_row = next(csv_reader)
       if(ifile != 0):
        if(not header_row == ref_header_row):
-         print('Error: input CSV file headers differ.' file=sys.stderr)
+         print('Error: input CSV file headers differ.', file=sys.stderr)
          sys.exit(1)
       else:
         ref_header_row = header_row
