@@ -115,7 +115,7 @@ fn process_bam_file(hash_edit_distance: usize,
     polya = &seq[11..15];
     is_hash = false;
     if(polya == "AAAA") {
-      hashbc = &seq[0..10];
+      hashbc = &seq[0..10].to_ascii_uppercase();
       for i in (0..hash_edit_distance+1) {
         if let Some(hashval_tmp) = hash_whitelist[i].get(hashbc) {
           is_hash = true;
