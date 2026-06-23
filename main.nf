@@ -14,6 +14,7 @@ params.hash_ratio = false
 params.hash_dup = false //Default is false. Other options are "p5" or "pcr_plate".
 params.run_empty_drops = true
 params.run_scrublet = true
+params.cpuid_level = 22
 
 
 def demux_out = "${params.output_dir}/demux_out"
@@ -244,10 +245,9 @@ workflow {
   ** Set up and run STAR aligner in STARsolo mode.
   */
   trim_bams.out.trimmed_bams.subscribe onNext: {
-    path -> {
+    path ->
       def file_base_name = path.toString().tokenize('/').last()
       params.object_map.trim_bam_map[file_base_name] = path
-    }
   }
 
   make_star_align_json(samplesheet_file, trim_bams.out.trimmed_bams.collect())
@@ -260,10 +260,9 @@ workflow {
   ** the STAR BAM file paths.
   */
   align_bams.out.subscribe onNext: {
-    path -> {
+    path ->
       def dir_base_name = path.toString().tokenize('/').last()
       params.object_map.merge_align_bam_map[dir_base_name] = path
-    }
   }
 
   make_merge_align_json(samplesheet_file, align_bams.out.collect())
@@ -296,7 +295,7 @@ workflow {
   ** Make cat_matrices_raw_map map with matrix file paths.
   */
   cat_matrices_raw.out.raw_matrix.subscribe onNext: {
-    def tup -> {
+    def tup ->
       def cells_path = tup[1]
       def cells_base_name = cells_path.toString().tokenize('/').last()
       params.object_map.cat_matrices_raw_map[cells_base_name] = cells_path
@@ -308,7 +307,6 @@ workflow {
       def matrix_path = tup[3]
       def matrix_base_name = matrix_path.toString().tokenize('/').last()
       params.object_map.cat_matrices_raw_map[matrix_base_name] = matrix_path
-    }
   }
 
   /*
@@ -350,11 +348,10 @@ workflow {
   **        tuple val(sample_name), path("*.raw.mobs"), emit: cds
   */
   run_scrublet.out.cds.subscribe onNext: {
-    def tup -> {
+    def tup ->
       def path = tup[1]
       def file_base_name = path.toString().tokenize('/').last()
       params.object_map.run_scrublet_cds_map[file_base_name] = path
-    }
   }
 
   /*
