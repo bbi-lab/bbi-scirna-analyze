@@ -14,10 +14,11 @@ params.hash_ratio = false
 params.hash_dup = false //Default is false. Other options are "p5" or "pcr_plate".
 params.run_empty_drops = true
 params.run_scrublet = true
+params.cpuid_level = 22
 
 
-demux_out = "${params.output_dir}/demux_out"
-genomes_data_file = "${params.bin_dir}/genomes_data.json"
+def demux_out = "${params.output_dir}/demux_out"
+def genomes_data_file = "${params.bin_dir}/genomes_data.json"
 
 
 /*
@@ -28,7 +29,7 @@ params.object_map = [:]
 /*
 ** Dummy channel path file.
 */
-dummy_file = "${params.bin_dir}/channel_dummy.xxx"
+def dummy_file = "${params.bin_dir}/channel_dummy.xxx"
 
 /*
 ** For the maps below, the keys are filenames
@@ -70,10 +71,6 @@ include { make_generate_qc_hash; make_generate_qc_no_hash } from './modules/make
 include { make_experiment_dashboard } from './modules/make_experiment_dashboard.nf'
 
 
-/*
-** Set up channels.
-*/
-samplesheet_file = channel.fromPath(params.samplesheet_json)
 
 
 /*
@@ -88,7 +85,7 @@ def merge_demux_closure = {
           def sample_name = item['sample_name']
           def out_name = item['out_file']
           def in_file_list = []
-          for(in_file in item['in_file_list']) {
+          for(def in_file in item['in_file_list']) {
             in_file_list.add(file(in_file))
           }
           [sample_name, out_name, in_file_list]
@@ -101,7 +98,7 @@ def read_json(filename) {
   def file_json = new File(filename.toString())
   def json_text = file_json.getText()
   def json_slurper = new groovy.json.JsonSlurper()
-  json_object = json_slurper.parseText(json_text) 
+  def json_object = json_slurper.parseText(json_text) 
   return(json_object)
 }
 
@@ -140,6 +137,8 @@ def trim_tuple_closure = {
 ** Run pipeline.
 */
 workflow {
+  def samplesheet_file = channel.fromPath(params.samplesheet_json)
+
   /*
   ** Set up and run samtools to merge (unaligned) input BAM files.
   */
@@ -200,17 +199,15 @@ workflow {
   **      but I cannot think of one at this time.
   */      
   merge_demux.out.subscribe onNext: {
-    path -> {
+    path ->
       def file_base_name = path.toString().tokenize('/').last()
       params.object_map.merge_bam_map[file_base_name] = path
-    }
   }
 
   merge_demux.out.subscribe onNext: {
-    path -> {
+    path ->
       def file_base_name = path.toString().tokenize('/').last()
       params.object_map.process_hashes_map[file_base_name] = path
-    }
   }
 
   /*
@@ -248,10 +245,9 @@ workflow {
   ** Set up and run STAR aligner in STARsolo mode.
   */
   trim_bams.out.trimmed_bams.subscribe onNext: {
-    path -> {
+    path ->
       def file_base_name = path.toString().tokenize('/').last()
       params.object_map.trim_bam_map[file_base_name] = path
-    }
   }
 
   make_star_align_json(samplesheet_file, trim_bams.out.trimmed_bams.collect())
@@ -264,10 +260,9 @@ workflow {
   ** the STAR BAM file paths.
   */
   align_bams.out.subscribe onNext: {
-    path -> {
+    path ->
       def dir_base_name = path.toString().tokenize('/').last()
       params.object_map.merge_align_bam_map[dir_base_name] = path
-    }
   }
 
   make_merge_align_json(samplesheet_file, align_bams.out.collect())
@@ -300,7 +295,7 @@ workflow {
   ** Make cat_matrices_raw_map map with matrix file paths.
   */
   cat_matrices_raw.out.raw_matrix.subscribe onNext: {
-    def tup -> {
+    def tup ->
       def cells_path = tup[1]
       def cells_base_name = cells_path.toString().tokenize('/').last()
       params.object_map.cat_matrices_raw_map[cells_base_name] = cells_path
@@ -312,7 +307,6 @@ workflow {
       def matrix_path = tup[3]
       def matrix_base_name = matrix_path.toString().tokenize('/').last()
       params.object_map.cat_matrices_raw_map[matrix_base_name] = matrix_path
-    }
   }
 
   /*
@@ -354,11 +348,10 @@ workflow {
   **        tuple val(sample_name), path("*.raw.mobs"), emit: cds
   */
   run_scrublet.out.cds.subscribe onNext: {
-    def tup -> {
+    def tup ->
       def path = tup[1]
       def file_base_name = path.toString().tokenize('/').last()
       params.object_map.run_scrublet_cds_map[file_base_name] = path
-    }
   }
 
   /*

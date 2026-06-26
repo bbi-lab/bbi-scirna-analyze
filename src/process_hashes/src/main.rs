@@ -115,7 +115,7 @@ fn process_bam_file(hash_edit_distance: usize,
     polya = &seq[11..15];
     is_hash = false;
     if(polya == "AAAA") {
-      hashbc = &seq[0..10];
+      let hashbc = &seq[0..10].to_ascii_uppercase();
       for i in (0..hash_edit_distance+1) {
         if let Some(hashval_tmp) = hash_whitelist[i].get(hashbc) {
           is_hash = true;
@@ -579,7 +579,7 @@ fn main() {
   */
   let hash_lookup = barcode_utils::read_barcode_file(&hash_sheet).unwrap();
   let barcodes: Vec<String> = hash_lookup.keys().cloned().collect();
-  let hash_whitelist: Vec<HashMap<String, String>> = barcode_utils::construct_mismatch_to_whitelist_map(barcodes, 1, true).unwrap();
+  let hash_whitelist: Vec<HashMap<String, String>> = barcode_utils::construct_mismatch_to_whitelist_map(barcodes, hash_edit_distance, true).unwrap();
 
   /*
   ** Initialize counters...
@@ -623,7 +623,7 @@ fn main() {
   for bam_filename in bam_filenames {
     let mut bam_reader = rust_htslib::bam::Reader::from_path(&bam_filename).expect("Error: unable to open BAM file");
     bam_reader.set_threads(num_threads).expect("Error: unable to set number of threads for BAM file reading");
-    let _ = process_bam_file(hash_edit_distance, &hash_whitelist, &mut cells, &mut read_counts, &mut hash_counts, &mut hashdict, &mut bam_reader, &mut num_hash, &hash_lookup);
+    let _ = process_bam_file(hash_edit_distance, &hash_whitelist, &mut cells, &mut read_counts, &mut hash_counts, &mut hashdict, &mut bam_reader, &mut num_hash, &hash_lookup).expect("Error: bad status: process_bam_file.");
   }
 
   // dump_nested_maps(&mut hashdict);
@@ -637,7 +637,7 @@ fn main() {
   ** Write matrix.
   ** Note: row_names and col_names were moved and dropped internally.
   */
-  let _ = write_matrix(&key, row_names, col_names, &smat);
+  let _ = write_matrix(&key, row_names, col_names, &smat).expect("Error: bad status: write_matrix");
   drop(smat);
 
   /*

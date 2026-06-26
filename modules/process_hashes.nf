@@ -33,6 +33,7 @@ process process_hashes {
   **   o  2 threads appears to be optimal
   */
 
+  script:
   """
   # bash watch for errors
   set -ueo pipefail
@@ -143,7 +144,6 @@ process calc_tot_hash_dup {
   maxRetries 2
 
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_total_hash_dup_rate.csv", mode: 'copy'
-
   input:
   tuple val(sample_name), path(hash_dup_per_cell)
 

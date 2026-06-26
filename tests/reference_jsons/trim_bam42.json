@@ -1,0 +1,38 @@
+[
+  {
+    "sample_name": "Sample01-001",
+    "root_file": "Sample01-001_011_013",
+    "in_file": "Sample01-001_011_013.merged.bam",
+    "out_file": "Sample01-001_011_013.trimmed.bam"
+  },
+  {
+    "sample_name": "Sample01-001",
+    "root_file": "Sample01-001_012_013",
+    "in_file": "Sample01-001_012_013.merged.bam",
+    "out_file": "Sample01-001_012_013.trimmed.bam"
+  },
+  {
+    "sample_name": "Sample01-002",
+    "root_file": "Sample01-002_011_014",
+    "in_file": "Sample01-002_011_014.merged.bam",
+    "out_file": "Sample01-002_011_014.trimmed.bam"
+  },
+  {
+    "sample_name": "Sample01-002",
+    "root_file": "Sample01-002_012_014",
+    "in_file": "Sample01-002_012_014.merged.bam",
+    "out_file": "Sample01-002_012_014.trimmed.bam"
+  },
+  {
+    "sample_name": "Sample01-003",
+    "root_file": "Sample01-003_011_015",
+    "in_file": "Sample01-003_011_015.merged.bam",
+    "out_file": "Sample01-003_011_015.trimmed.bam"
+  },
+  {
+    "sample_name": "Sample01-003",
+    "root_file": "Sample01-003_012_015",
+    "in_file": "Sample01-003_012_015.merged.bam",
+    "out_file": "Sample01-003_012_015.trimmed.bam"
+  }
+]

@@ -1,7 +1,7 @@
 {
   "Human": {
-     "genes_bed": "net/bbi/vol1/data/genomes_stage/human/human_rna/latest.genes.bed",
-     "star_index": "net/bbi/vol1/data/genomes_stage/human/human_star_2_7",
+     "genes_bed": "/net/bbi/vol1/data/genomes_stage/human/human_rna/latest.genes.bed",
+     "star_index": "/net/bbi/vol1/data/genomes_stage/human/human_star_2_7",
      "star_memory": 60
   },
   "Mouse": {
@@ -44,5 +44,10 @@
      "genes_bed": "/net/bbi/vol1/data/genomes_bcp/barnyard_bcp/genes/latest.genes.bed",
      "star_index": "/net/bbi/vol1/data/genomes_bcp/barnyard_bcp/star_2_7_11b",
      "star_memory": 90
+  },
+  "zebrafish_bcp": {
+     "genes_bed": "/net/bbi/vol1/data/genomes_bcp/zebrafish_bcp/genes/latest.genes.bed",
+     "star_index": "/net/bbi/vol1/data/genomes_bcp/zebrafish_bcp/Danio_rerio_v115_Extended_STAR",
+     "star_memory": 40
   }
 }

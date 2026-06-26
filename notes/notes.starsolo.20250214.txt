@@ -168,3 +168,25 @@ nUMImulti:    for the total number of counted UMI for multi-gene reads
 nGenesMulti:  for the number of genes for multi-gene reads
 
 
+== ScaleRna STARsolo parameters
+
+STAR --runThreadN 14
+     --genomeDir zebrafish_star_2_7
+     --soloType CB_UMI_Simple
+     --soloBarcodeReadLength 0
+     --soloCBwhitelist None
+     --soloCBtype String
+     --outSAMtype None
+     --outSJtype None
+     --soloCellReadStats Standard
+     --soloStrand Forward
+     --soloFeatures GeneFull_Ex50pAS
+     --soloMultiMappers PropUnique
+     --readFilesIn demuxed_ubam1.bam,demuxed_ubam2.bam,demuxed_ubam3.bam,demuxed_ubam4.bam,demuxed_ubam5.bam,demuxed_ubam6.bam,demuxed_ubam7.bam,demuxed_ubam8.bam,demuxed_ubam9.bam,demuxed_ubam10.bam,demuxed_ubam11.bam,demuxed_ubam12.bam,demuxed_ubam13.bam,demuxed_ubam14.bam,demuxed_ubam15.bam,demuxed_ubam16.bam,demuxed_ubam17.bam,demuxed_ubam18.bam,demuxed_ubam19.bam,demuxed_ubam20.bam,demuxed_ubam21.bam,demuxed_ubam22.bam,demuxed_ubam23.bam,demuxed_ubam24.bam,demuxed_ubam25.bam,demuxed_ubam26.bam,demuxed_ubam27.bam,demuxed_ubam28.bam,demuxed_ubam29.bam,demuxed_ubam30.bam,demuxed_ubam31.bam,demuxed_ubam32.bam
+     --readFilesType SAM SE
+     --readFilesCommand samtools view
+     --soloInputSAMattrBarcodeSeq CB UM
+     --soloCellFilter None
+     --outFilterMultimapNmax 6
+
+
