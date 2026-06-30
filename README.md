@@ -2,7 +2,7 @@
 
 ## Intro
 
-This *bbi-scirna-analyze* pipeline reads the unaligned BAM files from the *bbi-scirna-demux* pipeline, runs trimming and alignment programs, and makes a CDS file. Use the *develop* branch.
+This *bbi-scirna-analyze* pipeline reads the unaligned BAM files from the *bbi-scirna-demux* pipeline, runs trimming and alignment programs, and makes a CDS file. Use the *main* branch.
 
 ## Installation
 
