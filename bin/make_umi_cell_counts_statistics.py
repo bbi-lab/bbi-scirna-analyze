@@ -95,8 +95,9 @@ if __name__ == '__main__':
   empty_drops_fdr = pd.read_csv(filepath_or_buffer=empty_drops_fdr_filename, sep='\t', header=0, index_col='cell')
 
   if(len(empty_drops_fdr) > 0):
-    cell_umi_counts_joined = cell_umi_counts.join(other=empty_drops_fdr, on='cell', how='left')
-    cell_umi_counts_fdr = cell_umi_counts_joined.loc[cell_umi_counts_joined['FDR'] <= fdr_cutoff]
+    barcode_umi_counts = barcode_umi_counts_sums.join(other=barcode_umi_counts_in, on='cell', how='inner')
+    barcode_umi_counts_joined = barcode_umi_counts.join(other=empty_drops_fdr, on='cell', how='left')
+    cell_umi_counts_fdr = barcode_umi_counts_joined.loc[barcode_umi_counts_joined['FDR'] <= fdr_cutoff]
     cell_counts_fdr = len(cell_umi_counts_fdr)
   else:
     cell_counts_fdr = -1
