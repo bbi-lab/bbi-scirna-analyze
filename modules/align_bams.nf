@@ -40,8 +40,7 @@ process align_bams {
   # bash watch for errors
   set -ueo pipefail
 
-  # STAR_ALIGNER=${task.ext.star_path}
-  STAR_ALIGNER='STAR'
+  STAR_ALIGNER=${task.ext.star_path}
 
   #
   # Notes:
