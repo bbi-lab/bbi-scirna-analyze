@@ -30,6 +30,70 @@ process trim_bams {
   # bash watch for errors
   set -ueo pipefail
 
+  #
+  # Skip empty BAM files.
+  #
+  # Using head sets the pipefail error: 141 so
+  # remove the shell test for pipefail.
+  #
+  nread=`samtools head -h 0 -n 10 ${bam_in} | wc -l`
+  if [ "\${nread}" == "0" ]
+  then
+    cp ${bam_in} ${out_file}
+    touch ${root_file}.trimming_report.txt
+    exit 0
+  fi
+
+  #
+  # Note: the trim_galore documention says that it uses N+4 cores
+  # where N is given on the command line, except when N is 1.
+  #
+  trim_galore_rust -a AAAAAAAA --no_poly_g --three_prime_clip_R1 1 --output-format ubam --preserve-tags CB,CY,UB,UY --cores 2 ${bam_in}
+
+  mv ${root_file}.merged_trimmed.bam ${out_file}
+  mv ${root_file}.merged.bam_trimming_report.txt ${root_file}.trimming_report.txt
+
+  nread=`samtools head -h 0 -n 10 ${out_file} | awk '{print\$1}'`
+  if [ "\${nread}" == "0" ]
+  then
+    cp ${bam_in} ${out_file}
+    touch ${root_file}.trimming_report.txt
+    exit 0
+  fi
+  """
+
+}
+
+
+process aggregate_trimmer_logs {
+  errorStrategy 'retry'
+  maxRetries 2
+
+  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_trimgalore_counts.json", mode: 'copy'
+
+  input:
+  tuple val(sample_name), path(log_in)
+
+  output:
+  path("*_trimgalore_counts.json"), emit: trimgalore_counts
+
+  script:
+  """
+  # bash watch for errors
+  set -ueo pipefail
+
+  trimgalore_counts.py -s ${sample_name} -i ${log_in} -o ${sample_name}_trimgalore_counts.json
+  """
+}
+
+
+/*
+** trimgalore v0.6x trimming
+**
+  """
+  # bash watch for errors
+  set -ueo pipefail
+
 
   #
   # Skip empty BAM files.
@@ -92,29 +156,8 @@ process trim_bams {
   samtools import -T '*' -@ 3 tmp_trimmed.fq -o ${out_file}
   rm tmp_trimmed.fq
   """
-}
-
-
-process aggregate_trimmer_logs {
-  errorStrategy 'retry'
-  maxRetries 2
-
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_trimgalore_counts.json", mode: 'copy'
-
-  input:
-  tuple val(sample_name), path(log_in)
-
-  output:
-  path("*_trimgalore_counts.json"), emit: trimgalore_counts
-
-  script:
-  """
-  # bash watch for errors
-  set -ueo pipefail
-
-  trimgalore_counts.py -s ${sample_name} -i ${log_in} -o ${sample_name}_trimgalore_counts.json
-  """
-}
+**
+*/
 
 
 /*

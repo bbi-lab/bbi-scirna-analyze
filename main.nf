@@ -229,7 +229,7 @@ workflow {
   calc_tot_hash_dup(cat_hashes.out.hash_dup_per_cell)
 
   /*
-  ** Set up and run (cutadapt) read trimming.
+  ** Set up and run (trim_galore) read trimming.
   */
   make_trim_bam_json(samplesheet_file, merge_demux.out.collect())
   make_trim_bam_json.out.splitJson().map{trim_bam_function(it)}.set{trim_bam_channel_in}
