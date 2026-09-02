@@ -17,7 +17,7 @@ parser$add_argument('barcodes_to_wells', help='File of encoded barcode indices a
 parser$add_argument('umi_counts', help='File of mitochondrial UMI counts.')
 parser$add_argument('umi_cutoff', help='UMI cutoff to count as a cell.')
 parser$add_argument('counts_per_cell', help='Counts per cell from STARsolo CellReads.stats.')
-parser$add_argument('gene_bed', help='Bed file of gene info.')
+parser$add_argument('gene_tsv', help='TSV file of gene info.')
 parser$add_argument('empty_drops', help='RDS file from emptyDrops.')
 # parser$add_argument('intron_fraction_file', help='Intron fraction of barcode UMIs file.')
 # parser$add_argument('key', help='The sample name prefix.')
@@ -43,14 +43,14 @@ cds@rowRanges@elementMetadata@listData[['gene_expression']] <- NULL
 #
 # Add additional gene information.
 #
-gene_info <- read.csv(args$gene_bed, header=FALSE, sep='\t')
+gene_info <- read.csv(args$gene_tsv, header=FALSE, sep='\t')
 rownames(gene_info) <- gene_info$V4
 colnames(gene_info) <- c('chromosome', 'bp1', 'bp2', 'id', 'integer', 'gene_strand')
 
 missing_genes <- setdiff(rownames(rowData(cds)), rownames(gene_info))
 if (length(missing_genes) > 0) {
   stop(
-    'Gene BED is missing ', length(missing_genes),
+    'Gene TSV is missing ', length(missing_genes),
     ' CDS gene(s). Examples: ',
     paste(head(missing_genes, 10), collapse=', ')
   )

@@ -68,7 +68,7 @@ def read_umi_cell_statistics(sample_name_list):
 #     "sample_flags": "",
 #     "star_index": "/net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_star_2_7",
 #     "star_memory": 40,
-#     "genes_bed": "/net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_star_2_7/latest.genes.bed"
+#     "genes_tsv": "/net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_star_2_7/latest.genes.tsv"
 #   },
 #   ...
 # ]

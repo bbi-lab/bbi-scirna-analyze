@@ -29,7 +29,7 @@ process make_cds_raw {
   ${umi_counts} \
   ${umi_cutoff} \
   ${counts_per_cell} \
-  ${sample_map['genes_bed']} \
+  ${sample_map['genes_tsv']} \
   ${empty_drops}
   """
 }
@@ -47,7 +47,7 @@ process make_cds_filtered {
 
   input:
 //  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells)
-  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells), path(counts_per_cell), path(umi_counts), val(genome), path(latest_genes_bed), val(hash_file), val(sample_map)
+  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells), path(counts_per_cell), path(umi_counts), val(genome), path(latest_genes_tsv), val(hash_file), val(sample_map)
   val(out_file)
   val(umi_cutoff)
 
@@ -70,7 +70,7 @@ process make_cds_filtered {
   ${umi_counts} \
   ${umi_cutoff} \
   ${counts_per_cell} \
-  ${sample_map['genes_bed']} \
+  ${sample_map['genes_tsv']} \
   ${empty_drops}
   """
 }

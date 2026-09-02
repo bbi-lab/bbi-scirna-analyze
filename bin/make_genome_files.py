@@ -9,7 +9,7 @@ import re
 #
 # Program version string.
 #
-program_version = '0.1.0'
+program_version = '0.1.1'
 
 # struct SampleMap {
 #   sample_id: String,
@@ -66,15 +66,15 @@ def make_genome_files_dict(json_data, genome_files_dict):
       genome_path = star_genomes_dict[genome_name]['genome_path']
       genome_root = os.path.dirname(genome_path)
       genome_species = os.path.basename(genome_root)
-      tmp_genes_bed = os.path.join(genome_root, '%s_rna' % genome_species, 'tmp.genes.bed')
-      latest_genes_bed = os.path.join(genome_root, '%s_rna' % genome_species, 'latest.genes.bed')
+      tmp_genes_tsv = os.path.join(genome_root, '%s_rna' % genome_species, 'tmp.genes.tsv')
+      latest_genes_tsv = os.path.join(genome_root, '%s_rna' % genome_species, 'latest.genes.tsv')
       hash_file = sample_index_dict['hash_file']
 
       tmp_dict = dict()
       tmp_dict['sample_name'] = key
       tmp_dict['genome'] = genome_name
-      tmp_dict['tmp_genes_bed'] = tmp_genes_bed
-      tmp_dict['latest_genes_bed'] = latest_genes_bed
+      tmp_dict['tmp_genes_tsv'] = tmp_genes_tsv
+      tmp_dict['latest_genes_tsv'] = latest_genes_tsv
       tmp_dict['hash_file'] = hash_file
       genome_files_dict[key] = tmp_dict
   return(genome_files_dict)
@@ -87,14 +87,14 @@ def make_genome_files_dict(json_data, genome_files_dict):
 #   {
 #     "sample_name": "SeahubZ01-001",
 #     "genome": "Zebrafish",
-#     "tmp_genes_bed": "/net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_rna/tmp.genes.bed",
-#     "latest_genes_bed": "/net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_rna/latest.genes.bed"
+#     "tmp_genes_tsv": "/net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_rna/tmp.genes.tsv",
+#     "latest_genes_tsv": "/net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_rna/latest.genes.tsv"
 #   },
 #   {
 #     "sample_name": "Keyhole-001",
 #     "genome": "Fishbowl_seahub",
-#     "tmp_genes_bed": "/net/bbi/vol1/data/genomes_stage/fishbowl_seahub/fishbowl_seahub_rna/tmp.genes.bed",
-#     "latest_genes_bed": "/net/bbi/vol1/data/genomes_stage/fishbowl_seahub/fishbowl_seahub_rna/latest.genes.bed"
+#     "tmp_genes_tsv": "/net/bbi/vol1/data/genomes_stage/fishbowl_seahub/fishbowl_seahub_rna/tmp.genes.tsv",
+#     "latest_genes_tsv": "/net/bbi/vol1/data/genomes_stage/fishbowl_seahub/fishbowl_seahub_rna/latest.genes.tsv"
 #   },
 # ...
 # ]

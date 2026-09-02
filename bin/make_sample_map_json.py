@@ -78,7 +78,7 @@ def get_data_file_dict(samplesheet_data, genomes_data):
 
     star_index = genomes_data[genome]['star_index']
     star_memory = genomes_data[genome]['star_memory']
-    genes_bed = genomes_data[genome]['genes_bed']
+    genes_tsv = genomes_data[genome]['genes_tsv']
 
     sample_name_full = '%s-%03d' % (sample_name, int(process_group))
     if(not sample_name_full in sample_names_processed):
@@ -89,7 +89,7 @@ def get_data_file_dict(samplesheet_data, genomes_data):
       data_dict['sample_flags'] = sample_flags
       data_dict['star_index'] = star_index
       data_dict['star_memory'] = star_memory
-      data_dict['genes_bed'] = genes_bed
+      data_dict['genes_tsv'] = genes_tsv
       data_dict_list.append(data_dict)
       data_dict_dict[sample_name_full] = data_dict
       sample_names_processed.append(sample_name_full)

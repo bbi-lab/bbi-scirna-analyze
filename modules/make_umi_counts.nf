@@ -28,6 +28,6 @@ process make_umi_counts {
   # bash watch for errors
   set -ueo pipefail
 
-  mito_umis -m ${in_matrix} -f ${in_features} -b ${in_barcodes} -a ${sample_map['genes_bed']} -o ${out_file}
+  mito_umis -m ${in_matrix} -f ${in_features} -b ${in_barcodes} -a ${sample_map['genes_tsv']} -o ${out_file}
   """
 }
