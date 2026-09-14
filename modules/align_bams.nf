@@ -34,13 +34,46 @@ process align_bams {
 **    o  need input bam files
 **    o  need output bam files
 */
-
   script:
   """
   # bash watch for errors
   set -ueo pipefail
 
   STAR_ALIGNER=${task.ext.star_path}
+
+
+  #
+  # Logging.
+  #
+  ${LogUtil.emit([
+     [ tool: 'STAR',
+       cmdVer: 'STAR --version',
+       command: "\
+      STAR \
+      --runThreadN ${align_cpus} \
+      --genomeDir ${sample_map['star_index']} \
+      --soloType CB_UMI_Simple \
+      --soloBarcodeReadLength 0 \
+      --soloCBwhitelist None \
+      --soloCBtype String \
+      --soloInputSAMattrBarcodeSeq CB UB \
+      --outSAMtype BAM SortedByCoordinate \
+      --outSAMattributes NH HI nM AS GX GN sM \
+      --outSJtype None \
+      --outFilterMultimapNmax 6 \
+      --soloUMIdedup 1MM_All \
+      --soloCellReadStats Standard \
+      --soloStrand Forward \
+      --soloFeatures GeneFull_Ex50pAS \
+      --soloMultiMappers PropUnique \
+      --soloCellFilter None \
+      --readFilesType SAM SE \
+      --readFilesIn \
+        ${bam_in} \
+      --readFilesCommand samtools view \
+      --outFileNamePrefix ${out_dir}/"
+     ]
+   ], nextflow, task, params)}
 
   #
   # Notes:

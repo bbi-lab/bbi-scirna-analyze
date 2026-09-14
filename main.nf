@@ -198,13 +198,13 @@ workflow {
   **   o  I would like to use a 'cleaner' way to do this
   **      but I cannot think of one at this time.
   */      
-  merge_demux.out.subscribe onNext: {
+  merge_demux.out.bam.subscribe onNext: {
     path ->
       def file_base_name = path.toString().tokenize('/').last()
       params.object_map.merge_bam_map[file_base_name] = path
   }
 
-  merge_demux.out.subscribe onNext: {
+  merge_demux.out.bam.subscribe onNext: {
     path ->
       def file_base_name = path.toString().tokenize('/').last()
       params.object_map.process_hashes_map[file_base_name] = path
@@ -218,7 +218,7 @@ workflow {
   **      for finding the required paths in the work
   **      directory.
   */
-  make_process_hashes_json(samplesheet_file, merge_demux.out.collect())
+  make_process_hashes_json(samplesheet_file, merge_demux.out.bam.collect())
   make_process_hashes_json.out.splitJson().filter{it.size() > 0}.map{process_hashes_function(it)}.set{process_hashes_channel_in}
   process_hashes(process_hashes_channel_in)
 
@@ -231,7 +231,7 @@ workflow {
   /*
   ** Set up and run (trim_galore) read trimming.
   */
-  make_trim_bam_json(samplesheet_file, merge_demux.out.collect())
+  make_trim_bam_json(samplesheet_file, merge_demux.out.bam.collect())
   make_trim_bam_json.out.splitJson().map{trim_bam_function(it)}.set{trim_bam_channel_in}
   trim_bams(trim_bam_channel_in)
 
