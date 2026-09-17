@@ -9,6 +9,7 @@ parser = argparse::ArgumentParser(description='Script to run emptyDrops.')
 parser$add_argument('sample_name', help='Sample name.')
 parser$add_argument('mobs', help='Input monocle objects directory.')
 parser$add_argument('scrublet_csv', help='Input scrublet CSV file.')
+parser$add_argument('--version', action = 'version', version = paste('add_scrublet_to_cds', '0.1.0'))
 args = parser$parse_args()
 
 sample_name  <- args$sample_name

@@ -20,6 +20,11 @@ import argparse
 import csv
 import os.path
 
+#
+# Program version string.
+#
+program_version = '0.1.0'
+
 
 def process_files(in_filenames, out_filename, delimiter ):
   ofh = open(out_filename, 'w')
@@ -52,6 +57,7 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program to concatenate STARsolo CellReads.stats files.')
   parser.add_argument('-i', '--input_files', required=True, nargs='+', help='CSV files to concatenate.')
   parser.add_argument('-o', '--output_file', required=True, help='Name of output CSV file.')
+  parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
 
   process_files(args.input_files, args.output_file, delimiter='\t')

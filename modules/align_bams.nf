@@ -19,12 +19,15 @@ process align_bams {
 
 //  publishDir path: "${analyze_out}/${sample_name}", pattern: "*trimmed", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "CellReads.stats", mode: 'copy'
-
+  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+            
   input:
   tuple val(sample_name), path(bam_in), val(out_dir), val(sample_map)
 
   output:
-  path(out_dir)
+  path(out_dir), emit: 'starsolo'
+  path('version.json'), emit: 'version'
+
   //path(out_dir/Solo.out/GeneFull_Ex50pAS/CellReads.stats)
 
 /*
@@ -73,7 +76,7 @@ process align_bams {
       --readFilesCommand samtools view \
       --outFileNamePrefix ${out_dir}/"
      ]
-   ], nextflow, task, params)}
+   ], nextflow, task, params, sample_name)}
 
   #
   # Notes:

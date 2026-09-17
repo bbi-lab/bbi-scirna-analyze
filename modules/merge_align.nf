@@ -26,17 +26,26 @@ process merge_align {
   maxRetries 2
 
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*aligned.bam", mode: 'copy'
+  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val('sample_name'), val('out_file'), path('files')
 
   output:
-  path("*aligned.bam")
+  path("*aligned.bam"), emit: 'bam'
+  path("version.json"), emit: 'version'
 
   script:
   """
   # bash watch for errors
   set -ueo pipefail
+
+  ${LogUtil.emit([
+     [ tool: 'sambamba',
+       cmdVer: 'sambamba --version 2>&1 | grep "sambamba" | head -n 1',
+       command: "sambamba sambamba merge -t 8 ${out_file} files*"
+     ]
+   ], nextflow, task, params, sample_name)}
 
   nfil=`ls files* | wc -l`
 

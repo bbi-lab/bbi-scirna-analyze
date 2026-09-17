@@ -15,18 +15,26 @@ process make_umi_counts {
   errorStrategy 'retry'
 
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_umi_counts.tsv", mode: 'copy'
+  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), val(out_file), path(in_matrix), path(in_features), path(in_barcodes), val(sample_map)
 
   output:
   tuple val(sample_name), path("*_umi_counts.tsv"), emit: umi_counts_tsv
-
+  path("version.json"), emit: 'version'
 
   script:
   """
   # bash watch for errors
   set -ueo pipefail
+
+  ${LogUtil.emit([
+     [ tool: 'mito_umis',
+       cmdVer: 'mito_umis --version | head -n 1',
+       command: "mito_umis -m ${in_matrix} -f ${in_features} -b ${in_barcodes} -a ${sample_map['genes_tsv']} -o ${out_file}"
+     ]
+   ], nextflow, task, params, sample_name)}
 
   mito_umis -m ${in_matrix} -f ${in_features} -b ${in_barcodes} -a ${sample_map['genes_tsv']} -o ${out_file}
   """

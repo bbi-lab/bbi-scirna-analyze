@@ -8,6 +8,7 @@ process run_scrublet {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "run_scrublet.log", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "${sample_name}_cds.raw.mobs", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "${sample_name}_cds.raw.col_data.tsv", mode: 'copy'
+  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), path(mobs), path(umi_counts), val(sample_map)
@@ -16,6 +17,7 @@ process run_scrublet {
   tuple val(sample_name), path("*scrublet_out.csv"), path("*.png"), path('run_scrublet.log'), emit: scrublet_out
   tuple val(sample_name), path("${sample_name}_cds.raw.mobs", includeInputs: true), path(umi_counts), emit: cds
   tuple val(sample_name), path("${sample_name}_cds.raw.col_data.tsv"), emit: col_data
+  path("version.json"), emit: 'version'
 
   /*
   ** Don't exit on error. Continue so that
@@ -25,6 +27,17 @@ process run_scrublet {
 
   script:
   """
+
+  ${LogUtil.emit([
+     [ tool: 'run_scrublet.py',
+       cmdVer: 'run_scrublet.py --version | head -n 1',
+       command: "run_scrublet.py --sample_name $sample_name --mat <matrix_filename> --run_scrublet"
+     ],
+     [ tool: 'add_scrublet_to_cds.R',
+       cmdVer: 'add_scrublet_to_cds.R --version | head -n 1',
+       command: "add_scrublet_to_cds.R ${sample_name} tmp.in.mobs ${sample_name}_scrublet_out.csv"
+     ]
+   ], nextflow, task, params, sample_name)}
 
   #
   # Move the input mobs directory.

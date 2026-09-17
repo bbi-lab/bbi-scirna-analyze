@@ -21,7 +21,7 @@ parser$add_argument('gene_tsv', help='TSV file of gene info.')
 parser$add_argument('empty_drops', help='RDS file from emptyDrops.')
 # parser$add_argument('intron_fraction_file', help='Intron fraction of barcode UMIs file.')
 # parser$add_argument('key', help='The sample name prefix.')
-
+parser$add_argument('--version', action = 'version', version = paste('make_cds', '0.1.0'))
 args = parser$parse_args()
 
 sample_name <- args$sample_name

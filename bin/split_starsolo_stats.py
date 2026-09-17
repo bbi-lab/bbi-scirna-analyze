@@ -5,6 +5,11 @@
 # by downstream processes.
 #
 
+#
+# Program version string.
+#
+program_version = '0.1.0'
+
 
 import sys
 import argparse
@@ -86,6 +91,7 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program to split columns out of STARsolo CellReads.stats file.')
   parser.add_argument('-i', '--input_file', required=True, help='CellReads.stats file to processs.')
   parser.add_argument('-s', '--sample_name', required=True, help='Name of sample.')
+  parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
 
   process_file(args.input_file, args.sample_name)

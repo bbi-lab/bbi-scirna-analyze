@@ -7,6 +7,7 @@ parser = argparse::ArgumentParser(description='Script to calculate the total has
 parser$add_argument('sample_name', help='Sample name.')
 parser$add_argument('hash_dup_per_cell', help='hash_dup_per_cell input file.')
 parser$add_argument('hash_dup', help='hash_dup value.')
+parser$add_argument('--version', action = 'version', version = paste('calc_tot_hash_dup', '0.1.0'))
 
 args = parser$parse_args()
 

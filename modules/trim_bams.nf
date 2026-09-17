@@ -17,6 +17,7 @@ process trim_bams {
 
 //  publishDir path: "${analyze_out}/${sample_name}/cutadapt", pattern: "*.trimmed.bam", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}/cutadapt", pattern: "*.trimming_report.txt", mode: 'copy'
+  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), val(root_file), path(bam_in), val(out_file)
@@ -24,11 +25,19 @@ process trim_bams {
   output:
   path("*.trimmed.bam"), emit: trimmed_bams
   tuple val(sample_name), path("*.trimming_report.txt"), emit: trimmer_logs
+  path('version.json'), emit: 'version'
 
   script:
   """
   # bash watch for errors
   set -ueo pipefail
+
+  ${LogUtil.emit([
+     [ tool: 'trim_galore_rust',
+       cmdVer: 'trim_galore_rust --version | head -n 1',
+       command: "trim_galore_rust -a AAAAAAAA --no_poly_g --three_prime_clip_R1 1 --output-format ubam --preserve-tags CB,CY,UB,UY --cores 2 ${bam_in}"
+     ]
+  ], nextflow, task, params, sample_name)}
 
   #
   # Skip empty BAM files.
@@ -70,17 +79,25 @@ process aggregate_trimmer_logs {
   maxRetries 2
 
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*_trimgalore_counts.json", mode: 'copy'
+  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), path(log_in)
 
   output:
   path("*_trimgalore_counts.json"), emit: trimgalore_counts
+  path("version.json"), emit: 'version'
 
   script:
   """
   # bash watch for errors
   set -ueo pipefail
+  ${LogUtil.emit([
+     [ tool: 'trimgalore_counts.py',
+       cmdVer: 'trimgalore_counts.py --version | head -n 1',
+       command: "trimgalore_counts.py -s ${sample_name} -i ${log_in} -o ${sample_name}_trimgalore_counts.json"
+     ]
+   ], nextflow, task, params, sample_name)}
 
   trimgalore_counts.py -s ${sample_name} -i ${log_in} -o ${sample_name}_trimgalore_counts.json
   """

@@ -9,11 +9,17 @@ from PIL import Image, ImageDraw, ImageFont
 import os
 import argparse
 
+#
+# Program version string.
+#
+program_version = '0.1.0'
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Run scrublet.')
     parser.add_argument('-s', '--sample_name', required=True, help='Sample name.')
     parser.add_argument('-m', '--mat', required=True, help='Input matrix.')
     parser.add_argument('-r', '--run_scrublet', action="store_true", default=False, help='Should scrublet be run?')
+    parser.add_argument('-v', '--version', action='version', version=program_version)
     args = parser.parse_args()
 
     if args.run_scrublet:

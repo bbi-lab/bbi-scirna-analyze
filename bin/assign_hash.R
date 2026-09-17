@@ -18,6 +18,7 @@ parser$add_argument('cds', help='cds object in monocle_objects format')
 parser$add_argument('umis_per_cell', help='File with list of umis per cell barcode (all cells -- used to calculate background hash umis)')
 parser$add_argument('hash_umi_cutoff', type='integer', help='min number of hash umis to determine top to second best ratio')
 parser$add_argument('hash_ratio', help='min top to second best hash ratio. Default is false and not filtered')
+parser$add_argument('--version', action = 'version', version = paste('assign_hash', '0.1.0'))
 args = parser$parse_args()
 
 # Takes in cell hash matrix and background hash frequencies (determined by hash umi cutoff)

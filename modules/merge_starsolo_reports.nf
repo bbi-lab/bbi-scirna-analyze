@@ -31,6 +31,7 @@ process merge_starsolo_reports {
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*.starsolo.cell_reads.stats", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*Features.stats", mode: 'copy'
   publishDir path: "${analyze_out}/${sample_name}", pattern: "*Summary.txt", mode: 'copy'
+  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val('sample_name'), val('out_file'), path('file'), path('root')
@@ -38,11 +39,23 @@ process merge_starsolo_reports {
   output:
   tuple val(sample_name), path("*.starsolo.cell_reads.stats"), emit: cell_reads_stats
   tuple path("*Features.stats"), path("*Summary.txt"), emit: dummy
+  path("version.json"), emit: 'version'
 
   script:
   """
   # bash watch for errors
   set -ueo pipefail
+
+  ${LogUtil.emit([
+     [ tool: 'cat_starsolo_stats.py',
+       cmdVer: 'cat_starsolo_stats.py --version | head -n 1',
+       command: "cat_starsolo_stats.py -i ${file} -o ${out_file}"
+     ],
+     [ tool: 'merge_starsolo_reports.py',
+       cmdVer: 'merge_starsolo_reports.py --version | head -n 1',
+       command: "merge_starsolo_reports.py -i ${root} -s ${sample_name}"
+     ]
+   ], nextflow, task, params, sample_name)}
 
   cat_starsolo_stats.py -i ${file} -o ${out_file}
 

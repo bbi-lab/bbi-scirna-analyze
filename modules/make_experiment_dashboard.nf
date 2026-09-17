@@ -4,6 +4,7 @@ process make_experiment_dashboard {
   maxRetries 2
 
   publishDir path: "${params.output_dir}", pattern: "exp_dash", mode: 'copy'
+  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
 
   input:
     path("*") // merge_starsolo_reports.out.cell_reads_stats
@@ -17,13 +18,28 @@ process make_experiment_dashboard {
     val(fdr_cutoff)
 
   output:
-    path('exp_dash')
-
+    path('exp_dash'), emit: 'dash'
+    path('version.json'), emit: 'version'
 
   script:
   """
   # bash watch for errors
   set -ueo pipefail
+
+  ${LogUtil.emit([
+     [ tool: 'make_cellread_statistics.py',
+       cmdVer: 'make_cellread_statistics.py --version | head -n 1',
+       command: "make_cellread_statistics.py -s <sample_name> -c ${umi_cutoff} -i <cellread_statistics_tsv> -o <output_cellreads_statistics_json>"
+     ],
+     [ tool: 'make_umi_cell_counts_statistics.py',
+       cmdVer: 'make_umi_cell_counts_statistics.py --version | head -n 1',
+       command: "make_umi_cell_counts_statistics.py -s <sample_name> -c ${umi_cutoff} -f ${fdr_cutoff} -u <umi_counts_tsv> -e <empty_drops_fdr_tsv> -o <output_umi_cell_json>"
+     ],
+     [ tool: 'make_exp_dash_data_js.py',
+       cmdVer: 'make_exp_dash_data_js.py --version | head -n 1',
+       command: "make_exp_dash_data_js.py ${sample_maps_json} -p <project_directory>"
+     ]
+], nextflow, task, params, 'NA')}
 
   #
   # Get sample names from sample_map.json file.

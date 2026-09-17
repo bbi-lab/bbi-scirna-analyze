@@ -10,6 +10,7 @@ suppressPackageStartupMessages({
 parser = argparse::ArgumentParser(description='Script to generate knee plot for hash umis.')
 parser$add_argument('hash_umi', help='File of hash_umis_per_cell.')
 parser$add_argument('sample_name', help='Sample name')
+parser$add_argument('--version', action = 'version', version = paste('make_hash_knee_plot', '0.1.0'))
 args = parser$parse_args()
 
 df = read.table(

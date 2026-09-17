@@ -15,7 +15,7 @@ params.hash_dup = false //Default is false. Other options are "p5" or "pcr_plate
 params.run_empty_drops = true
 params.run_scrublet = true
 params.cpuid_level = 22
-
+params.raw_log_dir= "${params.output_dir}/raw_log"
 
 def demux_out = "${params.output_dir}/demux_out"
 def genomes_data_file = "${params.bin_dir}/genomes_data.json"
@@ -143,7 +143,7 @@ workflow {
   ** Set up and run samtools to merge (unaligned) input BAM files.
   */
   make_merge_demux_json(samplesheet_file, "$demux_out")
-  make_merge_demux_json.out.splitJson().map{merge_demux_closure(it)}.set{merge_demux_channel_in}
+  make_merge_demux_json.out.json.splitJson().map{merge_demux_closure(it)}.set{merge_demux_channel_in}
   merge_demux(merge_demux_channel_in)
 
   /*
@@ -219,7 +219,7 @@ workflow {
   **      directory.
   */
   make_process_hashes_json(samplesheet_file, merge_demux.out.bam.collect())
-  make_process_hashes_json.out.splitJson().filter{it.size() > 0}.map{process_hashes_function(it)}.set{process_hashes_channel_in}
+  make_process_hashes_json.out.json.splitJson().filter{it.size() > 0}.map{process_hashes_function(it)}.set{process_hashes_channel_in}
   process_hashes(process_hashes_channel_in)
 
   process_hashes.out.hash_matrix.groupTuple().join(process_hashes.out.hash_cells.groupTuple()).join(process_hashes.out.hash_hashes.groupTuple()).join(process_hashes.out.hash_umis_per_cell.groupTuple()).join(process_hashes.out.hash_dup_per_cell.groupTuple()).join(process_hashes.out.hash_reads_per_cell.groupTuple()).join(process_hashes.out.hash_assigned_table.groupTuple()).join(process_hashes.out.hash_log.groupTuple()).set{cat_hashes_in}
@@ -232,7 +232,7 @@ workflow {
   ** Set up and run (trim_galore) read trimming.
   */
   make_trim_bam_json(samplesheet_file, merge_demux.out.bam.collect())
-  make_trim_bam_json.out.splitJson().map{trim_bam_function(it)}.set{trim_bam_channel_in}
+  make_trim_bam_json.out.json.splitJson().map{trim_bam_function(it)}.set{trim_bam_channel_in}
   trim_bams(trim_bam_channel_in)
 
   /*
@@ -251,7 +251,7 @@ workflow {
   }
 
   make_star_align_json(samplesheet_file, trim_bams.out.trimmed_bams.collect())
-  make_star_align_json.out.splitJson().map{align_bam_function(it)}.combine(sample_maps_split, by: 0).set{align_bam_channel_in}
+  make_star_align_json.out.json.splitJson().map{align_bam_function(it)}.combine(sample_maps_split, by: 0).set{align_bam_channel_in}
   align_bams(align_bam_channel_in)
 
   /*
@@ -259,14 +259,14 @@ workflow {
   ** Use the same strategy as above for finding
   ** the STAR BAM file paths.
   */
-  align_bams.out.subscribe onNext: {
+  align_bams.out.starsolo.subscribe onNext: {
     path ->
       def dir_base_name = path.toString().tokenize('/').last()
       params.object_map.merge_align_bam_map[dir_base_name] = path
   }
 
-  make_merge_align_json(samplesheet_file, align_bams.out.collect())
-  make_merge_align_json.out.splitJson().map{merge_align_function(it)}.set{merge_align_channel_in}
+  make_merge_align_json(samplesheet_file, align_bams.out.starsolo.collect())
+  make_merge_align_json.out.json.splitJson().map{merge_align_function(it)}.set{merge_align_channel_in}
   merge_align(merge_align_channel_in)
 
   /*
@@ -276,7 +276,7 @@ workflow {
   **      the JSON file refers to the STARsolo output directory
   **      where all of the STARsolo results are stored.
   */
-  make_merge_align_json.out.splitJson().map{merge_starsolo_reports_function(it)}.set{merge_starsolo_reports_channel_in}
+  make_merge_align_json.out.json.splitJson().map{merge_starsolo_reports_function(it)}.set{merge_starsolo_reports_channel_in}
   merge_starsolo_reports(merge_starsolo_reports_channel_in)
 
   /*
@@ -288,7 +288,7 @@ workflow {
   ** Concatenate MM counts matrices.
   **
   */
-  make_merge_align_json.out.splitJson().map{cat_matrices_raw_function(it)}.set{cat_matrices_raw_channel_in}
+  make_merge_align_json.out.json.splitJson().map{cat_matrices_raw_function(it)}.set{cat_matrices_raw_channel_in}
   cat_matrices_raw(cat_matrices_raw_channel_in)
 
   /*
@@ -316,7 +316,7 @@ workflow {
   **   o  genome info
   */
   make_umi_counts_json(samplesheet_file, cat_matrices_raw.out.raw_matrix.collect())
-  make_umi_counts_json.out.splitJson().map{make_umi_counts_function(it)}.join(sample_maps_split).set{make_umi_counts_in}
+  make_umi_counts_json.out.umi_counts.splitJson().map{make_umi_counts_function(it)}.join(sample_maps_split).set{make_umi_counts_in}
   make_umi_counts(make_umi_counts_in)
 
   /*
