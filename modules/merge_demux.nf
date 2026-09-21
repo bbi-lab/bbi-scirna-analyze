@@ -1,5 +1,6 @@
 
 process merge_demux {
+  cache 'lenient'
   errorStrategy 'retry'
   maxRetries 2
 

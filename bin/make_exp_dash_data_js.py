@@ -50,6 +50,48 @@ def read_cellread_statistics(sample_name_list):
   return(cellread_statistics_dict)
 
 
+def read_starsolo_summary(sample_name_list):
+  pobj_list    = list()
+  for i in range(7):
+    new_list = ['', None, int()]
+    pobj_list.append(new_list)
+  pobj_list[0][0] = 'number_of_reads'
+  pobj_list[0][1] = re.compile('Number of Reads[ \t]+([0-9]+)')
+  pobj_list[0][2] = int
+  pobj_list[1][0] = 'reads_with_valid_barcodes'
+  pobj_list[1][1] = re.compile('Reads With Valid Barcodes[ \t]+([0-9.]+)')
+  pobj_list[1][2] = float
+  pobj_list[2][0] = 'sequencing_saturation'
+  pobj_list[2][1] = re.compile('Sequencing Saturation[ \t]+([0-9.]+)')
+  pobj_list[2][2] = float
+  pobj_list[3][0] = 'reads_mapped_to_genome_unique_and_multiple'
+  pobj_list[3][1] = re.compile('Reads Mapped to Genome: Unique[+]Multiple[ \t]+([0-9.]+)')
+  pobj_list[3][2] = float
+  pobj_list[4][0] = 'reads_mapped_to_genome_unique'
+  pobj_list[4][1] = re.compile('Reads Mapped to Genome: Unique[ \t]+([0-9.]+)')
+  pobj_list[4][2] = float
+  pobj_list[5][0] = 'reads_mapped_to_genefull_ex50pas_unique_and_multiple'
+  pobj_list[5][1] = re.compile('Reads Mapped to GeneFull_Ex50pAS: Unique[+]Multiple GeneFull_Ex50pAS[ \t]+([0-9.]+)')
+  pobj_list[5][2] = float
+  pobj_list[6][0] = 'reads_mapped_to_genefull_ex50pas_unique'
+  pobj_list[6][1] = re.compile('Reads Mapped to GeneFull_Ex50pAS: Unique GeneFull_Ex50pAS[ \t]+([0-9.]+)')
+  pobj_list[6][2] = float
+
+  starsolo_summary_dict = dict()
+  for sample_name in sample_name_list:
+    filename = '%s_Summary.txt' % sample_name
+    with open(filename, 'r') as ifh:
+      starsolo_summary = dict()
+      for line in ifh:
+        for pobj in pobj_list:
+          mobj = pobj[1].match(line.strip())
+          if(mobj != None):
+            starsolo_summary[pobj[0]] = pobj[2](mobj.group(1))
+            starsolo_summary_dict[sample_name] = starsolo_summary
+            break
+  return(starsolo_summary_dict)
+
+
 def read_umi_cell_statistics(sample_name_list):
   umi_cell_statistics_dict = dict()
   for sample_name in sample_name_list:
@@ -72,22 +114,45 @@ def read_umi_cell_statistics(sample_name_list):
 #   },
 #   ...
 # ]
+#
+#
+# Total reads: 8663052
+# Hash reads: 8430665
+# Hash rate: 0.9732
+#
 def read_hash_read_rates(sample_map_list):
+  pobj_list    = list()
+  for i in range(3):
+    new_list = ['', None, int()]
+    pobj_list.append(new_list)
+
+  pobj_list[0][0] = 'total_reads'
+  pobj_list[0][1] = re.compile('Total reads:[ \t]+([0-9]+)')
+  pobj_list[0][2] = int
+  pobj_list[1][0] = 'hash_reads'
+  pobj_list[1][1] = re.compile('Hash reads:[ \t]+([0-9.]+)')
+  pobj_list[1][2] = int
+  pobj_list[2][0] = 'hash_rate'
+  pobj_list[2][1] = re.compile('Hash rate:[ \t]+([0-9.]+)')
+  pobj_list[2][2] = float
+
   hash_read_rate_dict = dict()
   for sample_map in sample_map_list:
     sample_name = sample_map['sample_name']
-    hash_read_rate = 'NA'
     if(sample_map['hash_file'] != None):
       hash_file = sample_map['hash_file']
+      hash_read_rate = dict()
       if(len(hash_file) > 0):
         filename = '%s_hash_read_rate.txt' % (sample_name)
         with open(filename, 'r') as ifh:
           for line in ifh:
-            mobj = re.match('Hash rate: ([0-9.]+)', line)
-            if(mobj != None):
-              hash_read_rate = mobj.group(1)
-              break
-    hash_read_rate_dict[sample_name] = hash_read_rate
+            for pobj in pobj_list:
+              mobj = pobj[1].match(line.strip())
+              if(mobj != None):
+                hash_read_rate[pobj[0]] = pobj[2](mobj.group(1))
+                hash_read_rate_dict[sample_name] = hash_read_rate
+                break
+      hash_read_rate_dict[sample_name] = hash_read_rate
   return(hash_read_rate_dict)
 
 
@@ -116,19 +181,37 @@ def read_hash_read_rates(sample_map_list):
 #       "Cells_FDR_p01": "-"
 #     },
 # 
-def make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_statistics_dict, hash_read_rate_dict):
+def make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_statistics_dict, starsolo_summary_dict, hash_read_rate_dict, instrument):
   sample_stats_dict = dict()
   for sample_name in sample_name_list:
     total_reads              = cellread_statistics_dict[sample_name]['sum_counted_reads_unique'] + cellread_statistics_dict[sample_name]['sum_counted_reads_multi']
     total_umis               = cellread_statistics_dict[sample_name]['total_umi']
-    duplication_rate         = (1.0 - (float(total_umis) / float(total_reads))) * 100.0
+    if(total_reads > 0):
+      duplication_rate       = (1.0 - (float(total_umis) / float(total_reads))) * 100.0
+    else:
+      duplication_rate       = 0.0
     median_umis              = umi_cell_statistics_dict[sample_name]['umis_median']
     median_mitochondial_umis = umi_cell_statistics_dict[sample_name]['umis_mito_median']
     cells_100_umis           = umi_cell_statistics_dict[sample_name]['cell_counts_umi_100_umi_cutoff']
     cells_1000_umis          = umi_cell_statistics_dict[sample_name]['cell_counts_umi_1000_umi_cutoff']
     cells_fdr_p01            = umi_cell_statistics_dict[sample_name]['cell_counts_fdr']
 #    cells_100_umis           = umi_cell_statistics_dict[sample_name]['cell_counts_umi']
-    hash_read_rate           = hash_read_rate_dict[sample_name]
+    hash_read_rate         = 'NA'
+    hash_match_rate        = 'NA'
+    # Ultima reads are split from the mRNA reads by the Ultima trimmer
+    # so the read_rate for Ultima trimmer uses the number of hash reads
+    # for the denominator; so we need to add in the mRNA reads to the
+    # denominator. See below for the hash_match_rate.
+    if(hash_read_rate_dict.get(sample_name)):
+      if(instrument == 'Ultima'):
+        if(hash_read_rate_dict.get(sample_name)):
+          hash_read_rate  = float(hash_read_rate_dict[sample_name]['hash_reads']) / (float(hash_read_rate_dict[sample_name]['total_reads']) + float(starsolo_summary_dict[sample_name]['number_of_reads']))
+          hash_match_rate = float(hash_read_rate_dict[sample_name]['hash_rate'])
+      elif(instrument == 'Illumina'):
+        hash_read_rate = hash_read_rate_dict[sample_name]['hash_rate']
+      else:
+        print('Error: unrecognized instrument name \'s\'' % (instrument), file=sys.stderr)
+        sys.exit(1)
 
     if(median_umis > 0):
       median_mitochondrial_umis_percent = (float(median_mitochondial_umis) / float(median_umis)) * 100.0
@@ -145,7 +228,8 @@ def make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_
     stats_dict['Cells_100_UMIs']                    = '%d' % cells_100_umis
     stats_dict['Cells_1000_UMIs']                   = '%d' % cells_1000_umis
     stats_dict['Cells_FDR_p01']                     = '%d' % cells_fdr_p01
-    stats_dict['Hash_Read_Rate']                    = '%.2f' % float(hash_read_rate) if(hash_read_rate != 'NA') else 'NA'
+    stats_dict['Hash_Read_Rate']                    = '%.3f' % float(hash_read_rate) if(hash_read_rate != 'NA') else 'NA'
+    stats_dict['Hash_Match_Rate']                   = '%.3f' % float(hash_match_rate) if(hash_match_rate != 'NA') else 'NA'
 
     sample_stats_dict[sample_name] = stats_dict
 
@@ -209,9 +293,10 @@ def write_data_js(run_data_dict):
     fp = open('data.js', 'w+')
     fp.write('const run_data =\n')
     fp.write(json.dumps(run_data_dict, indent=2))
+    fp.close()
   except:
     print('Error: unable to write \"data.js\" file.', file=sys.stderr)
-    sys.exit(-1)
+    sys.exit(1)
   return(0)
 
 
@@ -219,6 +304,7 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program .')
   parser.add_argument('-s', '--sample_map_file', required=True, default=None, help='Input sample map file (required string(s)).')
   parser.add_argument('-p', '--processing_directory', required=True, default=None, help='Input processing directory name (required string(s)).')
+  parser.add_argument('-m', '--instrument', required=True, default=None, help='The sequencing instrument (required string: \'Illumina\' or \'Ultima\').')
   parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
 
@@ -235,7 +321,10 @@ if __name__ == '__main__':
   cellread_statistics_dict = read_cellread_statistics(sample_name_list)
   # print(json.dumps(cellread_statistics, indent=2))
 
-  # print()
+  #
+  # Read STARsolo summary reports.
+  #
+  starsolo_summary_dict = read_starsolo_summary(sample_name_list)
 
   #
   # Read sample UMI and cell statistics.
@@ -251,7 +340,7 @@ if __name__ == '__main__':
   #
   # Make sample data.
   #
-  sample_stats_dict = make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_statistics_dict, hash_read_rate_dict)
+  sample_stats_dict = make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_statistics_dict, starsolo_summary_dict, hash_read_rate_dict, args.instrument)
 
   #
   # Make run data.

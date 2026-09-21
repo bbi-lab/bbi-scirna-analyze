@@ -383,7 +383,10 @@ workflow {
   make_generate_qc_hash.out.qc_txt.concat(make_generate_qc_no_hash.out.qc_txt).map{ trim_tuple_closure(it) }.flatMap{ it -> it[0] }.collect().set{ make_experiment_dashboard_txt_channel_in }
   cat_hashes.out.hash_read_rate.map{ trim_tuple_closure(it) }.collect().ifEmpty(file(dummy_file)).set{ make_experiment_dashboard_cat_hashes_channel_in }
 
+ 
+  instrument = 'Illumina' 
   make_experiment_dashboard(merge_starsolo_reports.out.cell_reads_stats.map{ trim_tuple_closure(it) }.collect(),
+                            merge_starsolo_reports.out.starsolo_summary.map{ trim_tuple_closure(it) }.collect(),
                             make_umi_counts.out.umi_counts_tsv.map{ trim_tuple_closure(it) }.collect(),
                             run_empty_drops.out.empty_drops_fdr.map{ trim_tuple_closure(it) }.collect(),
                             make_experiment_dashboard_cat_hashes_channel_in,
@@ -391,6 +394,7 @@ workflow {
                             make_experiment_dashboard_txt_channel_in,
                             make_sample_map_json.out.sample_maps,
                             params.umi_cutoff,
-                            params.fdr_cutoff)
+                            params.fdr_cutoff,
+                            instrument)
 }
 
