@@ -1,0 +1,90 @@
+== Advantages for program users'
+
+  o  easy compiler installation
+  o  easy to build, one-step compiling and linking
+  o  transparent package version control
+  o  executables are fast
+  o  fairly memory efficient
+
+
+== Advantages for programmers
+
+  o  memory management is guaranteed to be 'safe'
+  o  multi-threading and concurrency are guaranteed to be 'safe'
+  o  'automatic' heap management (compiler 'drops' allocated memory when
+     variables go out of scope)
+  o  compiler gives fairly good error messages with often helpful suggestions
+  o  standard features such as structs, tuples, vectors, associative arrays,
+     sets, iterators, enums, generics, traits, interface to C libraries,
+     closures, ...
+  o  there are numerous packages, for example, reading/writing fastq
+     and fasta files, sparse matrices, reading and writing matrix market files,
+     ...
+  o  transparent compiler version control
+
+
+== Downsides
+
+  o  Rust has some new concepts such as value ownership and lifetimes
+  o  Rust does not have extensive OOP features
+
+
+== Linux Torvalds and Linux
+
+https://thenewstack.io/rust-in-the-linux-kernel/
+
+
+== Lars Bergstrom
+
+Rust teams ... are more than twice as productive as teams using C++.
+
+https://www.youtube.com/watch?v=6mZRWFQRvmw&t=27012s
+
+
+== Rust resources
+
+** Books
+
+The Rust Programming Language
+Kalbnik and Nichols
+Online version: https://doc.rust-lang.org/book/
+Printed version: No Starch Press
+
+Programming Rust. Fast, Safe Systems Development.
+Blandy, Orendorf, and Tindall
+Printed version: O'Reilly Media
+
+Comprehensive Rust
+Android Team at Google
+Online: https://google.github.io/comprehensive-rust/
+
+Rust for Rustaceans
+Gjengset
+Printed version: No Starch Press
+Note: this has not helped me yet.
+
+Rust Cookbook
+Rust Community?
+Online: https://rust-lang-nursery.github.io/rust-cookbook/
+
+Rust API Guidelines
+Rust Community?
+Online: https://rust-lang.github.io/api-guidelines/
+
+The Rust Performance Book
+Nicholas Nethercote and others
+Online: https://nnethercote.github.io/perf-book/title-page.html
+
+
+** Online resources
+
+Rust by Example
+Online: https://doc.rust-lang.org/rust-by-example/
+
+How not to learn Rust
+Oneline: https://dystroy.org/blog/how-not-to-learn-rust/
+
+** 'Awesome' Rust Crates
+
+Online: https://github.com/rust-unofficial/awesome-rust?tab=readme-ov-file
+

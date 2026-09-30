@@ -1,7 +1,7 @@
 
 process merge_demux {
-  cache 'lenient'
   errorStrategy 'retry'
+  cache 'lenient'
   maxRetries 2
 
   publishDir path: "logging/", pattern: "version.json", mode: 'copy'

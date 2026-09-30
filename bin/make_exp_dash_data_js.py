@@ -181,7 +181,7 @@ def read_hash_read_rates(sample_map_list):
 #       "Cells_FDR_p01": "-"
 #     },
 # 
-def make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_statistics_dict, starsolo_summary_dict, hash_read_rate_dict, instrument):
+def make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_statistics_dict, starsolo_summary_dict, hash_read_rate_dict, sequencing_platform):
   sample_stats_dict = dict()
   for sample_name in sample_name_list:
     total_reads              = cellread_statistics_dict[sample_name]['sum_counted_reads_unique'] + cellread_statistics_dict[sample_name]['sum_counted_reads_multi']
@@ -203,14 +203,14 @@ def make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_
     # for the denominator; so we need to add in the mRNA reads to the
     # denominator. See below for the hash_match_rate.
     if(hash_read_rate_dict.get(sample_name)):
-      if(instrument == 'Ultima'):
+      if(sequencing_platform == 'Ultima'):
         if(hash_read_rate_dict.get(sample_name)):
           hash_read_rate  = float(hash_read_rate_dict[sample_name]['hash_reads']) / (float(hash_read_rate_dict[sample_name]['total_reads']) + float(starsolo_summary_dict[sample_name]['number_of_reads']))
           hash_match_rate = float(hash_read_rate_dict[sample_name]['hash_rate'])
-      elif(instrument == 'Illumina'):
+      elif(sequencing_platform == 'Illumina'):
         hash_read_rate = hash_read_rate_dict[sample_name]['hash_rate']
       else:
-        print('Error: unrecognized instrument name \'s\'' % (instrument), file=sys.stderr)
+        print('Error: unrecognized sequencing_platform name \'s\'' % (sequencing_platform), file=sys.stderr)
         sys.exit(1)
 
     if(median_umis > 0):
@@ -304,7 +304,7 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program .')
   parser.add_argument('-s', '--sample_map_file', required=True, default=None, help='Input sample map file (required string(s)).')
   parser.add_argument('-p', '--processing_directory', required=True, default=None, help='Input processing directory name (required string(s)).')
-  parser.add_argument('-m', '--instrument', required=True, default=None, help='The sequencing instrument (required string: \'Illumina\' or \'Ultima\').')
+  parser.add_argument('-m', '--sequencing_platform', required=True, default=None, help='The sequencing platform (required string: \'Illumina\' or \'Ultima\').')
   parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
 
@@ -340,7 +340,7 @@ if __name__ == '__main__':
   #
   # Make sample data.
   #
-  sample_stats_dict = make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_statistics_dict, starsolo_summary_dict, hash_read_rate_dict, args.instrument)
+  sample_stats_dict = make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_statistics_dict, starsolo_summary_dict, hash_read_rate_dict, args.sequencing_platform)
 
   #
   # Make run data.

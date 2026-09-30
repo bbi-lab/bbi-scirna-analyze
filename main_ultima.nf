@@ -4,6 +4,7 @@ import java.nio.file.Paths
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
+def sequencing_platform = 'Ultima'
 
 params.bin_dir = workflow.projectDir + '/bin'
 params.align_cpus = 8
@@ -16,6 +17,7 @@ params.run_empty_drops = true
 params.run_scrublet = true
 params.cpuid_level = 22
 params.raw_log_dir= "${params.output_dir}/raw_log"
+
 
 def demux_out = "${params.output_dir}/demux_out"
 def genomes_data_file = "${params.bin_dir}/genomes_data.json"
@@ -38,7 +40,6 @@ def dummy_file = "${params.bin_dir}/channel_dummy.xxx"
 */
 params.object_map.merge_bam_map = [:]
 params.object_map.process_hashes_map = [:]
-params.object_map.trim_bam_map = [:]
 params.object_map.merge_align_bam_map = [:]
 params.object_map.run_scrublet_cds_map = [:]
 params.object_map.cat_matrices_raw_map = [:]
@@ -51,12 +52,12 @@ params.object_map.cat_matrices_raw_map = [:]
 include { make_sample_map_json } from './modules/make_sample_map_json.nf'
 include { make_merge_demux_json } from './modules/make_merge_demux_json.nf'
 include { merge_demux } from './modules/merge_demux.nf'
+include { make_merge_hash_reads_json } from './modules/make_merge_hash_reads_json.nf'
+include { merge_hash_reads } from './modules/merge_hash_reads.nf'
 include { make_process_hashes_json } from './modules/make_process_hashes_json.nf'
 include { process_hashes; cat_hashes; process_hashes_function; hash_umi_knee_plot; calc_tot_hash_dup; assign_hash_raw } from './modules/process_hashes.nf'
-include { make_trim_bam_json } from './modules/make_trim_bam_json.nf'
-include { trim_bams; trim_bam_function; aggregate_trimmer_logs } from './modules/trim_bams.nf'
 include { make_star_align_json } from './modules/make_star_align_json.nf'
-include { align_bams; align_bam_function } from './modules/align_bams.nf'
+include { align_bams; align_bam_ultima_function } from './modules/align_bams.nf'
 include { make_merge_align_json } from './modules/make_merge_align_json.nf'
 include { merge_align; merge_align_function } from './modules/merge_align.nf'
 include { merge_starsolo_reports; merge_starsolo_reports_function } from './modules/merge_starsolo_reports.nf'
@@ -69,8 +70,6 @@ include { run_scrublet } from './modules/run_scrublet.nf'
 include { run_empty_drops } from './modules/run_empty_drops.nf'
 include { make_generate_qc_hash; make_generate_qc_no_hash } from './modules/make_generate_qc.nf'
 include { make_experiment_dashboard } from './modules/make_experiment_dashboard.nf'
-
-
 
 
 /*
@@ -91,6 +90,17 @@ def merge_demux_closure = {
           [sample_name, out_name, in_file_list]
 }
 
+def merge_hash_reads_closure = {
+  item ->
+          def sample_name = item['sample_name']
+          def out_name = item['out_file']
+          def in_file_list = []
+          for(def in_file in item['in_file_list']) {
+            in_file_list.add(file(in_file))
+          }
+          [sample_name, out_name, in_file_list]
+}
+
 /*
 ** Read JSON file into the corresponding lists + maps.
 */
@@ -99,6 +109,7 @@ def read_json(filename) {
   def json_text = file_json.getText()
   def json_slurper = new groovy.json.JsonSlurper()
   def json_object = json_slurper.parseText(json_text) 
+
   return(json_object)
 }
 
@@ -147,6 +158,13 @@ workflow {
   merge_demux(merge_demux_channel_in)
 
   /*
+  ** Set up and run hash read TSV file merge.
+  */
+  make_merge_hash_reads_json(samplesheet_file, "$demux_out")
+  make_merge_hash_reads_json.out.splitJson().map{merge_hash_reads_closure(it)}.set{merge_hash_reads_channel_in}
+  merge_hash_reads(merge_hash_reads_channel_in)
+
+  /*
   ** Make a JSON file with sample-specific values.
   */
   make_sample_map_json(samplesheet_file, genomes_data_file)
@@ -155,7 +173,7 @@ workflow {
 
   /*
   ** Here are some convolutions in order to pass
-  ** the paths of merged bam files to the trim
+  ** the paths of merged bam files to the align
   ** bams process. The merged bam files are in the
   ** work directory so the paths are not known
   ** until Nextflow runs the merge_demux process.
@@ -168,7 +186,7 @@ workflow {
   **      addition, the global variable
   **      params.object_map.merge_bam_map transfers
   **      values from the .subscribe() operator to the
-  **      trim_bam_function().
+  **      align_bam_ultima_function().
   **   o  in short, the following .subscribe() operator
   **      makes a Java associative array (map) that
   **      maps a bam filename to its path in the work
@@ -204,7 +222,7 @@ workflow {
       params.object_map.merge_bam_map[file_base_name] = path
   }
 
-  merge_demux.out.bam.subscribe onNext: {
+  merge_hash_reads.out.subscribe onNext: {
     path ->
       def file_base_name = path.toString().tokenize('/').last()
       params.object_map.process_hashes_map[file_base_name] = path
@@ -218,9 +236,9 @@ workflow {
   **      for finding the required paths in the work
   **      directory.
   */
-  make_process_hashes_json(samplesheet_file, merge_demux.out.bam.collect())
+  make_process_hashes_json(samplesheet_file, sequencing_platform, merge_hash_reads.out.collect())
   make_process_hashes_json.out.json.splitJson().filter{it.size() > 0}.map{process_hashes_function(it)}.set{process_hashes_channel_in}
-  process_hashes(process_hashes_channel_in)
+  process_hashes(process_hashes_channel_in, sequencing_platform)
 
   process_hashes.out.hash_matrix.groupTuple().join(process_hashes.out.hash_cells.groupTuple()).join(process_hashes.out.hash_hashes.groupTuple()).join(process_hashes.out.hash_umis_per_cell.groupTuple()).join(process_hashes.out.hash_dup_per_cell.groupTuple()).join(process_hashes.out.hash_reads_per_cell.groupTuple()).join(process_hashes.out.hash_assigned_table.groupTuple()).join(process_hashes.out.hash_log.groupTuple()).set{cat_hashes_in}
   cat_hashes(cat_hashes_in)
@@ -229,29 +247,10 @@ workflow {
   calc_tot_hash_dup(cat_hashes.out.hash_dup_per_cell)
 
   /*
-  ** Set up and run (trim_galore) read trimming.
-  */
-  make_trim_bam_json(samplesheet_file, merge_demux.out.bam.collect())
-  make_trim_bam_json.out.json.splitJson().map{trim_bam_function(it)}.set{trim_bam_channel_in}
-  trim_bams(trim_bam_channel_in)
-
-  /*
-  ** Aggregate trimmer logs.
-  */
-  trim_bams.out.trimmer_logs.groupTuple().set { aggregate_trimmer_logs_channel_in }
-  aggregate_trimmer_logs(aggregate_trimmer_logs_channel_in)
-
-  /*
   ** Set up and run STAR aligner in STARsolo mode.
   */
-  trim_bams.out.trimmed_bams.subscribe onNext: {
-    path ->
-      def file_base_name = path.toString().tokenize('/').last()
-      params.object_map.trim_bam_map[file_base_name] = path
-  }
-
-  make_star_align_json(samplesheet_file, trim_bams.out.trimmed_bams.collect())
-  make_star_align_json.out.json.splitJson().map{align_bam_function(it)}.combine(sample_maps_split, by: 0).set{align_bam_channel_in}
+  make_star_align_json(samplesheet_file, sequencing_platform, merge_demux.out.bam.collect())
+  make_star_align_json.out.json.splitJson().map{align_bam_ultima_function(it)}.combine(sample_maps_split, by: 0).set{align_bam_channel_in}
   align_bams(align_bam_channel_in)
 
   /*
@@ -265,7 +264,7 @@ workflow {
       params.object_map.merge_align_bam_map[dir_base_name] = path
   }
 
-  make_merge_align_json(samplesheet_file, align_bams.out.starsolo.collect())
+  make_merge_align_json(samplesheet_file, sequencing_platform, align_bams.out.starsolo.collect())
   make_merge_align_json.out.json.splitJson().map{merge_align_function(it)}.set{merge_align_channel_in}
   merge_align(merge_align_channel_in)
 
@@ -295,7 +294,7 @@ workflow {
   ** Make cat_matrices_raw_map map with matrix file paths.
   */
   cat_matrices_raw.out.raw_matrix.subscribe onNext: {
-    def tup ->
+    tup ->
       def cells_path = tup[1]
       def cells_base_name = cells_path.toString().tokenize('/').last()
       params.object_map.cat_matrices_raw_map[cells_base_name] = cells_path
@@ -383,8 +382,6 @@ workflow {
   make_generate_qc_hash.out.qc_txt.concat(make_generate_qc_no_hash.out.qc_txt).map{ trim_tuple_closure(it) }.flatMap{ it -> it[0] }.collect().set{ make_experiment_dashboard_txt_channel_in }
   cat_hashes.out.hash_read_rate.map{ trim_tuple_closure(it) }.collect().ifEmpty(file(dummy_file)).set{ make_experiment_dashboard_cat_hashes_channel_in }
 
- 
-  instrument = 'Illumina' 
   make_experiment_dashboard(merge_starsolo_reports.out.cell_reads_stats.map{ trim_tuple_closure(it) }.collect(),
                             merge_starsolo_reports.out.starsolo_summary.map{ trim_tuple_closure(it) }.collect(),
                             make_umi_counts.out.umi_counts_tsv.map{ trim_tuple_closure(it) }.collect(),
@@ -395,6 +392,6 @@ workflow {
                             make_sample_map_json.out.sample_maps,
                             params.umi_cutoff,
                             params.fdr_cutoff,
-                            instrument)
+                            sequencing_platform)
 }
 

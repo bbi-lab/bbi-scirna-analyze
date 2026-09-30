@@ -18,7 +18,8 @@ process process_hashes {
   publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
 
   input:
-  tuple val(sample_name), val(hash_file), path(bam_in), val(out_root)
+  tuple val(sample_name), val(hash_file), path(file_in), val(out_root)
+  val(sequencing_platform)
 
   output:
   tuple val(sample_name), path("*.hashumis.mtx"), emit: 'hash_matrix'
@@ -37,19 +38,37 @@ process process_hashes {
   */
 
   script:
-  """
-  # bash watch for errors
-  set -ueo pipefail
+  if(sequencing_platform == 'Illumina') {
+    """
+    # bash watch for errors
+    set -ueo pipefail
+  
+    ${LogUtil.emit([
+       [ tool: 'process_hashes_illumina',
+         cmdVer: 'process_hashes_illumina --version | head -n 1',
+         command: "process_hashes_illumina -n ${sample_name} -k ${out_root} -s ${hash_file} -b ${file_in} -t 2"
+       ]
+     ], nextflow, task, params, sample_name)}
+  
+    process_hashes_illumina -n ${sample_name} -k ${out_root} -s ${hash_file} -b ${file_in} -t 2
+    """
+  } else if(sequencing_platform == 'Ultima') {
+    """
+    # bash watch for errors
+    set -ueo pipefail
+ 
+    ${LogUtil.emit([
+       [ tool: 'process_hashes_ultima',
+         cmdVer: 'process_hashes_ultima --version | head -n 1',
+         command: "process_hashes_ultima -n ${sample_name} -k ${out_root} -s ${hash_file} -t ${file_in}"
+       ]
+     ], nextflow, task, params, sample_name)}
 
-  ${LogUtil.emit([
-     [ tool: 'process_hashes',
-       cmdVer: 'process_hashes --version | head -n 1',
-       command: "process_hashes -n ${sample_name} -k ${out_root} -s ${hash_file} -b ${bam_in} -t 2"
-     ]
-   ], nextflow, task, params, sample_name)}
-
-  process_hashes -n ${sample_name} -k ${out_root} -s ${hash_file} -b ${bam_in} -t 2
-  """
+    process_hashes_ultima -n ${sample_name} -k ${out_root} -s ${hash_file} -t ${file_in} 
+    """
+  } else {
+    error "Unknown sequencing_platform: $sequencing_platform"
+  }
 }
 
 

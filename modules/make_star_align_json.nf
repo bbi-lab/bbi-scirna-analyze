@@ -6,6 +6,7 @@ process make_star_align_json {
 
   input:
   path(samplesheet_file)
+  val(sequencing_platform)
   val(dummy)
 
   output:
@@ -24,6 +25,6 @@ process make_star_align_json {
      ]
    ], nextflow, task, params, 'NA')}
 
-  $workflow.projectDir/bin/make_star_align_json.py -i $samplesheet_file
+  $workflow.projectDir/bin/make_star_align_json.py -i $samplesheet_file -p ${sequencing_platform}
   """
 }

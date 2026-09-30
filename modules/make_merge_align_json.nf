@@ -6,6 +6,7 @@ process make_merge_align_json {
 
   input:
   path(samplesheet_file)
+  val(sequencing_platform)
   val(dummy)
 
   output:
@@ -20,10 +21,10 @@ process make_merge_align_json {
   ${LogUtil.emit([
      [ tool: 'make_merge_align_json.py',
        cmdVer: 'make_merge_align_json.py --version | head -n 1',
-       command: "make_merge_align_json.py -i $samplesheet_file"
+       command: "make_merge_align_json.py -i $samplesheet_file -s ${sequencing_platform}"
      ]
    ], nextflow, task, params, 'NA')}
 
-  $workflow.projectDir/bin/make_merge_align_json.py -i $samplesheet_file
+  $workflow.projectDir/bin/make_merge_align_json.py -i $samplesheet_file -p ${sequencing_platform}
   """
 }

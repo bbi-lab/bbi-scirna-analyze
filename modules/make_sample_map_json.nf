@@ -1,6 +1,8 @@
 def json_files_out = params.output_dir + '/json_files'
 
 process make_sample_map_json {
+  cache 'lenient'
+
   publishDir path: "${json_files_out}", pattern: "sample_map.json", mode: 'copy'
   publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
 

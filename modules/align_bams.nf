@@ -1,7 +1,16 @@
-def align_bam_function(item) {
+def align_bam_illumina_function(item) {
   def sample_name = item['sample_name']
   def in_file = item['in_file']
   def file_path = params.object_map.trim_bam_map[in_file]
+  def out_dir = in_file.take(in_file.lastIndexOf('.'))
+
+  return([sample_name, file_path, out_dir])
+}
+
+def align_bam_ultima_function(item) {
+  def sample_name = item['sample_name']
+  def in_file = item['in_file']
+  def file_path = params.object_map.merge_bam_map[in_file]
   def out_dir = in_file.take(in_file.lastIndexOf('.'))
 
   return([sample_name, file_path, out_dir])

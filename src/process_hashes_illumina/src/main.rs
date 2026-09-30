@@ -10,7 +10,7 @@ use std::str;
 use std::collections::{HashMap, HashSet};
 use std::collections::hash_map::Entry;
 
-use process_hashes::barcode_utils;
+use process_hashes_illumina::barcode_utils;
 extern crate clap;
 use clap::{Arg, Command};
 use rust_htslib::bam::{Read, Reader};
@@ -23,7 +23,7 @@ use itertools::Itertools;
 ** Define command line arguments.
 */
 fn set_cl_options() -> Result<clap::Command, Box<dyn std::error::Error>> {
-  let cl_options = Command::new("process_hashes")
+  let cl_options = Command::new("process_hashes_illumina")
         .version(env!("CARGO_PKG_VERSION"))
         .about("Finds hash sequence reads in BAM file.")
         .arg(Arg::new("sample_name")  // required=true, no default
