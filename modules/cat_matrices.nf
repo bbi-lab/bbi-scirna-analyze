@@ -57,7 +57,7 @@ process cat_matrices_raw {
        cmdVer: 'barcode_to_well.py --version | head -n 1',
        command: "barcode_to_well.py -i ${out_file}.cells.tsv -o ${out_file}.cells.barcode_to_wells.tsv"
      ]
-   ], nextflow, task, params, sample_name)}
+   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   # Use the symbolic link referent because we use the path
   # to find the feature and cell files for cat_sparse_matrix.py.

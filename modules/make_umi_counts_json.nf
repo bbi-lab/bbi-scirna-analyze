@@ -22,7 +22,7 @@ process make_umi_counts_json {
        cmdVer: 'make_umi_counts_json.py --version | head -n 1',
        command: "make_umi_counts_json.py -i $samplesheet_file"
      ]
-   ], nextflow, task, params, 'NA')}
+   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", 'NA')}
 
   $workflow.projectDir/bin/make_umi_counts_json.py -i $samplesheet_file
   """

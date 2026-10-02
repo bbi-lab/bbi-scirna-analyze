@@ -30,7 +30,7 @@ process run_empty_drops {
        cmdVer: 'run_emptyDrops.R --version | head -n 1',
        command: "run_emptyDrops.R ${count_matrix} ${cell_tsv} ${feature_tsv} ${sample_name} <output_file>"
      ]
-   ], nextflow, task, params, sample_name)}
+   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   output_file="${sample_name}_emptyDrops.RDS"
 

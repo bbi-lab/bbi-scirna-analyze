@@ -57,7 +57,7 @@ process merge_starsolo_reports {
        cmdVer: 'merge_starsolo_reports.py --version | head -n 1',
        command: "merge_starsolo_reports.py -i ${root} -s ${sample_name}"
      ]
-   ], nextflow, task, params, sample_name)}
+   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   cat_starsolo_stats.py -i ${file} -o ${out_file}
 

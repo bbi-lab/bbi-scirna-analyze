@@ -24,7 +24,7 @@ process split_starsolo_stats {
        cmdVer: 'split_starsolo_stats.py --version | head -n 1',
        command: "split_starsolo_stats.py -i ${file} -s ${sample_name}"
      ]
-   ], nextflow, task, params, sample_name)}
+   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   split_starsolo_stats.py -i ${file} -s ${sample_name}
   """

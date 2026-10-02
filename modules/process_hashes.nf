@@ -47,7 +47,7 @@ process process_hashes {
          cmdVer: 'process_hashes_illumina --version | head -n 1',
          command: "process_hashes_illumina -n ${sample_name} -k ${out_root} -s ${hash_file} -b ${file_in} -t 2"
        ]
-     ], nextflow, task, params, sample_name)}
+     ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
   
     process_hashes_illumina -n ${sample_name} -k ${out_root} -s ${hash_file} -b ${file_in} -t 2
     """
@@ -61,7 +61,7 @@ process process_hashes {
          cmdVer: 'process_hashes_ultima --version | head -n 1',
          command: "process_hashes_ultima -n ${sample_name} -k ${out_root} -s ${hash_file} -t ${file_in}"
        ]
-     ], nextflow, task, params, sample_name)}
+     ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
     process_hashes_ultima -n ${sample_name} -k ${out_root} -s ${hash_file} -t ${file_in} 
     """
@@ -112,7 +112,7 @@ process cat_hashes {
        cmdVer: 'cat_sparse_matrix.py --version | head -n 1',
        command: "cat_sparse_matrix.py -i *_hashumis.mtx -m hashumis.mtx -f hashumis_hashes.txt -c hashumis_cells.txt -o ${sample_name}"
      ]
-   ], nextflow, task, params, sample_name)}
+   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   #
   # Check that groupTuple grouped files correctly by
@@ -178,7 +178,7 @@ process hash_umi_knee_plot {
        cmdVer: 'make_hash_knee_plot.R --version | head -n 1',
        command: "make_hash_knee_plot.R ${hash_umis_per_cell} ${sample_name}"
      ]
-   ], nextflow, task, params, sample_name)}
+   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   make_hash_knee_plot.R ${hash_umis_per_cell} ${sample_name}
   """
@@ -209,7 +209,7 @@ process calc_tot_hash_dup {
        cmdVer: 'calc_tot_hash_dup.R --version 2>&1 | grep "^calc_tot_hash_dup"',
        command: "calc_tot_hash_dup.R ${sample_name} ${hash_dup_per_cell} ${params.hash_dup}"
      ]
-  ], nextflow, task, params, sample_name)}
+  ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   if [ ${params.hash_dup} != 'false' ]
   then
@@ -256,7 +256,7 @@ process assign_hash_raw {
     ${params.hash_umi_cutoff} \
     ${params.hash_ratio}"
      ]
-  ], nextflow, task, params, sample_name)}
+  ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   mkdir tmp_dir
   mv ${mobs} tmp_dir

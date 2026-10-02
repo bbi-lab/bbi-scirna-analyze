@@ -37,7 +37,7 @@ process make_cds_raw {
   ${sample_map['genes_tsv']} \
   ${empty_drops}"
      ]
-   ], nextflow, task, params, sample_name)}
+   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   make_cds.R \
   ${sample_name} \

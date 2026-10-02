@@ -37,7 +37,7 @@ process run_scrublet {
        cmdVer: 'add_scrublet_to_cds.R --version | head -n 1',
        command: "add_scrublet_to_cds.R ${sample_name} tmp.in.mobs ${sample_name}_scrublet_out.csv"
      ]
-   ], nextflow, task, params, sample_name)}
+   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   #
   # Move the input mobs directory.

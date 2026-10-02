@@ -34,7 +34,7 @@ process make_umi_counts {
        cmdVer: 'mito_umis --version | head -n 1',
        command: "mito_umis -m ${in_matrix} -f ${in_features} -b ${in_barcodes} -a ${sample_map['genes_tsv']} -o ${out_file}"
      ]
-   ], nextflow, task, params, sample_name)}
+   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   mito_umis -m ${in_matrix} -f ${in_features} -b ${in_barcodes} -a ${sample_map['genes_tsv']} -o ${out_file}
   """

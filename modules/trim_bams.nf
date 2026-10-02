@@ -37,7 +37,7 @@ process trim_bams {
        cmdVer: 'trim_galore_rust --version | head -n 1',
        command: "trim_galore_rust -a AAAAAAAA --no_poly_g --three_prime_clip_R1 1 --output-format ubam --preserve-tags CB,CY,UB,UY --cores 2 ${bam_in}"
      ]
-  ], nextflow, task, params, sample_name)}
+  ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   #
   # Skip empty BAM files.
@@ -97,7 +97,7 @@ process aggregate_trimmer_logs {
        cmdVer: 'trimgalore_counts.py --version | head -n 1',
        command: "trimgalore_counts.py -s ${sample_name} -i ${log_in} -o ${sample_name}_trimgalore_counts.json"
      ]
-   ], nextflow, task, params, sample_name)}
+   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   trimgalore_counts.py -s ${sample_name} -i ${log_in} -o ${sample_name}_trimgalore_counts.json
   """

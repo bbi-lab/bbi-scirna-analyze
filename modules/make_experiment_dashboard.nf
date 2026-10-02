@@ -40,7 +40,7 @@ process make_experiment_dashboard {
        cmdVer: 'make_exp_dash_data_js.py --version | head -n 1',
        command: "make_exp_dash_data_js.py ${sample_maps_json} -p <project_directory>"
      ]
-], nextflow, task, params, 'NA')}
+], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", 'NA')}
 
   #
   # Get sample names from sample_map.json file.

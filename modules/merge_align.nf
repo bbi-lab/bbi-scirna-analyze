@@ -44,7 +44,7 @@ process merge_align {
       cmdVer: 'sambamba --version 2>&1 | grep "sambamba" | head -n 1',
       command: "sambamba sambamba merge -t 8 ${out_file} files*"
     ]
-  ], nextflow, task, params, sample_name)}
+  ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   nfil=`ls files* | wc -l`
 

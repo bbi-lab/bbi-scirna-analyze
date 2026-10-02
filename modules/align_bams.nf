@@ -85,7 +85,7 @@ process align_bams {
       --readFilesCommand samtools view \
       --outFileNamePrefix ${out_dir}/"
      ]
-   ], nextflow, task, params, sample_name)}
+   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   #
   # Notes:

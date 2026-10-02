@@ -46,7 +46,7 @@ process make_generate_qc_hash {
          cmdVer: 'generate_qc.R --version | head -n 1',
          command: "Not hash sample: skip make_generate_qc_hash"
        ]
-    ], nextflow, task, params, sample_name)}
+    ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
     echo 'Not hash sample: skip make_generate_qc_hash'
     """
@@ -60,7 +60,7 @@ process make_generate_qc_hash {
          cmdVer: 'generate_qc.R --version | head -n 1',
          command: "generate_qc.R ${cds_raw_hash_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} ${sample_map['hash_file']} ${sample_map['genome']} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}"
        ]
-    ], nextflow, task, params, sample_name)}
+    ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
     generate_qc.R ${cds_raw_hash_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} ${sample_map['hash_file']} ${sample_map['genome']} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}
     """
@@ -94,7 +94,7 @@ process make_generate_qc_no_hash {
          cmdVer: 'generate_qc.R --version | head -n 1',
          command: "generate_qc.R ${cds_raw_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} 'false' ${sample_map['genome']} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}"
        ]
-    ], nextflow, task, params, sample_name)}
+    ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
     generate_qc.R ${cds_raw_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} 'false' ${sample_map['genome']} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}
     """
@@ -108,7 +108,7 @@ process make_generate_qc_no_hash {
          cmdVer: 'generate_qc.R --version | head -n 1',
          command: "Hash sample: skip make_generate_qc_no_hash"
        ]
-    ], nextflow, task, params, sample_name)}
+    ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
     echo 'Hash sample: skip make_generate_qc_no_hash'
     """

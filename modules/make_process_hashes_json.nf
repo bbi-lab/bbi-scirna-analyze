@@ -22,7 +22,7 @@ process make_process_hashes_json {
        cmdVer: 'make_process_hashes_json.py --version | head -n 1',
        command: "make_process_hashes_json.py -i ${samplesheet_file} -s ${params.sequencing_platform}"
      ]
-   ], nextflow, task, params, 'NA')}
+   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", 'NA')}
 
   $workflow.projectDir/bin/make_process_hashes_json.py -i ${samplesheet_file} -p ${params.sequencing_platform}
   """

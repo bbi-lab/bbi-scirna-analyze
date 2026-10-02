@@ -24,7 +24,7 @@ process make_sample_map_json {
        cmdVer: 'make_sample_map_json.py --version | head -n 1',
        command: "make_sample_map_json.py -s $samplesheet_file -g ${genomes_data_file}"
      ]
-   ], nextflow, task, params, 'NA')}
+   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", 'NA')}
 
   $workflow.projectDir/bin/make_sample_map_json.py -s ${samplesheet_file} -g ${genomes_data_file}
   """

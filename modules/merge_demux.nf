@@ -18,15 +18,15 @@ process merge_demux {
   set -ueo pipefail
 
   ${LogUtil.emit([
-     [ tool: 'samtools',
-       cmdVer: 'samtools --version | head -n 2',
-       command: "samtools sort -@ 4 -m 8G <file_in> -o <file_out.sorted>" 
-     ],
-     [ tool: 'samtools',
-       cmdVer: 'samtools --version | head -n 2',
-       command: "samtools merge -@ 4 ${out_file} *.sorted"
-     ]
-   ], nextflow, task, params, sample_name)}
+    [ tool: 'samtools',
+      cmdVer: 'samtools --version | head -n 2',
+      command: "samtools sort -@ 4 -m 8G <file_in> -o <file_out.sorted>" 
+    ],
+    [ tool: 'samtools',
+      cmdVer: 'samtools --version | head -n 2',
+      command: "samtools merge -@ 4 ${out_file} *.sorted"
+    ]
+  ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   file_list=`ls files*`
   for file in \$file_list
@@ -37,4 +37,6 @@ process merge_demux {
   rm -r *.sorted
   """
 }
+
+
 

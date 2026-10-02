@@ -22,8 +22,10 @@ process make_merge_demux_json {
       cmdVer: 'make_merge_demux_json.py --version | head -n 1',
       command: "make_merge_demux_json.py -i $samplesheet_file -p $bam_path"
     ]
-  ], nextflow, task, params, 'NA')}
+  ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", 'NA')}
 
   $workflow.projectDir/bin/make_merge_demux_json.py -i $samplesheet_file -p $bam_path
   """
 }
+
+
