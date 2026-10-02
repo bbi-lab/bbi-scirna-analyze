@@ -1,5 +1,3 @@
-include { log_provenance } from './log_utils'
-
 def merge_align_function(item) {
   def sample_name = item['sample_name']
   def out_file = item['out_file']
@@ -30,26 +28,23 @@ process merge_align {
   publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
 
   input:
-  tuple val(sample_name), val(out_file), path(files)
+  tuple val(sample_name), val(out_file), path("files")
 
   output:
   path("*aligned.bam"), emit: 'bam'
   path("version.json"), emit: 'version'
 
   script:
-  // nxf-lint-disable-next-line
-  logging_run = log_provenance([
-     [ tool: 'sambamba',
-       cmdVer: 'sambamba --version | grep "sambamba" | head -n 1',
-       command: "sambamba sambamba merge -t 8 ${out_file} files*"
-     ]
-   ], nextflow, task, params, sample_name)
-
   """
   # bash watch for errors
   set -ueo pipefail
 
-  ${logging_run}
+  ${LogUtil.emit([
+    [ tool: 'sambamba',
+      cmdVer: 'sambamba --version 2>&1 | grep "sambamba" | head -n 1',
+      command: "sambamba sambamba merge -t 8 ${out_file} files*"
+    ]
+  ], nextflow, task, params, sample_name)}
 
   nfil=`ls files* | wc -l`
 

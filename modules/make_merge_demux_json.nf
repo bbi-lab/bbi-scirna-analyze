@@ -1,9 +1,7 @@
-def json_files_out = params.output_dir + '/json_files'
-
 process make_merge_demux_json {
   cache 'lenient'
 
-  publishDir path: "${json_files_out}", pattern: "merge_demux.json", mode: 'copy'
+  publishDir path: "${params.output_dir}/json_files", pattern: "merge_demux.json", mode: 'copy'
   publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
 
   input:
@@ -20,11 +18,11 @@ process make_merge_demux_json {
   set -ueo pipefail
 
   ${LogUtil.emit([
-     [ tool: 'make_merge_demux_json.py',
-       cmdVer: 'make_merge_demux_json.py --version | head -n 1',
-       command: "make_merge_demux_json.py -i $samplesheet_file -p $bam_path"
-     ]
-   ], nextflow, task, params, 'NA')}
+    [ tool: 'make_merge_demux_json.py',
+      cmdVer: 'make_merge_demux_json.py --version | head -n 1',
+      command: "make_merge_demux_json.py -i $samplesheet_file -p $bam_path"
+    ]
+  ], nextflow, task, params, 'NA')}
 
   $workflow.projectDir/bin/make_merge_demux_json.py -i $samplesheet_file -p $bam_path
   """

@@ -1,5 +1,3 @@
-package LogUtil
-
 /*
 ** Software logging utility.
 ** Usage fragment:
