@@ -4,8 +4,8 @@ import java.nio.file.Paths
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
-sequencing_platform = 'Illumina'
 
+params.sequencing_platform = 'Illumina'
 params.bin_dir = workflow.projectDir + '/bin'
 params.align_cpus = 8
 params.umi_cutoff = 100
@@ -86,10 +86,15 @@ def merge_demux_closure = {
   item -> 
           def sample_name = item['sample_name']
           def out_name = item['out_file']
+          def in_file_list = item['in_file_list']
+
+/*
           def in_file_list = []
           for(def in_file in item['in_file_list']) {
             in_file_list.add(file(in_file))
           }
+*/
+
           [sample_name, out_name, in_file_list]
 }
 
@@ -220,9 +225,9 @@ workflow {
   **      for finding the required paths in the work
   **      directory.
   */
-  make_process_hashes_json(samplesheet_file, sequencing_platform, merge_demux.out.bam.collect())
+  make_process_hashes_json(samplesheet_file, merge_demux.out.bam.collect())
   make_process_hashes_json.out.json.splitJson().filter{it.size() > 0}.map{process_hashes_function(it)}.set{process_hashes_channel_in}
-  process_hashes(process_hashes_channel_in, sequencing_platform)
+  process_hashes(process_hashes_channel_in)
 
   process_hashes.out.hash_matrix.groupTuple().join(process_hashes.out.hash_cells.groupTuple()).join(process_hashes.out.hash_hashes.groupTuple()).join(process_hashes.out.hash_umis_per_cell.groupTuple()).join(process_hashes.out.hash_dup_per_cell.groupTuple()).join(process_hashes.out.hash_reads_per_cell.groupTuple()).join(process_hashes.out.hash_assigned_table.groupTuple()).join(process_hashes.out.hash_log.groupTuple()).set{cat_hashes_in}
   cat_hashes(cat_hashes_in)
@@ -252,7 +257,7 @@ workflow {
       params.object_map.trim_bam_map[file_base_name] = path
   }
 
-  make_star_align_json(samplesheet_file, sequencing_platform, trim_bams.out.trimmed_bams.collect())
+  make_star_align_json(samplesheet_file, trim_bams.out.trimmed_bams.collect())
   make_star_align_json.out.json.splitJson().map{align_bam_illumina_function(it)}.combine(sample_maps_split, by: 0).set{align_bam_channel_in}
   align_bams(align_bam_channel_in)
 
@@ -267,7 +272,7 @@ workflow {
       params.object_map.merge_align_bam_map[dir_base_name] = path
   }
 
-  make_merge_align_json(samplesheet_file, sequencing_platform, align_bams.out.starsolo.collect())
+  make_merge_align_json(samplesheet_file, align_bams.out.starsolo.collect())
   make_merge_align_json.out.json.splitJson().map{merge_align_function(it)}.set{merge_align_channel_in}
   merge_align(merge_align_channel_in)
 
@@ -395,7 +400,6 @@ workflow {
                             make_experiment_dashboard_txt_channel_in,
                             make_sample_map_json.out.sample_maps,
                             params.umi_cutoff,
-                            params.fdr_cutoff,
-                            sequencing_platform)
+                            params.fdr_cutoff)
 }
 

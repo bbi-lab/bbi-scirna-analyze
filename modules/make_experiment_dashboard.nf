@@ -17,7 +17,6 @@ process make_experiment_dashboard {
     path(sample_maps_json)
     val(umi_cutoff)
     val(fdr_cutoff)
-    val(sequencing_platform)  // 'Illumina' or 'Ultima'
 
   output:
     path('exp_dash'), emit: 'dash'
@@ -67,7 +66,7 @@ process make_experiment_dashboard {
   # Make data.js file for dashboard.
   #
   project_directory=`basename ${workflow.launchDir}`
-  make_exp_dash_data_js.py -s ${sample_maps_json} -p \${project_directory} -m ${sequencing_platform}
+  make_exp_dash_data_js.py -s ${sample_maps_json} -p \${project_directory} -m ${params.sequencing_platform}
 
   #
   # Copy skeleton dashboard to exp_dash directory.

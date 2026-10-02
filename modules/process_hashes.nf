@@ -19,7 +19,6 @@ process process_hashes {
 
   input:
   tuple val(sample_name), val(hash_file), path(file_in), val(out_root)
-  val(sequencing_platform)
 
   output:
   tuple val(sample_name), path("*.hashumis.mtx"), emit: 'hash_matrix'
@@ -38,7 +37,7 @@ process process_hashes {
   */
 
   script:
-  if(sequencing_platform == 'Illumina') {
+  if("$params.sequencing_platform" == 'Illumina') {
     """
     # bash watch for errors
     set -ueo pipefail
@@ -52,7 +51,7 @@ process process_hashes {
   
     process_hashes_illumina -n ${sample_name} -k ${out_root} -s ${hash_file} -b ${file_in} -t 2
     """
-  } else if(sequencing_platform == 'Ultima') {
+  } else if("$params.sequencing_platform" == 'Ultima') {
     """
     # bash watch for errors
     set -ueo pipefail
@@ -67,7 +66,7 @@ process process_hashes {
     process_hashes_ultima -n ${sample_name} -k ${out_root} -s ${hash_file} -t ${file_in} 
     """
   } else {
-    error "Unknown sequencing_platform: $sequencing_platform"
+    error "Unknown sequencing_platform: $params.sequencing_platform"
   }
 }
 

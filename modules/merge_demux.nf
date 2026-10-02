@@ -1,10 +1,9 @@
 
 process merge_demux {
-  errorStrategy 'retry'
   cache 'lenient'
+  errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "logging/", pattern: "version.json", mode: 'copy'
   publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
 
   input:
@@ -29,8 +28,6 @@ process merge_demux {
        command: "samtools merge -@ 4 ${out_file} *.sorted"
      ]
    ], nextflow, task, params, sample_name)}
-
-  # mv version.json ${sample_name}.version.json
 
   file_list=`ls files*`
   for file in \$file_list

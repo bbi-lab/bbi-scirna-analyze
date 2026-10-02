@@ -1,3 +1,5 @@
+package LogUtil
+
 /*
 ** Software logging utility.
 ** Usage fragment:
@@ -159,16 +161,12 @@ class LogUtil {
     L << "     --slurpfile software .software.json \\"
     L << "     --arg     sample      \"${sample}\" \\"
     L << "     --arg     process     \"${task.process}\" \\"
-    L << "     --arg     task_id     \"${task.index}\" \\"
-    L << "     --argjson attempt      ${task.attempt} \\"
     L << "     --arg     container    \"${task.container}\" \\"
     L << "     --arg     nf_version   \"${nextflow.version}\" \\"
     L << "     --arg     pipeline     \"${params.version}\" \\"
-    L << "     --arg     timestamp    \"\$(date -u +%Y-%m-%dT%H:%M:%SZ)\" \\"
-    L << "     '{sample: \$sample, process: \$process, task_id: \$task_id, " +
-          "attempt: \$attempt, container: \$container, nf_version: \$nf_version, " +
-          "pipeline: \$pipeline, timestamp: \$timestamp, software: \$software}' > version.json"
-
+    L << "     '{sample: \$sample, process: \$process, " +
+          "container: \$container, nf_version: \$nf_version, " +
+          "pipeline: \$pipeline, software: \$software}' > version.json"
 /*
     // 5. Human-readable command provenance
     L << "{ echo \"# task: ${task.id}  process: ${task.processName}  attempt: ${task.attempt}\";"
@@ -188,3 +186,19 @@ class LogUtil {
 }
 
 
+/*
+    // 4. Assemble the final version.json
+    L << "jq -n \\"
+    L << "     --slurpfile software .software.json \\"
+    L << "     --arg     sample      \"${sample}\" \\"
+    L << "     --arg     process     \"${task.process}\" \\"
+    L << "     --arg     task_id     \"${task.index}\" \\"
+    L << "     --argjson attempt      ${task.attempt} \\"
+    L << "     --arg     container    \"${task.container}\" \\"
+    L << "     --arg     nf_version   \"${nextflow.version}\" \\"
+    L << "     --arg     pipeline     \"${params.version}\" \\"
+    L << "     --arg     timestamp    \"\$(date -u +%Y-%m-%dT%H:%M:%SZ)\" \\"
+    L << "     '{sample: \$sample, process: \$process, task_id: \$task_id, " +
+          "attempt: \$attempt, container: \$container, nf_version: \$nf_version, " +
+          "pipeline: \$pipeline, timestamp: \$timestamp, software: \$software}' > version.json"
+*/
