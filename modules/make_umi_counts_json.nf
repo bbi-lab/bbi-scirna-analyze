@@ -1,8 +1,7 @@
-def json_files_out = params.output_dir + '/json_files'
 
 process make_umi_counts_json {
-  publishDir path: "${json_files_out}", pattern: "umi_counts.json", mode: 'copy'
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+  publishDir path: "${params.output_dir}/json_files", pattern: "umi_counts.json", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   path(samplesheet_file)

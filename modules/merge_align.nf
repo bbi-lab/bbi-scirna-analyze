@@ -24,8 +24,8 @@ process merge_align {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${params.output_dir}/analyze_out/${sample_name}", pattern: "*aligned.bam", mode: 'copy'
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*aligned.bam", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), val(out_file), path("files")

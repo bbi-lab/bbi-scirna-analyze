@@ -9,13 +9,11 @@ def process_hashes_function(item) {
 }
 
 
-def analyze_out = params.output_dir + '/analyze_out'
-
 process process_hashes {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), val(hash_file), path(file_in), val(out_root)
@@ -75,17 +73,17 @@ process cat_hashes {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.hashumis.mtx", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.hashumis_hashes.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.hashumis_cells.txt", mode: 'copy'
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*.hashumis.mtx", mode: 'copy'
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*.hashumis_hashes.txt", mode: 'copy'
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*.hashumis_cells.txt", mode: 'copy'
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_assigned_table.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_dup_per_cell.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_reads_per_cell.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_umis_per_cell.txt", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash.log", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_read_rate.txt", mode: 'copy'
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*_hash_assigned_table.txt", mode: 'copy'
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*_hash_dup_per_cell.txt", mode: 'copy'
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*_hash_reads_per_cell.txt", mode: 'copy'
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*_hash_umis_per_cell.txt", mode: 'copy'
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*_hash.log", mode: 'copy'
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*_hash_read_rate.txt", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
 
   input:
@@ -158,8 +156,8 @@ process hash_umi_knee_plot {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_knee_plot.png", mode: 'copy'
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*_hash_knee_plot.png", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), path(hash_umis_per_cell)
@@ -189,8 +187,8 @@ process calc_tot_hash_dup {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_total_hash_dup_rate.csv", mode: 'copy'
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*_total_hash_dup_rate.csv", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), path(hash_dup_per_cell)
@@ -223,10 +221,10 @@ process assign_hash_raw {
   errorStrategy 'retry'
   maxRetries 1
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_table.raw.csv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_cds.raw.mobs", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_hash_cds.raw.col_data.tsv", mode: 'copy'
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*hash_table.raw.csv", mode: 'copy'
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*hash_cds.raw.mobs", mode: 'copy'
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*_hash_cds.raw.col_data.tsv", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/analyze_out/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(counts_per_cell), path(mobs), path(umi_counts)
@@ -305,8 +303,8 @@ process assign_hash_filtered {
   errorStrategy 'retry'
   maxRetries 1
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_table.filtered.csv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*hash_cds.filtered.mobs", mode: 'copy'
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*hash_table.filtered.csv", mode: 'copy'
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*hash_cds.filtered.mobs", mode: 'copy'
 
   input:
   tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(counts_per_cell), val(genome), path(mobs), path(umi_counts), val(hash_file)

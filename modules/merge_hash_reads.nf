@@ -3,7 +3,7 @@ process merge_hash_reads {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val('sample_name'), val('out_file'), path('files')

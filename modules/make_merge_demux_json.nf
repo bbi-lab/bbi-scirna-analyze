@@ -2,7 +2,7 @@ process make_merge_demux_json {
   cache 'lenient'
 
   publishDir path: "${params.output_dir}/json_files", pattern: "merge_demux.json", mode: 'copy'
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   path(samplesheet_file)

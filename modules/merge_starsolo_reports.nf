@@ -3,7 +3,7 @@ def merge_starsolo_reports_function(item) {
   def out_file = sample_name + '.starsolo.cell_reads.stats'
   def in_dir_list = []
   def in_root_list = []
-  for(def in_dir in item['in_dir_list']) {
+  item['in_dir_list'].each { in_dir ->
     def dir_base_name = in_dir.toString().tokenize('/').last()
     def root_path = params.object_map.merge_align_bam_map[dir_base_name]
     def file_path = params.object_map.merge_align_bam_map[dir_base_name] + '/Solo.out/GeneFull_Ex50pAS/CellReads.stats'
@@ -13,7 +13,7 @@ def merge_starsolo_reports_function(item) {
     ** skip this pipeline entry.
     */
     if(file_path == null) {
-      continue
+      return
     }
     in_dir_list.add(file_path)
     in_root_list.add(root_path)
@@ -22,19 +22,18 @@ def merge_starsolo_reports_function(item) {
 }
 
 
-def analyze_out = params.output_dir + '/analyze_out' 
-
 process merge_starsolo_reports {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.starsolo.cell_reads.stats", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*Features.stats", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*Summary.txt", mode: 'copy'
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.starsolo.cell_reads.stats", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*Features.stats", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*Summary.txt", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
-  tuple val('sample_name'), val('out_file'), path('file'), path('root')
+//  tuple val(sample_name), val(out_file), path("file"), path("root")
+  tuple val(sample_name), val(out_file), path(file, stageAs: 'file?'), path(root, stageAs: 'root?')
 
   output:
   tuple val(sample_name), path("*.starsolo.cell_reads.stats"), emit: cell_reads_stats
@@ -51,11 +50,11 @@ process merge_starsolo_reports {
   ${LogUtil.emit([
      [ tool: 'cat_starsolo_stats.py',
        cmdVer: 'cat_starsolo_stats.py --version | head -n 1',
-       command: "cat_starsolo_stats.py -i ${file} -o ${out_file}"
+       command: "cat_starsolo_stats.py -i <in_file> -o ${out_file}"
      ],
      [ tool: 'merge_starsolo_reports.py',
        cmdVer: 'merge_starsolo_reports.py --version | head -n 1',
-       command: "merge_starsolo_reports.py -i ${root} -s ${sample_name}"
+       command: "merge_starsolo_reports.py -i <in_root> -s ${sample_name}"
      ]
    ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 

@@ -1,14 +1,15 @@
-def analyze_out = params.output_dir + '/analyze_out'
 
 process run_scrublet {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_scrublet_out.csv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "run_scrublet.log", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "${sample_name}_cds.raw.mobs", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "${sample_name}_cds.raw.col_data.tsv", mode: 'copy'
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+  shell '/bin/bash', '-u'
+
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*_scrublet_out.csv", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "run_scrublet.log", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*_cds.raw.mobs", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*_cds.raw.col_data.tsv", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), path(mobs), path(umi_counts), val(sample_map)
@@ -18,12 +19,6 @@ process run_scrublet {
   tuple val(sample_name), path("${sample_name}_cds.raw.mobs", includeInputs: true), path(umi_counts), emit: cds
   tuple val(sample_name), path("${sample_name}_cds.raw.col_data.tsv"), emit: col_data
   path("version.json"), emit: 'version'
-
-  /*
-  ** Don't exit on error. Continue so that
-  ** the merge_align is not aborted.
-  */
-  shell '/bin/bash', '-u'
 
   script:
   """

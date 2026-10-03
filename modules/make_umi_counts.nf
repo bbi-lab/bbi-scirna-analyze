@@ -9,13 +9,11 @@ def make_umi_counts_function(item) {
 }
 
 
-def analyze_out = params.output_dir + '/analyze_out'
-
 process make_umi_counts {
   errorStrategy 'retry'
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_umi_counts.tsv", mode: 'copy'
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*_umi_counts.tsv", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), val(out_file), path(in_matrix), path(in_features), path(in_barcodes), val(sample_map)

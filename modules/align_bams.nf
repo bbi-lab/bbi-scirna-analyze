@@ -17,18 +17,18 @@ def align_bam_ultima_function(item) {
 }
 
 
-def align_cpus = params.align_cpus < 8 ? params.align_cpus : 8
-def analyze_out = params.output_dir + '/analyze_out'
 
 process align_bams {
+  cpus { Math.min(params.align_cpus as int, 8) }
   errorStrategy 'retry'
   maxRetries 2
 
-  clusterOptions { '-l m_mem_free=' + Math.round(sample_map['star_memory'].toFloat() / align_cpus.toFloat()) + 'G -pe serial ' + align_cpus + " -l cpuid_level=${params.cpuid_level}" }
+  // clusterOptions { '-l m_mem_free=' + Math.round(sample_map['star_memory'].toFloat() / task.cpus) + 'G -pe serial ' + align_cpus + " -l cpuid_level=${params.cpuid_level}" }
+  clusterOptions { "-l m_mem_free=${Math.round(sample_map['star_memory'].toFloat() / task.cpus)}G -l cpuid_level=${params.cpuid_level}" }
 
-//  publishDir path: "${analyze_out}/${sample_name}", pattern: "*trimmed", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "CellReads.stats", mode: 'copy'
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+//  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*trimmed", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "CellReads.stats", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
             
   input:
   tuple val(sample_name), path(bam_in), val(out_dir), val(sample_map)
@@ -62,7 +62,7 @@ process align_bams {
        cmdVer: 'STAR --version',
        command: "\
       STAR \
-      --runThreadN ${align_cpus} \
+      --runThreadN ${task.cpus} \
       --genomeDir ${sample_map['star_index']} \
       --soloType CB_UMI_Simple \
       --soloBarcodeReadLength 0 \
@@ -97,7 +97,7 @@ process align_bams {
   #      later.
   #
   \${STAR_ALIGNER} \
-      --runThreadN ${align_cpus} \
+      --runThreadN ${task.cpus} \
       --genomeDir ${sample_map['star_index']} \
       --soloType CB_UMI_Simple \
       --soloBarcodeReadLength 0 \

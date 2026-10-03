@@ -1,5 +1,3 @@
-def analyze_out = params.output_dir + '/analyze_out'
-
 /*
 ** Run generate_qc.R.
 */
@@ -22,9 +20,9 @@ def analyze_out = params.output_dir + '/analyze_out'
 process make_generate_qc_hash {
   errorStrategy 'ignore'
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.txt", mode: 'copy'
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.png", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.txt", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), path(cds_raw_hash_mobs), path(umi_counts), path(empty_drops_rds), val(sample_map)
@@ -70,9 +68,9 @@ process make_generate_qc_hash {
 process make_generate_qc_no_hash {
   errorStrategy 'ignore'
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.txt", mode: 'copy'
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.png", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.txt", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), path(cds_raw_mobs), path(umi_counts), path(empty_drops_rds), val(sample_map)

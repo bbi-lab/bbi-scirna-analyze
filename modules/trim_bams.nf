@@ -9,15 +9,13 @@ def trim_bam_function(item) {
 }
 
 
-def analyze_out = params.output_dir + '/analyze_out'
-
 process trim_bams {
   errorStrategy 'retry'
   maxRetries 2
 
-//  publishDir path: "${analyze_out}/${sample_name}/cutadapt", pattern: "*.trimmed.bam", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}/cutadapt", pattern: "*.trimming_report.txt", mode: 'copy'
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+//  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}/cutadapt" }, pattern: "*.trimmed.bam", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}/cutadapt" }, pattern: "*.trimming_report.txt", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), val(root_file), path(bam_in), val(out_file)
@@ -78,8 +76,8 @@ process aggregate_trimmer_logs {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*_trimgalore_counts.json", mode: 'copy'
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*_trimgalore_counts.json", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), path(log_in)

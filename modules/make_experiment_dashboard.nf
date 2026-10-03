@@ -4,7 +4,7 @@ process make_experiment_dashboard {
   maxRetries 2
 
   publishDir path: "${params.output_dir}", pattern: "exp_dash", mode: 'copy'
-  publishDir path: "${params.raw_log_dir}/${task.process}/${task.index}", mode: 'copy', pattern: 'version.json'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
     path("*") // merge_starsolo_reports.out.cell_reads_stats
