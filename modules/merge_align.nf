@@ -42,7 +42,7 @@ process merge_align {
   ${LogUtil.emit([
     [ tool: 'sambamba',
       cmdVer: 'sambamba --version 2>&1 | grep "sambamba" | head -n 1',
-      command: "sambamba sambamba merge -t 8 ${out_file} files*"
+      command: "sambamba merge -t 8 ${out_file} files*"
     ]
   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 

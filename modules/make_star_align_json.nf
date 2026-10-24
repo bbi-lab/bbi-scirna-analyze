@@ -19,7 +19,7 @@ process make_star_align_json {
   ${LogUtil.emit([
      [ tool: 'make_star_align_json.py',
        cmdVer: 'make_star_align_json.py --version | head -n 1',
-       command: "make_star_align_json.py -i $samplesheet_file"
+       command: "make_star_align_json.py -i $samplesheet_file -p ${params.sequencing_platform}"
      ]
    ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", 'NA')}
 

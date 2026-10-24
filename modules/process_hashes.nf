@@ -241,6 +241,10 @@ process assign_hash_raw {
   set -ueo pipefail
 
   ${LogUtil.emit([
+     [ tool: 'well_to_barcode.py',
+       cmdVer: 'well_to_barcode.py --version | head -n 1',
+       command: "well_to_barcode.py -i ${hashumis_cells_txt} -o hashumis_cells.tmp1"
+     ],
      [ tool: 'assign_hash.R',
        cmdVer: 'assign_hash.R --version | head -n 1',
        command: "assign_hash.R \

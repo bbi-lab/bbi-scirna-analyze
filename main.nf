@@ -143,7 +143,6 @@ workflow {
   ** Make a JSON file with sample-specific values.
   */
   make_sample_map_json(samplesheet_file, genomes_data_file)
-  // make_sample_map_json.out.sample_maps.map{it -> maps_list_to_maps_map(read_json(it))}.set{sample_maps_map}
   make_sample_map_json.out.sample_maps.splitJson().map{it -> sample_maps_split_function(it)}.set{sample_maps_split}
 
   /*

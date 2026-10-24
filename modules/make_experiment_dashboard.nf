@@ -38,7 +38,7 @@ process make_experiment_dashboard {
      ],
      [ tool: 'make_exp_dash_data_js.py',
        cmdVer: 'make_exp_dash_data_js.py --version | head -n 1',
-       command: "make_exp_dash_data_js.py ${sample_maps_json} -p <project_directory>"
+       command: "make_exp_dash_data_js.py ${sample_maps_json} -p <project_directory> -m ${params.sequencing_platform}"
      ]
 ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", 'NA')}
 
