@@ -35,7 +35,6 @@ params.object_map.merge_bam_map = [:]
 params.object_map.process_hashes_map = [:]
 params.object_map.trim_bam_map = [:]
 params.object_map.merge_align_bam_map = [:]
-params.object_map.run_scrublet_cds_map = [:]
 params.object_map.cat_matrices_raw_map = [:]
 
 
@@ -133,17 +132,17 @@ workflow {
   def samplesheet_file = channel.fromPath(params.samplesheet_json)
 
   /*
+  ** Make a JSON file with sample-specific values.
+  */
+  make_sample_map_json(samplesheet_file, genomes_data_file)
+  make_sample_map_json.out.sample_maps.splitJson().map{it -> sample_maps_split_function(it)}.set{sample_maps_split}
+
+  /*
   ** Set up and run samtools to merge (unaligned) input BAM files.
   */
   make_merge_demux_json(samplesheet_file, "$demux_out")
   make_merge_demux_json.out.json.splitJson().map{it -> merge_demux_function(it)}.set{merge_demux_channel_in}
   merge_demux(merge_demux_channel_in)
-
-  /*
-  ** Make a JSON file with sample-specific values.
-  */
-  make_sample_map_json(samplesheet_file, genomes_data_file)
-  make_sample_map_json.out.sample_maps.splitJson().map{it -> sample_maps_split_function(it)}.set{sample_maps_split}
 
   /*
   ** Here are some convolutions in order to pass
@@ -154,14 +153,14 @@ workflow {
   **
   ** Notes:
   **   o  in summary, there are three 'actors' in this
-  **      story: (a) the .subscribe() operator below,
+  **      story: (a) the .map() operator below,
   **      (b) the trim_bam_function(), and (c) the
-  **      .collect() operator. In
+  **      .map() operator output channel. In
   **      addition, the global variable
   **      params.object_map.merge_bam_map transfers
-  **      values from the .subscribe() operator to the
+  **      values from the .map() operator to the
   **      trim_bam_function().
-  **   o  in short, the following .subscribe() operator
+  **   o  in short, the following .map() operator
   **      makes a Java associative array (map) that
   **      maps a bam filename to its path in the work
   **      directory. This runs after the merge_demux
@@ -187,30 +186,37 @@ workflow {
   **   o  when the channel objects are tuples, one
   **      must subscript the tuple variable to get the
   **      necessary element.
-  **   o  I would like to use a 'cleaner' way to do this
-  **      but I cannot think of one at this time.
+  **   o  the .map {} output is collected and assigned
+  **      to a channel name called make_trim_bam_json_sync
+  **   o  the make_trim_bam_json processes takes the
+  **      make_trim_bam_json_sync as input so that
+  **      the make_trim_bam_json process waits until
+  **      the params.object_map.merge_bam_map is
+  **      complete.
   */      
-  merge_demux.out.bam.subscribe onNext: {
+  merge_demux.out.bam.map{
     path ->
       def file_base_name = path.toString().tokenize('/').last()
       params.object_map.merge_bam_map[file_base_name] = path
-  }
+      return( "OK" )
+  }.collect().set { make_trim_bam_json_sync }
 
-  merge_demux.out.bam.subscribe onNext: {
+  merge_demux.out.bam.map{
     path ->
       def file_base_name = path.toString().tokenize('/').last()
       params.object_map.process_hashes_map[file_base_name] = path
-  }
+      return("OK")
+  }.collect().set { make_process_hashes_json_sync }
 
   /*
   ** Check for hash read runs: set up JSON file, process reads, and make make output.
   ** Notes:
-  **   o  use merge_demux.out.collect() so that this process
+  **   o  use params.object_map.merge_bam_map so that this process
   **      waits for completion of merge_demux. This is necessary
   **      for finding the required paths in the work
   **      directory.
   */
-  make_process_hashes_json(samplesheet_file, merge_demux.out.bam.collect())
+  make_process_hashes_json(samplesheet_file, make_process_hashes_json_sync)
   make_process_hashes_json.out.json.splitJson().filter{it -> it.size() > 0}.map{it -> process_hashes_function(it)}.set{process_hashes_channel_in}
   process_hashes(process_hashes_channel_in)
 
@@ -223,7 +229,7 @@ workflow {
   /*
   ** Set up and run (trim_galore) read trimming.
   */
-  make_trim_bam_json(samplesheet_file, merge_demux.out.bam.collect())
+  make_trim_bam_json(samplesheet_file, make_trim_bam_json_sync)
   make_trim_bam_json.out.json.splitJson().map{it -> trim_bam_function(it)}.set{trim_bam_channel_in}
   trim_bams(trim_bam_channel_in)
 
@@ -236,13 +242,14 @@ workflow {
   /*
   ** Set up and run STAR aligner in STARsolo mode.
   */
-  trim_bams.out.trimmed_bams.subscribe onNext: {
+  trim_bams.out.trimmed_bams.map {
     path ->
       def file_base_name = path.toString().tokenize('/').last()
       params.object_map.trim_bam_map[file_base_name] = path
-  }
+      return("OK")
+  }.collect().set { make_star_align_json_sync }
 
-  make_star_align_json(samplesheet_file, trim_bams.out.trimmed_bams.collect())
+  make_star_align_json(samplesheet_file, make_star_align_json_sync)
   make_star_align_json.out.json.splitJson().map{it -> align_bam_illumina_function(it)}.combine(sample_maps_split, by: 0).set{align_bam_channel_in}
   align_bams(align_bam_channel_in)
 
@@ -251,13 +258,14 @@ workflow {
   ** Use the same strategy as above for finding
   ** the STAR BAM file paths.
   */
-  align_bams.out.starsolo.subscribe onNext: {
+  align_bams.out.starsolo.map {
     path ->
       def dir_base_name = path.toString().tokenize('/').last()
       params.object_map.merge_align_bam_map[dir_base_name] = path
-  }
+      return("OK")
+  }.collect().set { make_merge_align_json_sync }
 
-  make_merge_align_json(samplesheet_file, align_bams.out.starsolo.collect())
+  make_merge_align_json(samplesheet_file, make_merge_align_json_sync)
   make_merge_align_json.out.json.splitJson().map{it -> merge_align_function(it)}.set{merge_align_channel_in}
   merge_align(merge_align_channel_in)
 
@@ -286,7 +294,7 @@ workflow {
   /*
   ** Make cat_matrices_raw_map map with matrix file paths.
   */
-  cat_matrices_raw.out.raw_matrix.subscribe onNext: {
+  cat_matrices_raw.out.raw_matrix.map {
     def tup ->
       def cells_path = tup[1]
       def cells_base_name = cells_path.toString().tokenize('/').last()
@@ -299,7 +307,8 @@ workflow {
       def matrix_path = tup[3]
       def matrix_base_name = matrix_path.toString().tokenize('/').last()
       params.object_map.cat_matrices_raw_map[matrix_base_name] = matrix_path
-  }
+      return("OK")
+  }.collect().set { make_umi_counts_json_sync }
 
   /*
   ** Calculate UMIs per cell.
@@ -307,7 +316,7 @@ workflow {
   **   o  concatenated matrix
   **   o  genome info
   */
-  make_umi_counts_json(samplesheet_file, cat_matrices_raw.out.raw_matrix.collect())
+  make_umi_counts_json(samplesheet_file, make_umi_counts_json_sync)
   make_umi_counts_json.out.umi_counts.splitJson().map{it -> make_umi_counts_function(it)}.join(sample_maps_split).set{make_umi_counts_in}
   make_umi_counts(make_umi_counts_in)
 
@@ -329,22 +338,6 @@ workflow {
   ** Run scrublet.
   */
   run_scrublet(make_cds_raw.out.cds.join(sample_maps_split))
-
-  /*
-  ** Note:
-  **   o  the run_scrublet.out.cds channel is a tuple
-  **      so it's necessary to select the path element.
-  **
-  **   o  run_scrublet.out.cds channel is
-  **
-  **        tuple val(sample_name), path("*.raw.mobs"), emit: cds
-  */
-  run_scrublet.out.cds.subscribe onNext: {
-    def tup ->
-      def path = tup[1]
-      def file_base_name = path.toString().tokenize('/').last()
-      params.object_map.run_scrublet_cds_map[file_base_name] = path
-  }
 
   /*
   ** Assign hashes to cells and update cds.
