@@ -6,7 +6,7 @@ process merge_hash_reads {
   publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
-  tuple val('sample_name'), val('out_file'), path('files')
+  tuple val(sample_name), val(out_file), path("files")
 
   output:
   path("*.hash_reads.merged.tsv")
@@ -22,7 +22,7 @@ process merge_hash_reads {
       cmdVer: 'merge_hash_reads.py --version | head -n 1',
       command: "merge_hash_reads.py -i \${file_list} -o ${out_file}"
     ]
-  ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", 'NA')}
+  ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   file_list=`ls files*`
   $workflow.projectDir/bin/merge_hash_reads.py -i \${file_list} -o ${out_file}

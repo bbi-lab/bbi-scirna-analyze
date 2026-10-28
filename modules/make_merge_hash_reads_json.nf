@@ -8,7 +8,7 @@ process make_merge_hash_reads_json {
   val(tsv_path)
 
   output:
-  path("merge_hash_reads.json")
+  path("merge_hash_reads.json"), emit: 'json'
   path("version.json"), emit: 'version'
 
   script:
@@ -21,7 +21,7 @@ process make_merge_hash_reads_json {
       cmdVer: 'make_merge_hash_reads_json.py --version | head -n 2',
       command: "make_merge_hash_reads_json.py -i $samplesheet_file -p $tsv_path"
     ]
-  ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
+  ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", 'NA')}
 
   $workflow.projectDir/bin/make_merge_hash_reads_json.py -i $samplesheet_file -p $tsv_path
   """

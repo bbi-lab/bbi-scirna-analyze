@@ -6,6 +6,9 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 */
 
+/*
+** params.sequencing_platform is either 'Illumina' or 'Ultima'
+*/
 params.sequencing_platform = 'Illumina'
 params.bin_dir = workflow.projectDir + '/bin'
 params.align_cpus = 8
@@ -45,6 +48,8 @@ params.object_map.cat_matrices_raw_map = [:]
 include { make_sample_map_json } from './modules/make_sample_map_json.nf'
 include { make_merge_demux_json } from './modules/make_merge_demux_json.nf'
 include { merge_demux } from './modules/merge_demux.nf'
+include { make_merge_hash_reads_json } from './modules/make_merge_hash_reads_json.nf'
+include { merge_hash_reads } from './modules/merge_hash_reads.nf'
 include { make_process_hashes_json } from './modules/make_process_hashes_json.nf'
 include { process_hashes; cat_hashes; process_hashes_function; hash_umi_knee_plot; calc_tot_hash_dup; assign_hash_raw } from './modules/process_hashes.nf'
 include { make_trim_bam_json } from './modules/make_trim_bam_json.nf'
@@ -66,11 +71,11 @@ include { make_experiment_dashboard } from './modules/make_experiment_dashboard.
 
 
 /*
-** Functions and closures.
+** Functions.
 */
 
 /*
-** Set up channel from JSON map contents.
+** Set up channels from JSON map contents.
 */
 def merge_demux_function(item) {
   def sample_name = item['sample_name']
@@ -79,6 +84,15 @@ def merge_demux_function(item) {
   return([sample_name, out_name, in_file_list])
 }
 
+/*
+** This is used for Ultima data sets.
+*/
+def merge_hash_reads_function(item) {
+  def sample_name = item['sample_name']
+  def out_name = item['out_file']
+  def in_file_list = item['in_file_list']
+  return([sample_name, out_name, in_file_list])
+}
 
 /*
 ** Read JSON file into the corresponding lists + maps.
@@ -135,14 +149,23 @@ workflow {
   ** Make a JSON file with sample-specific values.
   */
   make_sample_map_json(samplesheet_file, genomes_data_file)
-  make_sample_map_json.out.sample_maps.splitJson().map{it -> sample_maps_split_function(it)}.set{sample_maps_split}
+  make_sample_map_json.out.sample_maps.splitJson().map {it -> sample_maps_split_function(it)}.set{sample_maps_split}
 
   /*
   ** Set up and run samtools to merge (unaligned) input BAM files.
   */
   make_merge_demux_json(samplesheet_file, "$demux_out")
-  make_merge_demux_json.out.json.splitJson().map{it -> merge_demux_function(it)}.set{merge_demux_channel_in}
+  make_merge_demux_json.out.json.splitJson().map {it -> merge_demux_function(it)}.set{merge_demux_channel_in}
   merge_demux(merge_demux_channel_in)
+
+  if(params.sequencing_platform == "Ultima") {
+    /*
+    ** Set up and run hash read TSV file merge.
+    */
+    make_merge_hash_reads_json(samplesheet_file, "$demux_out")
+    make_merge_hash_reads_json.out.json.splitJson().map {it -> merge_hash_reads_function(it)}.set{merge_hash_reads_channel_in}
+    merge_hash_reads(merge_hash_reads_channel_in)
+  }
 
   /*
   ** Here are some convolutions in order to pass
@@ -194,19 +217,40 @@ workflow {
   **      the params.object_map.merge_bam_map is
   **      complete.
   */      
-  merge_demux.out.bam.map{
-    path ->
-      def file_base_name = path.toString().tokenize('/').last()
-      params.object_map.merge_bam_map[file_base_name] = path
-      return( "OK" )
-  }.collect().set { make_trim_bam_json_sync }
+  if(params.sequencing_platform == "Illumina") {
+    merge_demux.out.bam.map {
+      path ->
+        def file_base_name = path.toString().tokenize('/').last()
+        params.object_map.merge_bam_map[file_base_name] = path
+        return( "OK" )
+    }.collect().set { make_trim_bam_json_sync }
 
-  merge_demux.out.bam.map{
-    path ->
-      def file_base_name = path.toString().tokenize('/').last()
-      params.object_map.process_hashes_map[file_base_name] = path
-      return("OK")
-  }.collect().set { make_process_hashes_json_sync }
+    merge_demux.out.bam.map {
+      path ->
+        def file_base_name = path.toString().tokenize('/').last()
+        params.object_map.process_hashes_map[file_base_name] = path
+        return("OK")
+    }.collect().set { make_process_hashes_json_sync }
+  }
+  else
+  if(params.sequencing_platform == "Ultima") {
+    merge_demux.out.bam.map {
+      path ->
+        def file_base_name = path.toString().tokenize('/').last()
+        params.object_map.merge_bam_map[file_base_name] = path
+        return( "OK" )
+    }.collect().set { make_star_align_json_sync }
+
+    merge_hash_reads.out.map {
+      path ->
+        def file_base_name = path.toString().tokenize('/').last()
+        params.object_map.process_hashes_map[file_base_name] = path
+        return("OK")
+    }.collect().set {make_process_hashes_json_sync }
+  }
+  else {
+    error("Error: unrecognized sequencing_platform value: " + params.sequencing_platform + ".")
+  }
 
   /*
   ** Check for hash read runs: set up JSON file, process reads, and make make output.
@@ -217,7 +261,7 @@ workflow {
   **      directory.
   */
   make_process_hashes_json(samplesheet_file, make_process_hashes_json_sync)
-  make_process_hashes_json.out.json.splitJson().filter{it -> it.size() > 0}.map{it -> process_hashes_function(it)}.set{process_hashes_channel_in}
+  make_process_hashes_json.out.json.splitJson().filter{it -> it.size() > 0}.map {it -> process_hashes_function(it)}.set{process_hashes_channel_in}
   process_hashes(process_hashes_channel_in)
 
   process_hashes.out.hash_matrix.groupTuple().join(process_hashes.out.hash_cells.groupTuple()).join(process_hashes.out.hash_hashes.groupTuple()).join(process_hashes.out.hash_umis_per_cell.groupTuple()).join(process_hashes.out.hash_dup_per_cell.groupTuple()).join(process_hashes.out.hash_reads_per_cell.groupTuple()).join(process_hashes.out.hash_assigned_table.groupTuple()).join(process_hashes.out.hash_log.groupTuple()).set{cat_hashes_in}
@@ -226,31 +270,33 @@ workflow {
   hash_umi_knee_plot(cat_hashes.out.hash_umis_per_cell)
   calc_tot_hash_dup(cat_hashes.out.hash_dup_per_cell)
 
-  /*
-  ** Set up and run (trim_galore) read trimming.
-  */
-  make_trim_bam_json(samplesheet_file, make_trim_bam_json_sync)
-  make_trim_bam_json.out.json.splitJson().map{it -> trim_bam_function(it)}.set{trim_bam_channel_in}
-  trim_bams(trim_bam_channel_in)
-
-  /*
-  ** Aggregate trimmer logs.
-  */
-  trim_bams.out.trimmer_logs.groupTuple().set { aggregate_trimmer_logs_channel_in }
-  aggregate_trimmer_logs(aggregate_trimmer_logs_channel_in)
-
-  /*
-  ** Set up and run STAR aligner in STARsolo mode.
-  */
-  trim_bams.out.trimmed_bams.map {
-    path ->
-      def file_base_name = path.toString().tokenize('/').last()
-      params.object_map.trim_bam_map[file_base_name] = path
-      return("OK")
-  }.collect().set { make_star_align_json_sync }
+  if(params.sequencing_platform == "Illumina") {
+    /*
+    ** Set up and run (trim_galore) read trimming.
+    */
+    make_trim_bam_json(samplesheet_file, make_trim_bam_json_sync)
+    make_trim_bam_json.out.json.splitJson().map {it -> trim_bam_function(it)}.set{trim_bam_channel_in}
+    trim_bams(trim_bam_channel_in)
+  
+    /*
+    ** Aggregate trimmer logs.
+    */
+    trim_bams.out.trimmer_logs.groupTuple().set { aggregate_trimmer_logs_channel_in }
+    aggregate_trimmer_logs(aggregate_trimmer_logs_channel_in)
+  
+    /*
+    ** Set up and run STAR aligner in STARsolo mode.
+    */
+    trim_bams.out.trimmed_bams.map {
+      path ->
+        def file_base_name = path.toString().tokenize('/').last()
+        params.object_map.trim_bam_map[file_base_name] = path
+        return("OK")
+    }.collect().set { make_star_align_json_sync }
+  }
 
   make_star_align_json(samplesheet_file, make_star_align_json_sync)
-  make_star_align_json.out.json.splitJson().map{it -> align_bam_illumina_function(it)}.combine(sample_maps_split, by: 0).set{align_bam_channel_in}
+  make_star_align_json.out.json.splitJson().map {it -> align_bam_illumina_function(it)}.combine(sample_maps_split, by: 0).set{align_bam_channel_in}
   align_bams(align_bam_channel_in)
 
   /*
@@ -266,7 +312,7 @@ workflow {
   }.collect().set { make_merge_align_json_sync }
 
   make_merge_align_json(samplesheet_file, make_merge_align_json_sync)
-  make_merge_align_json.out.json.splitJson().map{it -> merge_align_function(it)}.set{merge_align_channel_in}
+  make_merge_align_json.out.json.splitJson().map {it -> merge_align_function(it)}.set{merge_align_channel_in}
   merge_align(merge_align_channel_in)
 
   /*
@@ -276,7 +322,7 @@ workflow {
   **      the JSON file refers to the STARsolo output directory
   **      where all of the STARsolo results are stored.
   */
-  make_merge_align_json.out.json.splitJson().map{it -> merge_starsolo_reports_function(it)}.set{merge_starsolo_reports_channel_in}
+  make_merge_align_json.out.json.splitJson().map {it -> merge_starsolo_reports_function(it)}.set{merge_starsolo_reports_channel_in}
   merge_starsolo_reports(merge_starsolo_reports_channel_in)
 
   /*
@@ -288,7 +334,7 @@ workflow {
   ** Concatenate MM counts matrices.
   **
   */
-  make_merge_align_json.out.json.splitJson().map{it -> cat_matrices_raw_function(it)}.set{cat_matrices_raw_channel_in}
+  make_merge_align_json.out.json.splitJson().map {it -> cat_matrices_raw_function(it)}.set{cat_matrices_raw_channel_in}
   cat_matrices_raw(cat_matrices_raw_channel_in)
 
   /*
@@ -317,7 +363,7 @@ workflow {
   **   o  genome info
   */
   make_umi_counts_json(samplesheet_file, make_umi_counts_json_sync)
-  make_umi_counts_json.out.umi_counts.splitJson().map{it -> make_umi_counts_function(it)}.join(sample_maps_split).set{make_umi_counts_in}
+  make_umi_counts_json.out.umi_counts.splitJson().map {it -> make_umi_counts_function(it)}.join(sample_maps_split).set{make_umi_counts_in}
   make_umi_counts(make_umi_counts_in)
 
   /*
@@ -364,15 +410,15 @@ workflow {
   **      need to extract the files from the path() list using flatMap{ it -> it[0] }. There
   **      is likely a more succint strategy...
   */
-  make_generate_qc_hash.out.qc_png.concat(make_generate_qc_no_hash.out.qc_png).map{ it -> trim_tuple_function(it) }.flatMap{ it -> it[0] }.collect().set{ make_experiment_dashboard_png_channel_in }
-  make_generate_qc_hash.out.qc_txt.concat(make_generate_qc_no_hash.out.qc_txt).map{ it -> trim_tuple_function(it) }.flatMap{ it -> it[0] }.collect().set{ make_experiment_dashboard_txt_channel_in }
-  cat_hashes.out.hash_read_rate.map{ it -> trim_tuple_function(it) }.collect().ifEmpty(file(dummy_file)).set{ make_experiment_dashboard_cat_hashes_channel_in }
+  make_generate_qc_hash.out.qc_png.concat(make_generate_qc_no_hash.out.qc_png).map {it -> trim_tuple_function(it) }.flatMap{ it -> it[0] }.collect().set{ make_experiment_dashboard_png_channel_in }
+  make_generate_qc_hash.out.qc_txt.concat(make_generate_qc_no_hash.out.qc_txt).map {it -> trim_tuple_function(it) }.flatMap{ it -> it[0] }.collect().set{ make_experiment_dashboard_txt_channel_in }
+  cat_hashes.out.hash_read_rate.map {it -> trim_tuple_function(it) }.collect().ifEmpty(file(dummy_file)).set{ make_experiment_dashboard_cat_hashes_channel_in }
 
  
-  make_experiment_dashboard(merge_starsolo_reports.out.cell_reads_stats.map{ it -> trim_tuple_function(it) }.collect(),
-                            merge_starsolo_reports.out.starsolo_summary.map{ it -> trim_tuple_function(it) }.collect(),
-                            make_umi_counts.out.umi_counts_tsv.map{ it -> trim_tuple_function(it) }.collect(),
-                            run_empty_drops.out.empty_drops_fdr.map{ it -> trim_tuple_function(it) }.collect(),
+  make_experiment_dashboard(merge_starsolo_reports.out.cell_reads_stats.map {it -> trim_tuple_function(it) }.collect(),
+                            merge_starsolo_reports.out.starsolo_summary.map {it -> trim_tuple_function(it) }.collect(),
+                            make_umi_counts.out.umi_counts_tsv.map {it -> trim_tuple_function(it) }.collect(),
+                            run_empty_drops.out.empty_drops_fdr.map {it -> trim_tuple_function(it) }.collect(),
                             make_experiment_dashboard_cat_hashes_channel_in,
                             make_experiment_dashboard_png_channel_in,
                             make_experiment_dashboard_txt_channel_in,
