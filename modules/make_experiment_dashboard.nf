@@ -4,9 +4,11 @@ process make_experiment_dashboard {
   maxRetries 2
 
   publishDir path: "${params.output_dir}", pattern: "exp_dash", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
     path("*") // merge_starsolo_reports.out.cell_reads_stats
+    path("*") // merge_starsolo_reports.out.starsolo_summary
     path("*") // make_umi_counts.out.umi_counts_tsv
     path("*") // run_empty_drops.out.empty_drops_fdr
     path("*") // cat_hashes.out.hash_read_rate
@@ -17,13 +19,28 @@ process make_experiment_dashboard {
     val(fdr_cutoff)
 
   output:
-    path('exp_dash')
-
+    path('exp_dash'), emit: 'dash'
+    path('version.json'), emit: 'version'
 
   script:
   """
   # bash watch for errors
   set -ueo pipefail
+
+  ${LogUtil.emit([
+     [ tool: 'make_cellread_statistics.py',
+       cmdVer: 'make_cellread_statistics.py --version | head -n 1',
+       command: "make_cellread_statistics.py -s <sample_name> -c ${umi_cutoff} -i <cellread_statistics_tsv> -o <output_cellreads_statistics_json>"
+     ],
+     [ tool: 'make_umi_cell_counts_statistics.py',
+       cmdVer: 'make_umi_cell_counts_statistics.py --version | head -n 1',
+       command: "make_umi_cell_counts_statistics.py -s <sample_name> -c ${umi_cutoff} -f ${fdr_cutoff} -u <umi_counts_tsv> -e <empty_drops_fdr_tsv> -o <output_umi_cell_json>"
+     ],
+     [ tool: 'make_exp_dash_data_js.py',
+       cmdVer: 'make_exp_dash_data_js.py --version | head -n 1',
+       command: "make_exp_dash_data_js.py ${sample_maps_json} -p <project_directory> -m ${params.sequencing_platform}"
+     ]
+], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", 'NA')}
 
   #
   # Get sample names from sample_map.json file.
@@ -49,7 +66,7 @@ process make_experiment_dashboard {
   # Make data.js file for dashboard.
   #
   project_directory=`basename ${workflow.launchDir}`
-  make_exp_dash_data_js.py -s ${sample_maps_json} -p \${project_directory}
+  make_exp_dash_data_js.py -s ${sample_maps_json} -p \${project_directory} -m ${params.sequencing_platform}
 
   #
   # Copy skeleton dashboard to exp_dash directory.

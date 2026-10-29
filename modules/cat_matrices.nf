@@ -1,5 +1,3 @@
-def analyze_out = params.output_dir + '/analyze_out' 
-
 
 /*
 ** STARsolo 'raw' matrix concatenation.
@@ -8,7 +6,7 @@ def cat_matrices_raw_function(item) {
   def sample_name = item['sample_name']
   def out_file = sample_name + '_counts.raw'
   def in_file_list = []
-  for(def in_dir in item['in_dir_list']) {
+  item['in_dir_list'].each { in_dir ->
     def dir_base_name = in_dir.toString().tokenize('/').last()
     def file_path = params.object_map.merge_align_bam_map[dir_base_name] + '/Solo.out/GeneFull_Ex50pAS/raw/UniqueAndMult-PropUnique.mtx'
 //    def file_path = params.object_map.merge_align_bam_map[dir_base_name] + '/Solo.out/GeneFull_Ex50pAS/raw/matrix.mtx'
@@ -18,7 +16,7 @@ def cat_matrices_raw_function(item) {
     ** skip this pipeline entry.
     */
     if(file_path == null) {
-      continue
+      return
     }
     in_file_list.add(file_path)
   }
@@ -30,21 +28,34 @@ process cat_matrices_raw {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.cells.tsv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.features.tsv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.matrix.mtx", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.cells.barcode_to_wells.tsv", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.cells.tsv", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.features.tsv", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.matrix.mtx", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.cells.barcode_to_wells.tsv", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
-  tuple val('sample_name'), val('out_file'), path('file')
+  tuple val(sample_name), val(out_file), path('file')
 
   output:
   tuple val(sample_name), path("*.cells.tsv"), path("*.features.tsv"), path("*.matrix.mtx"), path("*.cells.barcode_to_wells.tsv"), emit: raw_matrix
+  path("version.json"), emit: 'version'
 
   script:
   """
   # bash watch for errors
   set -ueo pipefail
+
+  ${LogUtil.emit([
+     [ tool: 'cat_sparse_matrix.py',
+       cmdVer: 'cat_sparse_matrix.py --version | head -n 1',
+       command: "cat_sparse_matrix.py -i <in_file_list> -m 'UniqueAndMult-PropUnique.mtx' -f 'features.tsv' -c 'barcodes.tsv' -o ${out_file}"
+     ],
+     [ tool: 'barcode_to_well.py',
+       cmdVer: 'barcode_to_well.py --version | head -n 1',
+       command: "barcode_to_well.py -i ${out_file}.cells.tsv -o ${out_file}.cells.barcode_to_wells.tsv"
+     ]
+   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   # Use the symbolic link referent because we use the path
   # to find the feature and cell files for cat_sparse_matrix.py.
@@ -76,7 +87,7 @@ def cat_matrices_filtered_function(item) {
   def sample_name = item['sample_name']
   def out_file = sample_name + '_counts.filtered'
   def in_file_list = []
-  for(def in_dir in item['in_dir_list']) {
+  item['in_dir_list'].each { in_dir ->
     def dir_base_name = in_dir.toString().tokenize('/').last()
     def file_path = params.object_map.merge_align_bam_map[dir_base_name] + '/Solo.out/GeneFull_Ex50pAS/filtered/matrix.mtx'
     /*
@@ -85,7 +96,7 @@ def cat_matrices_filtered_function(item) {
     ** skip this pipeline entry.
     */
     if(file_path == null) {
-      continue
+      return
     }
     in_file_list.add(file_path)
   }
@@ -97,12 +108,12 @@ process cat_matrices_filtered {
   errorStrategy 'retry'
   maxRetries 2
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.cells.tsv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.features.tsv", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.matrix.mtx", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.cells.tsv", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.features.tsv", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.matrix.mtx", mode: 'copy'
 
   input:
-  tuple val('sample_name'), val('out_file'), path('file')
+  tuple val(sample_name), val(out_file), path('file')
 
   output:
   tuple val(sample_name), path("*.cells.tsv"), path("*.features.tsv"), path("*.matrix.mtx"), path("*.cells.barcode_to_wells.tsv"), emit: filtered_matrix

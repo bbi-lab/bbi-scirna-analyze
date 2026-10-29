@@ -82,7 +82,7 @@ def get_data_file_dict(json_data):
 # Example pipeline align_bam process output channed content:
 #   /net/bbi/vol1/data/bge/bbi/tests/bbi-scirna-tests/rna3-065-a/work_analyze/64/4e387e2434fba67266b6290ced6594/Keyhole-001_088_000.merged
 #
-def make_data_file_json(data_file_dict):
+def make_data_file_json_illumina(data_file_dict):
   bam_merge_list = []
   for process_group in data_file_dict.keys():
     for sample_name in data_file_dict[process_group].keys():
@@ -108,9 +108,36 @@ def make_data_file_json(data_file_dict):
     sys.exit(1)
 
 
+def make_data_file_json_ultima(data_file_dict):
+  bam_merge_list = []
+  for process_group in data_file_dict.keys():
+    for sample_name in data_file_dict[process_group].keys():
+      merge_dict = {}
+      qualified_sample_name = '%s-%03d' % (sample_name, int(process_group))
+      merge_dict['sample_name'] = qualified_sample_name
+      out_filename = '%s-%03d.aligned.bam' % (sample_name, int(process_group))
+      merge_dict['out_file'] = out_filename
+      in_dir_list = []
+      merge_dict['in_dir_list'] = in_dir_list
+      for pcr_pair in data_file_dict[process_group][sample_name].keys():
+        in_dir = '%s-%03d_%s.merged' % (sample_name, int(process_group), pcr_pair)
+        merge_dict['in_dir_list'].append(in_dir)
+      bam_merge_list.append(merge_dict)
+
+  try:
+    filename_json = 'merge_align.json'
+    fh = open(filename_json, 'w')
+    json.dump(bam_merge_list, fh, indent=2)
+    fh.close()
+  except:
+    print('Error: unable to write output file \"%s\"' % (filename_json), file=sys.stderr)
+    sys.exit(1)
+
+
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program to make JSON file for merging aligned bam files.')
   parser.add_argument('-i', '--input', required=True, default=None, help='Input JSON samplesheet filename (required string).')
+  parser.add_argument('-p', '--sequencing_platform', required=True, default=None, help='The sequencing platform (required string: \'Illumina\' or \'Ultima\').')
   parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
 
@@ -119,5 +146,10 @@ if __name__ == '__main__':
   #
   json_data = read_json(args.input)
   data_file_dict = get_data_file_dict(json_data)
-  make_data_file_json(data_file_dict)
+  if(args.sequencing_platform == 'Illumina'):
+    make_data_file_json_illumina(data_file_dict)
+  elif(args.sequencing_platform == 'Ultima'):
+    make_data_file_json_ultima(data_file_dict)
+  else:
+    print('Error: unrecognized sequencing_platform type \'%s\'' % (args.sequencing_platform), file=sys.stderr)
 

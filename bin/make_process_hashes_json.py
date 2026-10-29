@@ -122,7 +122,7 @@ def get_data_file_dict(json_data, sample_hash_dict):
   return(data_file_dict)
 
 
-def make_data_file_json(data_file_dict, sample_hash_dict):
+def make_data_file_json_illumina(data_file_dict, sample_hash_dict):
   hash_bam_list = []
   for process_group in data_file_dict.keys():
     for sample_name in data_file_dict[process_group].keys():
@@ -150,9 +150,39 @@ def make_data_file_json(data_file_dict, sample_hash_dict):
     sys.exit(1)
 
 
+def make_data_file_json_ultima(data_file_dict, sample_hash_dict):
+  hash_tsv_list = []
+  for process_group in data_file_dict.keys():
+    for sample_name in data_file_dict[process_group].keys():
+      if(sample_hash_dict.get(process_group) != None
+        and sample_hash_dict[process_group].get(sample_name) != None
+        and len(sample_hash_dict[process_group][sample_name][0]) > 0):
+
+        for pcr_pair in data_file_dict[process_group][sample_name].keys():
+          in_file = '%s-%03d_%s.hash_reads.merged.tsv' % (sample_name, int(process_group), pcr_pair)
+          hash_file = sample_hash_dict[process_group][sample_name][0]
+          out_root = '%s-%03d_%s' % (sample_name, int(process_group), pcr_pair)
+          merge_dict = {}
+          merge_dict['sample_name'] = '%s-%03d' % (sample_name, int(process_group))
+          merge_dict['in_file'] = in_file
+          merge_dict['hash_file'] = hash_file
+          merge_dict['out_root'] = out_root
+          hash_tsv_list.append(merge_dict)
+
+  try:
+    filename_json = 'process_hashes.json'
+    fh = open(filename_json, 'w')
+    json.dump(hash_tsv_list, fh, indent=2)
+    fh.close()
+  except:
+    print('Error: unable to write output file \"%s\"' % (filename_json), file=sys.stderr)
+    sys.exit(1)
+
+
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program to make JSON file for setting process_hash runs.')
   parser.add_argument('-i', '--input', required=True, default=None, help='Input JSON samplesheet filename (required string).')
+  parser.add_argument('-p', '--sequencing_platform', required=True, default=None, help='Sequencing platform (required string: Illumina or Ultima).')
   parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
 
@@ -163,7 +193,11 @@ if __name__ == '__main__':
   sample_hash_dict = make_sample_hash_dict(json_data)
   data_file_dict = get_data_file_dict(json_data, sample_hash_dict)
 
-  make_data_file_json(data_file_dict, sample_hash_dict)
-
+  if(args.sequencing_platform == 'Illumina'):
+    make_data_file_json_illumina(data_file_dict, sample_hash_dict)
+  elif(args.sequencing_platform == 'Ultima'):
+    make_data_file_json_ultima(data_file_dict, sample_hash_dict)
+  else:
+    print('Error: unrecognized sequencing_platform type \'%s\'' % (args.sequencing_platform), file=sys.stderr)
 
 

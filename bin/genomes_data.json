@@ -1,52 +1,52 @@
 {
   "Human": {
-     "genes_bed": "/net/bbi/vol1/data/genomes_stage/human/human_rna/latest.genes.bed",
+     "genes_tsv": "/net/bbi/vol1/data/genomes_stage/human/human_rna/latest.genes.bed",
      "star_index": "/net/bbi/vol1/data/genomes_stage/human/human_star_2_7",
      "star_memory": 60
   },
   "Mouse": {
-     "genes_bed": "/net/bbi/vol1/data/genomes_stage/mouse/mouse_rna/latest.genes.bed",
+     "genes_tsv": "/net/bbi/vol1/data/genomes_stage/mouse/mouse_rna/latest.genes.bed",
      "star_index": "/net/bbi/vol1/data/genomes_stage/mouse/mouse_star_2_7",
      "star_memory": 47
      
   },
   "Barnyard": {
-     "genes_bed": "/net/bbi/vol1/data/genomes_stage/barnyard/barnyard_rna/latest.genes.bed",
+     "genes_tsv": "/net/bbi/vol1/data/genomes_stage/barnyard/barnyard_rna/latest.genes.bed",
      "star_index": "/net/bbi/vol1/data/genomes_stage/barnyard/barnyard_star_2_7",
      "star_memory": 90
   },
   "Zebrafish": {
-     "genes_bed": "/net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_star_2_7/latest.genes.bed",
+     "genes_tsv": "/net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_star_2_7/latest.genes.bed",
      "star_index": "/net/bbi/vol1/data/genomes_stage/zebrafish/zebrafish_star_2_7",
      "star_memory": 40
   },
   "Fishbowl_seahub": {
-     "genes_bed": "/net/bbi/vol1/data/genomes_stage/fishbowl_seahub/fishbowl_seahub_rna/latest.genes.bed",
+     "genes_tsv": "/net/bbi/vol1/data/genomes_stage/fishbowl_seahub/fishbowl_seahub_rna/latest.genes.bed",
      "star_index": "/net/bbi/vol1/data/genomes_stage/fishbowl_seahub/fishbowl_seahub_star_2_7",
      "star_memory": 70
   },
   "Macaque": {
-     "genes_bed": "/net/bbi/vol1/data/genomes_stage/macaque/macaque_rna/latest.genes.bed",
+     "genes_tsv": "/net/bbi/vol1/data/genomes_stage/macaque/macaque_rna/latest.genes.bed",
      "star_index": "/net/bbi/vol1/data/genomes_stage/macaque/macaque_star_2_7",
      "star_memory": 110
   },
   "Human_bcp": {
-     "genes_bed": "/net/bbi/vol1/data/genomes_bcp/human_grch38/GRCh38-v48/genes/latest.genes.bed",
+     "genes_tsv": "/net/bbi/vol1/data/genomes_bcp/human_grch38/GRCh38-v48/genes/latest.genes.bed",
      "star_index": "/net/bbi/vol1/data/genomes_bcp/human_grch38/GRCh38-v48/star_2_7_11b",
      "star_memory": 60
   },
   "Mouse_bcp": {
-     "genes_bed": "/net/bbi/vol1/data/genomes_bcp/mouse_grcm39/GRCm39-vM37/genes/latest.genes.bed",
+     "genes_tsv": "/net/bbi/vol1/data/genomes_bcp/mouse_grcm39/GRCm39-vM37/genes/latest.genes.bed",
      "star_index": "/net/bbi/vol1/data/genomes_bcp/mouse_grcm39/GRCm39-vM37/star_2_7_11b",
      "star_memory": 47
   },
   "Barnyard_bcp": {
-     "genes_bed": "/net/bbi/vol1/data/genomes_bcp/barnyard_bcp/genes/latest.genes.bed",
+     "genes_tsv": "/net/bbi/vol1/data/genomes_bcp/barnyard_bcp/genes/latest.genes.bed",
      "star_index": "/net/bbi/vol1/data/genomes_bcp/barnyard_bcp/star_2_7_11b",
      "star_memory": 90
   },
   "zebrafish_bcp": {
-     "genes_bed": "/net/bbi/vol1/data/genomes_bcp/zebrafish_bcp/genes/latest.genes.bed",
+     "genes_tsv": "/net/bbi/vol1/data/genomes_bcp/zebrafish_bcp/genes/latest.genes.bed",
      "star_index": "/net/bbi/vol1/data/genomes_bcp/zebrafish_bcp/Danio_rerio_v115_Extended_STAR",
      "star_memory": 40
   }

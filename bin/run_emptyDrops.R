@@ -13,6 +13,7 @@ parser$add_argument('cell_data', help='File of cell data.')
 parser$add_argument('gene_data', help='File of gene data.')
 parser$add_argument('key', help='The sample name prefix.')
 parser$add_argument('output_file', help='The output filename.')
+parser$add_argument('--version', action = 'version', version = paste('run_emptyDrops', '0.1.0'))
 args = parser$parse_args()
 
 sample_name <- args$key

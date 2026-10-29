@@ -9,7 +9,7 @@ from collections import defaultdict
 #
 # Program version string.
 #
-program_version = '0.3.0'
+program_version = '0.3.1'
 
 #
 # Merge the lane-specific BAM files that belong to a combination

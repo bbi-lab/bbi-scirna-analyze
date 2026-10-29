@@ -1,4 +1,4 @@
-def align_bam_function(item) {
+def align_bam_illumina_function(item) {
   def sample_name = item['sample_name']
   def in_file = item['in_file']
   def file_path = params.object_map.trim_bam_map[in_file]
@@ -7,24 +7,36 @@ def align_bam_function(item) {
   return([sample_name, file_path, out_dir])
 }
 
+def align_bam_ultima_function(item) {
+  def sample_name = item['sample_name']
+  def in_file = item['in_file']
+  def file_path = params.object_map.merge_bam_map[in_file]
+  def out_dir = in_file.take(in_file.lastIndexOf('.'))
 
-def align_cpus = params.align_cpus < 8 ? params.align_cpus : 8
-def analyze_out = params.output_dir + '/analyze_out'
+  return([sample_name, file_path, out_dir])
+}
+
+
 
 process align_bams {
+  cpus { Math.min(params.align_cpus as int, 8) }
   errorStrategy 'retry'
   maxRetries 2
 
-  clusterOptions { '-l m_mem_free=' + Math.round(sample_map['star_memory'].toFloat() / align_cpus.toFloat()) + 'G -pe serial ' + align_cpus + " -l cpuid_level=${params.cpuid_level}" }
+  // clusterOptions { '-l m_mem_free=' + Math.round(sample_map['star_memory'].toFloat() / task.cpus) + 'G -pe serial ' + align_cpus + " -l cpuid_level=${params.cpuid_level}" }
+  clusterOptions { "-l m_mem_free=${Math.round(sample_map['star_memory'].toFloat() / task.cpus)}G -l cpuid_level=${params.cpuid_level}" }
 
-//  publishDir path: "${analyze_out}/${sample_name}", pattern: "*trimmed", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "CellReads.stats", mode: 'copy'
-
+//  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*trimmed", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "CellReads.stats", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
+            
   input:
   tuple val(sample_name), path(bam_in), val(out_dir), val(sample_map)
 
   output:
-  path(out_dir)
+  path(out_dir), emit: 'starsolo'
+  path('version.json'), emit: 'version'
+
   //path(out_dir/Solo.out/GeneFull_Ex50pAS/CellReads.stats)
 
 /*
@@ -34,13 +46,46 @@ process align_bams {
 **    o  need input bam files
 **    o  need output bam files
 */
-
   script:
   """
   # bash watch for errors
   set -ueo pipefail
 
   STAR_ALIGNER=${task.ext.star_path}
+
+
+  #
+  # Logging.
+  #
+  ${LogUtil.emit([
+     [ tool: 'STAR',
+       cmdVer: 'STAR --version',
+       command: "\
+      STAR \
+      --runThreadN ${task.cpus} \
+      --genomeDir ${sample_map['star_index']} \
+      --soloType CB_UMI_Simple \
+      --soloBarcodeReadLength 0 \
+      --soloCBwhitelist None \
+      --soloCBtype String \
+      --soloInputSAMattrBarcodeSeq CB UB \
+      --outSAMtype BAM SortedByCoordinate \
+      --outSAMattributes NH HI nM AS GX GN sM \
+      --outSJtype None \
+      --outFilterMultimapNmax 6 \
+      --soloUMIdedup 1MM_All \
+      --soloCellReadStats Standard \
+      --soloStrand Forward \
+      --soloFeatures GeneFull_Ex50pAS \
+      --soloMultiMappers PropUnique \
+      --soloCellFilter None \
+      --readFilesType SAM SE \
+      --readFilesIn \
+        ${bam_in} \
+      --readFilesCommand samtools view \
+      --outFileNamePrefix ${out_dir}/"
+     ]
+   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
   #
   # Notes:
@@ -52,7 +97,7 @@ process align_bams {
   #      later.
   #
   \${STAR_ALIGNER} \
-      --runThreadN ${align_cpus} \
+      --runThreadN ${task.cpus} \
       --genomeDir ${sample_map['star_index']} \
       --soloType CB_UMI_Simple \
       --soloBarcodeReadLength 0 \

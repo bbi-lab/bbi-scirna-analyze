@@ -77,7 +77,7 @@ def get_data_file_dict(json_data):
   return(data_file_dict)
 
 
-def make_data_file_json(data_file_dict):
+def make_data_file_json_illumina(data_file_dict):
   star_align_list = []
   for process_group in data_file_dict.keys():
     for pcr_pair in data_file_dict[process_group].keys():
@@ -98,9 +98,31 @@ def make_data_file_json(data_file_dict):
     sys.exit(1)
 
 
+def make_data_file_json_ultima(data_file_dict):
+  star_align_list = []
+  for process_group in data_file_dict.keys():
+    for pcr_pair in data_file_dict[process_group].keys():
+      for sample_name in data_file_dict[process_group][pcr_pair].keys():
+        merge_dict = {}
+        in_file = '%s-%03d_%s.merged.bam' % (sample_name, int(process_group), pcr_pair)
+        merge_dict['sample_name'] = '%s-%03d' % (sample_name, int(process_group))
+        merge_dict['in_file'] = in_file
+        star_align_list.append(merge_dict)
+
+  try:
+    filename_json = 'star_align.json'
+    fh = open(filename_json, 'w')
+    json.dump(star_align_list, fh, indent=2)
+    fh.close()
+  except:
+    print('Error: unable to write output file \"%s\"' % (filename_json), file=sys.stderr)
+    sys.exit(1)
+
+
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program to make JSON file for setting STAR aligner runs.')
   parser.add_argument('-i', '--input', required=True, default=None, help='Input JSON samplesheet filename (required string).')
+  parser.add_argument('-p', '--sequencing_platform', required=True, default=None, help='Sequencing sequencing_platform (required string: Illumina or Ultima).')
   parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
 
@@ -113,7 +135,10 @@ if __name__ == '__main__':
 
   #  print(json.dumps(data_file_dict, indent=2))
 
-  make_data_file_json(data_file_dict )
-
-
+  if(args.sequencing_platform == 'Illumina'):
+    make_data_file_json_illumina(data_file_dict )
+  elif(args.sequencing_platform == 'Ultima'):
+    make_data_file_json_ultima(data_file_dict )
+  else:
+    print('Error: unrecognized sequencing_platform type \'%s\'' % (args.sequencing_platform), file=sys.stderr)
 

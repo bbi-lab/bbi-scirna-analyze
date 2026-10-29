@@ -1,0 +1,8 @@
+== bbi-scirna-analyze/apptainer
+
+Copy the apptainer .sif file called bbi_pipelines.all.sif to this directory. The file
+bbi-scirna-analyze/nextflow.config expects to file bbi-scirna-analyze/bbi_pipelines.all.sif.
+
+Use the 'apptainer' profile in nextflow.config to run bbi-scirna-analyze using the
+bbi_pipelines.all.sif container.
+

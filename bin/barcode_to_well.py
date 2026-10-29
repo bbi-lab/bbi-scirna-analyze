@@ -5,6 +5,12 @@ import argparse
 
 
 #
+# Program version string.
+#
+program_version = '0.1.0'
+
+
+#
 # Read a file of base 4 well index barcode strings and
 # convert them to a well name string.
 #
@@ -127,6 +133,7 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser(description='A program to convert base 4 encoded barcode index string to string of well names.')
   parser.add_argument('-i', '--input_file', required=True, help='Input filename.')
   parser.add_argument('-o', '--output_file', required=True, help='Output filename.')
+  parser.add_argument('-v', '--version', action='version', version=program_version)
   args = parser.parse_args()
 
   (rt_well_dict, lig_well_dict, p7_well_dict, p5_well_dict) = make_barcode_decoder(max_index)

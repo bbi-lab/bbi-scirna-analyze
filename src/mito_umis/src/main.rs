@@ -35,7 +35,7 @@ fn set_cl_options() -> Result<clap::Command, Box<dyn std::error::Error>> {
                   .required(true)
                   .short('a')
                   .long("annotations_file")
-                  .help("Annotations bed file path."))
+                  .help("Annotations tsv file path."))
         .arg(Arg::new("out_file")  // required=true, no default
                   .required(true)
                   .short('o')
@@ -105,7 +105,7 @@ fn main() {
   }
 
   /*
-  ** Read annotations .bed file into a HashMap keyed by gene name.
+  ** Read annotations .tsv file into a HashMap keyed by gene name.
   ** TSV fields:
   **   1       17369   17436   ENSG00000278267 255     -       MIR6859-1
   **   1       29554   31109   ENSG00000243485 255     +       MIR1302-2HG

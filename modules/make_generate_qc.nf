@@ -1,5 +1,3 @@
-def analyze_out = params.output_dir + '/analyze_out'
-
 /*
 ** Run generate_qc.R.
 */
@@ -22,8 +20,9 @@ def analyze_out = params.output_dir + '/analyze_out'
 process make_generate_qc_hash {
   errorStrategy 'ignore'
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.txt", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.png", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.txt", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), path(cds_raw_hash_mobs), path(umi_counts), path(empty_drops_rds), val(sample_map)
@@ -32,6 +31,7 @@ process make_generate_qc_hash {
   output:
   tuple val(sample_name), path("*.txt"), optional: true, emit: qc_txt
   tuple val(sample_name), path("*.png"), optional: true, emit: qc_png
+  path('version.json'), emit: 'version'
 
   script:
   if(sample_map['hash_file'] == '')
@@ -39,12 +39,26 @@ process make_generate_qc_hash {
     # bash watch for errors
     set -ueo pipefail
 
+    ${LogUtil.emit([
+       [ tool: 'generate_qc.R',
+         cmdVer: 'generate_qc.R --version | head -n 1',
+         command: "Not hash sample: skip make_generate_qc_hash"
+       ]
+    ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
+
     echo 'Not hash sample: skip make_generate_qc_hash'
     """
   else
     """
     # bash watch for errors
     set -ueo pipefail
+
+    ${LogUtil.emit([
+       [ tool: 'generate_qc.R',
+         cmdVer: 'generate_qc.R --version | head -n 1',
+         command: "generate_qc.R ${cds_raw_hash_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} ${sample_map['hash_file']} ${sample_map['genome']} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}"
+       ]
+    ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
     generate_qc.R ${cds_raw_hash_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} ${sample_map['hash_file']} ${sample_map['genome']} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}
     """
@@ -54,8 +68,9 @@ process make_generate_qc_hash {
 process make_generate_qc_no_hash {
   errorStrategy 'ignore'
 
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.png", mode: 'copy'
-  publishDir path: "${analyze_out}/${sample_name}", pattern: "*.txt", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.png", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.txt", mode: 'copy'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), path(cds_raw_mobs), path(umi_counts), path(empty_drops_rds), val(sample_map)
@@ -64,6 +79,7 @@ process make_generate_qc_no_hash {
   output:
   tuple val(sample_name), path("*.txt"), optional: true, emit: qc_txt
   tuple val(sample_name), path("*.png"), optional: true, emit: qc_png
+  path('version.json'), emit: 'version'
 
   script:
   if(sample_map['hash_file'] == '')
@@ -71,12 +87,26 @@ process make_generate_qc_no_hash {
     # bash watch for errors
     set -ueo pipefail
 
+    ${LogUtil.emit([
+       [ tool: 'generate_qc',
+         cmdVer: 'generate_qc.R --version | head -n 1',
+         command: "generate_qc.R ${cds_raw_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} 'false' ${sample_map['genome']} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}"
+       ]
+    ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
+
     generate_qc.R ${cds_raw_mobs} ${umi_counts} ${sample_name} ${empty_drops_rds} 'false' ${sample_map['genome']} 'bbi-scirna-analyze' --specify_cutoff ${umi_cutoff}
     """
   else
     """
     # bash watch for errors
     set -ueo pipefail
+
+    ${LogUtil.emit([
+       [ tool: 'generate_qc',
+         cmdVer: 'generate_qc.R --version | head -n 1',
+         command: "Hash sample: skip make_generate_qc_no_hash"
+       ]
+    ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
     echo 'Hash sample: skip make_generate_qc_no_hash'
     """

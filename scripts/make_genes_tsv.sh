@@ -3,12 +3,12 @@
 #
 # This script is lifted from bbi-genome-data/scripts/rna.03.make_bed_files.sh
 #
-# It makes a bed file from a filtered gtf file. The bed file is used by the
+# It makes a tsv file from a filtered gtf file. The tsv file is used by the
 # make_cds.R script in the bbi-lab/bbi-scirna-analyze pipeline.
 #
 
 GTF_IN="${1}"
-BED_OUT="${2}"
+TSV_OUT="${2}"
 
 # Ensembl GTFs have a 'gene_biotype' tag. The Gencode GTFs
 # appear to have a 'gene_type' tag.
@@ -35,6 +35,6 @@ cat "${GTF_IN}" | grep -v "^#" \
       printf "%s\t%s\t%s\t%s\t%d\t%s\n",
           $1, $4, $5, gene_id, 255, $7;
   }}' | sort -k1,1 -k2,2n -S 4G \
-> "${BED_OUT}"
+> "${TSV_OUT}"
 
 

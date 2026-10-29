@@ -802,6 +802,7 @@ parser$add_argument('hash', help='hash run or not.')
 parser$add_argument('genome', help='Genome name - used by Barnyard plot.')
 parser$add_argument('pipeline_name', help='"bbi-sci" or "bbi-scirna-analyze"')
 parser$add_argument('--specify_cutoff', type='integer', default=NULL, help='Optional. Specifies a cutoff rather than choosing a UMI cutoff automatically.')
+parser$add_argument('--version', action = 'version', version = paste('generate_qc', '0.1.0'))
 args = parser$parse_args()
 
 cds_path <- args$cds_path
