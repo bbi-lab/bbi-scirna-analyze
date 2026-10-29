@@ -55,7 +55,7 @@ include { process_hashes; cat_hashes; process_hashes_function; hash_umi_knee_plo
 include { make_trim_bam_json } from './modules/make_trim_bam_json.nf'
 include { trim_bams; trim_bam_function; aggregate_trimmer_logs } from './modules/trim_bams.nf'
 include { make_star_align_json } from './modules/make_star_align_json.nf'
-include { align_bams; align_bam_illumina_function } from './modules/align_bams.nf'
+include { align_bams; align_bam_illumina_function; align_bam_ultima_function } from './modules/align_bams.nf'
 include { make_merge_align_json } from './modules/make_merge_align_json.nf'
 include { merge_align; merge_align_function } from './modules/merge_align.nf'
 include { merge_starsolo_reports; merge_starsolo_reports_function } from './modules/merge_starsolo_reports.nf'
@@ -167,56 +167,29 @@ workflow {
     merge_hash_reads(merge_hash_reads_channel_in)
   }
 
-  /*
-  ** Here are some convolutions in order to pass
-  ** the paths of merged bam files to the trim
-  ** bams process. The merged bam files are in the
-  ** work directory so the paths are not known
-  ** until Nextflow runs the merge_demux process.
-  **
-  ** Notes:
-  **   o  in summary, there are three 'actors' in this
-  **      story: (a) the .map() operator below,
-  **      (b) the trim_bam_function(), and (c) the
-  **      .map() operator output channel. In
-  **      addition, the global variable
-  **      params.object_map.merge_bam_map transfers
-  **      values from the .map() operator to the
-  **      trim_bam_function().
-  **   o  in short, the following .map() operator
-  **      makes a Java associative array (map) that
-  **      maps a bam filename to its path in the work
-  **      directory. This runs after the merge_demux
-  **      process finishes. The associative array is
-  **      stored in the global variable called
-  **      params.object_map.merge_bam_map.
-  **   o  python scripts make json files that define
-  **      the contents of channels used in downstream
-  **      processes, including paths for input to the
-  **      downstream processes. The script knows the
-  **      input file names but not the paths in the
-  **      Nextflow work directory. The main list in
-  **      the JSON file is split into 'items' that
-  **      are processed by a groovy function to
-  **      define queue channel contents. The input
-  **      filenames are given in the JSON file but
-  **      not their paths within the Nextflow work
-  **      directory tree.
-  **   o  the maps in params.object_map.* are used to
-  **      substitute the file path for the file name
-  **      within a groovy function that sets up the
-  **      channel.
-  **   o  when the channel objects are tuples, one
-  **      must subscript the tuple variable to get the
-  **      necessary element.
-  **   o  the .map {} output is collected and assigned
-  **      to a channel name called make_trim_bam_json_sync
-  **   o  the make_trim_bam_json processes takes the
-  **      make_trim_bam_json_sync as input so that
-  **      the make_trim_bam_json process waits until
-  **      the params.object_map.merge_bam_map is
-  **      complete.
-  */      
+/*
+ * COORDINATION OF DYNAMIC BAM PATHS
+ * ---------------------------------
+ * Goal: Pass the absolute paths of merged BAM files to the 'trim_bams' process.
+ * 
+ * Challenge: The absolute paths in the Nextflow work directory are unknown until 
+ * the 'merge_demux' process finishes execution.
+ *
+ * Implementation Details:
+ * - Global State: We use 'params.object_map.merge_bam_map' as a lookup table to 
+ *   store the mapping of [filename -> absolute_path].
+ * - Data Flow: 
+ *   a. The .map() operator extracts paths from the 'merge_demux' output and 
+ *      updates the global map.
+ *   b. A Groovy function reads JSON configuration files (which contain only 
+ *      filenames) and replaces those names with the resolved paths from the map.
+ *   c. If the channel contains tuples, the function subscripts the tuple to 
+ *      access the required filename element.
+ * - Execution Order: To prevent race conditions, the 'make_trim_bam_json' process 
+ *   is gated by the 'make_trim_bam_json_sync' channel. This ensures the 
+ *   global map is fully populated before the JSON-to-channel conversion begins.
+ */
+
   if(params.sequencing_platform == "Illumina") {
     merge_demux.out.bam.map {
       path ->
@@ -241,7 +214,7 @@ workflow {
         return( "OK" )
     }.collect().set { make_star_align_json_sync }
 
-    merge_hash_reads.out.map {
+    merge_hash_reads.out.hash_reads.map {
       path ->
         def file_base_name = path.toString().tokenize('/').last()
         params.object_map.process_hashes_map[file_base_name] = path
@@ -296,7 +269,16 @@ workflow {
   }
 
   make_star_align_json(samplesheet_file, make_star_align_json_sync)
-  make_star_align_json.out.json.splitJson().map {it -> align_bam_illumina_function(it)}.combine(sample_maps_split, by: 0).set{align_bam_channel_in}
+  if(params.sequencing_platform == "Illumina") {
+    make_star_align_json.out.json.splitJson().map {it -> align_bam_illumina_function(it)}.combine(sample_maps_split, by: 0).set{align_bam_channel_in}
+  }
+  else
+  if( params.sequencing_platform == "Ultima") {
+    make_star_align_json.out.json.splitJson().map {it -> align_bam_ultima_function(it)}.combine(sample_maps_split, by: 0).set{align_bam_channel_in}
+  }
+  else {
+    error("Error: unrecognized sequencing_platform value: " + params.sequencing_platform + ".")
+  }
   align_bams(align_bam_channel_in)
 
   /*

@@ -9,7 +9,7 @@ process merge_hash_reads {
   tuple val(sample_name), val(out_file), path("files")
 
   output:
-  path("*.hash_reads.merged.tsv")
+  path("*.hash_reads.merged.tsv"), emit: 'hash_reads'
   path("version.json"), emit: 'version'
 
   script:

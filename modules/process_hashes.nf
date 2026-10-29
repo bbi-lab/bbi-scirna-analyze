@@ -224,7 +224,7 @@ process assign_hash_raw {
   publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*hash_table.raw.csv", mode: 'copy'
   publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*hash_cds.raw.mobs", mode: 'copy'
   publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*_hash_cds.raw.col_data.tsv", mode: 'copy'
-  publishDir path: { "${params.raw_log_dir}/analyze_out/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
+  publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(counts_per_cell), path(mobs), path(umi_counts)
