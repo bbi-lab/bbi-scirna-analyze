@@ -9,7 +9,8 @@ process run_empty_drops {
   publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
-  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells)
+  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix)
+  // tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells)
 
   output:
   tuple val(sample_name), path("*_emptyDrops.RDS"), emit: empty_drops_rds

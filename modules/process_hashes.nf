@@ -228,6 +228,7 @@ process assign_hash_raw {
 
   input:
   tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(counts_per_cell), path(mobs), path(umi_counts)
+  path(sample_maps)
 
   output:
   path("*hash_table.raw.csv"), emit: hash_table
@@ -251,7 +252,7 @@ process assign_hash_raw {
     ${sample_name} \
     'raw' \
     ${hashumis_mtx} \
-    hashumis_cells.tmp2 \
+    ${hashumis_cells_txt} \
     ${hashumis_hashes_txt} \
     tmp_dir/${mobs} \
     ${counts_per_cell} \
@@ -260,44 +261,25 @@ process assign_hash_raw {
      ]
   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
+  get_sample_hash_filename.py -s ${sample_name} -i ${sample_maps} -o hash_map_file.tsv
+
   mkdir tmp_dir
   mv ${mobs} tmp_dir
-
-  #
-  # Convert the well-based cell names to encoded barcode-based names,
-  # and pass the converted cell names to assign_hash.R.
-  #
-  well_to_barcode.py -i ${hashumis_cells_txt} -o hashumis_cells.tmp1
-
-  #
-  # Sanity test.
-  #
-  awk '{print \$1}' hashumis_cells.tmp1 > hashumis_cells.tmp3
-  diff ${hashumis_cells_txt} hashumis_cells.tmp3
-  exit_value=\$?
-  if [ \$exit_value -eq 1 ]
-  then
-    echo 'Error: inconsistent cell names in well_to_barcode.py output file.'
-    exit -1
-  fi
-  rm hashumis_cells.tmp3
-
-  awk '{print \$2}' hashumis_cells.tmp1 > hashumis_cells.tmp2
 
   assign_hash.R \
     ${sample_name} \
     'raw' \
     ${hashumis_mtx} \
-    hashumis_cells.tmp2 \
+    ${hashumis_cells_txt} \
     ${hashumis_hashes_txt} \
     tmp_dir/${mobs} \
     ${counts_per_cell} \
     ${params.hash_umi_cutoff} \
-    ${params.hash_ratio}
+    ${params.hash_ratio} \
+    hash_map_file.tsv
 
   write_col_data.R ${sample_name}_hash_cds.raw.mobs ${sample_name}_hash_cds.raw.col_data.tsv
 
-  rm hashumis_cells.tmp1 hashumis_cells.tmp2
   rm -r tmp_dir
   """
 }

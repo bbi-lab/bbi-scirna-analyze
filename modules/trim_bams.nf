@@ -33,7 +33,7 @@ process trim_bams {
   ${LogUtil.emit([
      [ tool: 'trim_galore_rust',
        cmdVer: 'trim_galore_rust --version | head -n 1',
-       command: "trim_galore_rust -a AAAAAAAA --no_poly_g --three_prime_clip_R1 1 --output-format ubam --preserve-tags CB,CY,UB,UY --cores 2 ${bam_in}"
+       command: "trim_galore_rust -a AAAAAAAA --no_poly_g --three_prime_clip_R1 1 --output-format ubam --preserve-tags CB,UB,UY --cores 2 ${bam_in}"
      ]
   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
@@ -55,7 +55,7 @@ process trim_bams {
   # Note: the trim_galore documention says that it uses N+4 cores
   # where N is given on the command line, except when N is 1.
   #
-  trim_galore_rust -a AAAAAAAA --no_poly_g --three_prime_clip_R1 1 --output-format ubam --preserve-tags CB,CY,UB,UY --cores 2 ${bam_in}
+  trim_galore_rust -a AAAAAAAA --no_poly_g --three_prime_clip_R1 1 --output-format ubam --preserve-tags CB,UB,UY --cores 2 ${bam_in}
 
   mv ${root_file}.merged_trimmed.bam ${out_file}
   mv ${root_file}.merged.bam_trimming_report.txt ${root_file}.trimming_report.txt

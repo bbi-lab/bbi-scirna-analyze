@@ -31,14 +31,15 @@ process cat_matrices_raw {
   publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.cells.tsv", mode: 'copy'
   publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.features.tsv", mode: 'copy'
   publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.matrix.mtx", mode: 'copy'
-  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.cells.barcode_to_wells.tsv", mode: 'copy'
+//  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}" }, pattern: "*.cells.barcode_to_wells.tsv", mode: 'copy'
   publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
   tuple val(sample_name), val(out_file), path('file')
 
   output:
-  tuple val(sample_name), path("*.cells.tsv"), path("*.features.tsv"), path("*.matrix.mtx"), path("*.cells.barcode_to_wells.tsv"), emit: raw_matrix
+  tuple val(sample_name), path("*.cells.tsv"), path("*.features.tsv"), path("*.matrix.mtx"), emit: raw_matrix
+  // tuple val(sample_name), path("*.cells.tsv"), path("*.features.tsv"), path("*.matrix.mtx"), path("*.cells.barcode_to_wells.tsv"), emit: raw_matrix
   path("version.json"), emit: 'version'
 
   script:
@@ -50,10 +51,6 @@ process cat_matrices_raw {
      [ tool: 'cat_sparse_matrix.py',
        cmdVer: 'cat_sparse_matrix.py --version | head -n 1',
        command: "cat_sparse_matrix.py -i <in_file_list> -m 'UniqueAndMult-PropUnique.mtx' -f 'features.tsv' -c 'barcodes.tsv' -o ${out_file}"
-     ],
-     [ tool: 'barcode_to_well.py',
-       cmdVer: 'barcode_to_well.py --version | head -n 1',
-       command: "barcode_to_well.py -i ${out_file}.cells.tsv -o ${out_file}.cells.barcode_to_wells.tsv"
      ]
    ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
 
@@ -74,8 +71,6 @@ process cat_matrices_raw {
     cat_sparse_matrix.py -i \$in_file_list -m 'UniqueAndMult-PropUnique.mtx' -f 'features.tsv' -c 'barcodes.tsv' -o ${out_file}
 #    cat_sparse_matrix.py -i \$in_file_list -m 'matrix.mtx' -f 'features.tsv' -c 'barcodes.tsv' -o ${out_file}
   fi
-
-  barcode_to_well.py -i ${out_file}.cells.tsv -o ${out_file}.cells.barcode_to_wells.tsv
   """
 }
 

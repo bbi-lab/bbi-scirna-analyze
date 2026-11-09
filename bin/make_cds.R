@@ -13,7 +13,7 @@ parser$add_argument('matrix_key', help='Is this \'raw\' or \'filtered\'?')
 parser$add_argument('matrix', help='File of umi count matrix.')
 parser$add_argument('gene_data', help='File of gene data.')
 parser$add_argument('cell_data', help='File of cell data.')
-parser$add_argument('barcodes_to_wells', help='File of encoded barcode indices and wells.')
+# parser$add_argument('barcodes_to_wells', help='File of encoded barcode indices and wells.')
 parser$add_argument('umi_counts', help='File of mitochondrial UMI counts.')
 parser$add_argument('umi_cutoff', help='UMI cutoff to count as a cell.')
 parser$add_argument('counts_per_cell', help='Counts per cell from STARsolo CellReads.stats.')
@@ -107,13 +107,14 @@ if(is(emptydrops_data, 'DFrame')) {
 #
 # Add barcode well string to colData(cds).
 #
-wells <- read.table(args$barcodes_to_wells, sep='\t', row.names=1)
-colData(cds)['wells'] <- wells[row.names(colData(cds)),1]
+# wells <- read.table(args$barcodes_to_wells, sep='\t', row.names=1)
+# colData(cds)['wells'] <- wells[row.names(colData(cds)),1]
+colData(cds)['wells'] <- colData(cds)['cell']
 
 # Extract meta info from well name
 df <- as.data.frame(colData(cds))
 meta_types <-  meta_types <- c("P5_barcode", "P7_barcode", "RT_barcode", "Ligation_barcode")
-meta<- separate(df, wells, into=meta_types, sep="_", remove=FALSE)
+meta <- separate(df, wells, into=meta_types, sep="_", remove=FALSE)
 
 for (m in meta_types) {
   colData(cds)[,m] <- meta[[m]]

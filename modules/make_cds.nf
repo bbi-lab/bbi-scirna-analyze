@@ -6,7 +6,8 @@ process make_cds_raw {
   publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
-  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells), path(counts_per_cell), path(empty_drops), path(umi_counts), val(sample_map)
+  tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(counts_per_cell), path(empty_drops), path(umi_counts), val(sample_map)
+  // tuple val(sample_name), path(cell_tsv), path(feature_tsv), path(count_matrix), path(barcode_to_wells), path(counts_per_cell), path(empty_drops), path(umi_counts), val(sample_map)
   val(out_file)
   val(umi_cutoff)
 
@@ -29,7 +30,6 @@ process make_cds_raw {
   ${count_matrix} \
   ${feature_tsv} \
   ${cell_tsv} \
-  ${barcode_to_wells} \
   ${umi_counts} \
   ${umi_cutoff} \
   ${counts_per_cell} \
@@ -44,7 +44,6 @@ process make_cds_raw {
   ${count_matrix} \
   ${feature_tsv} \
   ${cell_tsv} \
-  ${barcode_to_wells} \
   ${umi_counts} \
   ${umi_cutoff} \
   ${counts_per_cell} \
