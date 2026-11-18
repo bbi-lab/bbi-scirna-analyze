@@ -370,8 +370,8 @@ workflow {
   /*
   ** Assign hashes to cells and update cds.
   */
-  cat_hashes.out.hash_matrix.join(split_starsolo_stats.out.counts_per_cell).join(run_scrublet.out.cds).set{assign_hash_raw_channel_in}
-  assign_hash_raw(assign_hash_raw_channel_in, make_sample_map_json.out.sample_maps )
+  cat_hashes.out.hash_matrix.join(process_hashes.out.hash_hashseq_map).join(split_starsolo_stats.out.counts_per_cell).join(run_scrublet.out.cds).set{assign_hash_raw_channel_in}
+  assign_hash_raw(assign_hash_raw_channel_in)
 
   /*
   ** Run generate_qc.R.

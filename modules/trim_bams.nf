@@ -14,7 +14,7 @@ process trim_bams {
   maxRetries 2
 
 //  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}/cutadapt" }, pattern: "*.trimmed.bam", mode: 'copy'
-  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}/cutadapt" }, pattern: "*.trimming_report.txt", mode: 'copy'
+  publishDir path: { "${params.output_dir}/analyze_out/${sample_name}/trim_galore" }, pattern: "*.trimming_report.txt", mode: 'copy'
   publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:

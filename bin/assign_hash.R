@@ -19,7 +19,7 @@ parser$add_argument('cds', help='cds object in monocle_objects format.')
 parser$add_argument('umis_per_cell', help='File with list of umis per cell barcode (all cells -- used to calculate background hash umis).')
 parser$add_argument('hash_umi_cutoff', type='integer', help='min number of hash umis to determine top to second best ratio.')
 parser$add_argument('hash_ratio', help='min top to second best hash ratio. Default is false and not filtered.')
-parser$add_argument('hash_map_file', help='TSV file with path to hash_map file.')
+parser$add_argument('hashseq_map_file', help='TSV file with path to hashseq_map file.')
 parser$add_argument('--version', action = 'version', version = paste('assign_hash', '0.1.0'))
 args = parser$parse_args()
 
@@ -45,7 +45,7 @@ chisq_vs_background <- function(test_hash_matrix, hash_frequencies){
 # Creates a corrected hash table 
 assign_hash_labels <- 
   function(hash_matrix,
-           hash_map,
+           hashseq_map,
            test_cell_hashes, 
            background_cell_hashes, 
            qval_thresh = 0.05, 
@@ -86,14 +86,8 @@ assign_hash_labels <-
     })
     #unambiguous_hits = which(top_to_second_best_ratios > min_best_vs_second_best_ratio)
 
-    # Edit hash_map hash names.
-    hash_map$V1 <- str_replace_all(hash_map$V1, "[-\\[)(=_/\\]]", '.')
-
-message('top_oligo struct')
-str(top_hash)
-
     # Get vector of hash oligo sequences.
-    hash_seqs <- hash_map[match(top_hash, hash_map$V1),2]
+    hash_seqs <- hashseq_map[match(top_hash, hashseq_map[['hash_name_edited']]),3]
 
     hash_label_df = data.frame(cell = rownames(test_hash_matrix),
                                hash_umis = rowSums(test_hash_matrix),
@@ -152,12 +146,7 @@ colnames(hash_mtx) = cell_list
 hash_mtx = t(hash_mtx)
 
 # Read hash map file (hash names to hash oligo sequences).
-hash_map_file <- read.delim(args$hash_map_file, header = TRUE)
-if(nrow(hash_map_file) != 1) {
-  stop('Error: unexpected number of rows in \'', hash_map_file, '\' ', nrow(hash_map_file))
-}
-
-hash_map <- read.delim(hash_map_file['file_path'][[1]], header = FALSE)
+hashseq_map <- read.delim(args$hashseq_map_file, header = TRUE)
 
 # Grab sci umis 
 counts_per_cell = fread(args$umis_per_cell,
@@ -181,7 +170,7 @@ background_cell_hashes =
 
 # Assign number of hash umis to each cell, pvals, qvals, top_to_second_best_ratio, and the top oligo
 corrected_hash_table = assign_hash_labels(hash_matrix = hash_mtx,
-                                          hash_map = hash_map,
+                                          hashseq_map = hashseq_map,
                                           test_cell_hashes = cds$cell,
                                           background_cell_hashes = background_cell_hashes)
 

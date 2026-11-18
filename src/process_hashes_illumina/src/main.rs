@@ -17,12 +17,14 @@ use rust_htslib::bam::{Read, Reader};
 use sprs::CsMat;
 use regex::Regex;
 use itertools::Itertools;
+use polars::prelude::*;
+use anyhow::{Context, Result, anyhow, bail};
 
 
 /*
 ** Define command line arguments.
 */
-fn set_cl_options() -> Result<clap::Command, Box<dyn std::error::Error>> {
+fn set_cl_options() -> Result<clap::Command> {
   let cl_options = Command::new("process_hashes_illumina")
         .version(env!("CARGO_PKG_VERSION"))
         .about("Finds hash sequence reads in BAM file.")
@@ -76,7 +78,7 @@ fn process_bam_file(hash_edit_distance: usize,
                     hashdict: &mut HashMap<String, HashMap<String, HashMap<String, u64>>>,
                     bam_reader: &mut Reader,
                     num_hash: &mut u64,
-                    hash_lookup: &HashMap<String, String>) -> Result<(), Box<dyn std::error::Error>> {
+                    hash_lookup: &HashMap<String, String>) -> Result<()> {
 
   /*
   ** Loop through input reads.
@@ -97,13 +99,13 @@ fn process_bam_file(hash_edit_distance: usize,
   let mut num_hash_read: u64 = 0;
 
   while let Some(result) = bam_reader.read(&mut record) {
-    result.expect("Error: unable to parse BAM record");
+    result.context("Error: unable to parse BAM record")?;
 
     num_read += 1;
 
-    header = std::str::from_utf8(record.qname()).expect("bad status getting bam read header");
+    header = std::str::from_utf8(record.qname()).context("bad status getting bam read header")?;
     let bseq = record.seq().as_bytes();
-    seq = std::str::from_utf8(&bseq).expect("bad status getting bam read sequence");
+    seq = std::str::from_utf8(&bseq).context("bad status getting bam read sequence")?;
 
     if(seq.len() < 15) {
       continue
@@ -172,18 +174,18 @@ fn process_bam_file(hash_edit_distance: usize,
 
 
 #[inline(always)]
-fn update_nested_maps(hash_key1: &String, hash_key2: String, hash_key3: String, map1: &mut HashMap<String, HashMap<String, HashMap<String, u64>>>, umi_new: &mut usize) -> Result<(), Box<dyn std::error::Error>> {
+fn update_nested_maps(hash_key1: &String, hash_key2: String, hash_key3: String, map1: &mut HashMap<String, HashMap<String, HashMap<String, u64>>>, umi_new: &mut usize) -> Result<()> {
   /*
   ** We expect that map1 was initialized with hash_key1 so we don't need
   ** to use map1.entry(key1.to_string()).or_insert(HashMap::new()); instead,
   ** we return an error if the hash_key1 isn't in map1.
-  let map2 = map1.entry(key1.to_string()).or_insert_with(|| HashMap::new()).expect("unable to insert key/value pair");
+  let map2 = map1.entry(key1.to_string()).or_insert_with(|| HashMap::new()).context("unable to insert key/value pair")?;
   */
 
   /*
   ** map1 key is hash barcode (hash_key1).
   */
-  let map2 = map1.get_mut(hash_key1).expect("hash barcode not in hash_sheet file.");
+  let map2 = map1.get_mut(hash_key1).context("hash barcode not in hash_sheet file.")?;
 
   /*
   ** map2 key is cell barcode (hash_key2).
@@ -204,7 +206,7 @@ fn update_nested_maps(hash_key1: &String, hash_key2: String, hash_key3: String, 
 }
 
 
-fn make_sparse_matrix(cells: &HashSet<String>, hash_lookup: &HashMap<String, String>, map: &HashMap<String, HashMap<String, HashMap<String, u64>>>) -> Result<(Vec<String>, Vec<String>, CsMat<usize>), Box<dyn std::error::Error>> {
+fn make_sparse_matrix(cells: &HashSet<String>, hash_lookup: &HashMap<String, String>, map: &HashMap<String, HashMap<String, HashMap<String, u64>>>) -> Result<(Vec<String>, Vec<String>, CsMat<usize>)> {
 
   /*
   ** Note: it's possible to use the indexing operator
@@ -223,7 +225,7 @@ fn make_sparse_matrix(cells: &HashSet<String>, hash_lookup: &HashMap<String, Str
 
   let num_cell = cell_counter.len();
   if(num_cell != cells.len()) {
-    panic!("Error: inconsistent cell counts! {} {}", num_cell, cells.len());
+    bail!("Error: inconsistent cell counts! {} {}", num_cell, cells.len());
   }
 
   /*
@@ -231,9 +233,9 @@ fn make_sparse_matrix(cells: &HashSet<String>, hash_lookup: &HashMap<String, Str
   let mut hash_seqs: Vec<String> = Vec::with_capacity(num_hash);
   let mut row_names: Vec<String> = Vec::with_capacity(num_hash);
   for hash_seq in map.keys() {
-    if(!map.get(hash_seq).unwrap().is_empty()) {
+    if(!map.get(hash_seq)?.is_empty()) {
       hash_seqs.push(hash_seq.to_string());
-      row_names.push(hash_lookup.get(hash_seq).unwrap().to_string());
+      row_names.push(hash_lookup.get(hash_seq)?.to_string());
     }
   }
   */
@@ -271,7 +273,7 @@ fn make_sparse_matrix(cells: &HashSet<String>, hash_lookup: &HashMap<String, Str
   */
   for (irow, hash_seq) in hash_seqs.iter().enumerate() {
     for (icol, col_name) in col_names.iter().enumerate() {
-      let cell_map = map.get(hash_seq as &str).unwrap();
+      let cell_map = map.get(hash_seq as &str).ok_or_else(|| anyhow!("Error: no hash sequence."))?;
 
       /*
       ** There are not UMIs for every hash and cell combination so
@@ -296,7 +298,7 @@ fn make_sparse_matrix(cells: &HashSet<String>, hash_lookup: &HashMap<String, Str
 /*
 ** Write sparse matrix to Matrix Market file.
 */
-fn write_matrix(key: &String, row_names: Vec<String>, col_names: Vec<String>, smat: &sprs::CsMat<usize> ) -> Result<(), std::io::Error> {
+fn write_matrix(key: &String, row_names: Vec<String>, col_names: Vec<String>, smat: &sprs::CsMat<usize>, hashnames_hashmap: &HashMap<String, String> ) -> Result<()> {
 
   let mut file_name: String;
   let mut path: &Path;
@@ -308,18 +310,24 @@ fn write_matrix(key: &String, row_names: Vec<String>, col_names: Vec<String>, sm
   */
   file_name = format!("{}.hashumis.mtx", *key);
   path = Path::new(&file_name);
-  let _result = sprs::io::write_matrix_market(path, smat).expect(&format!("error while writing file {}", file_name));
+  let _result = sprs::io::write_matrix_market(path, smat).with_context(|| format!("error while writing file {}", file_name))?;
 
   /*
   ** Write row name file.
   */
-  let re = Regex::new(r"[ )(=_/-]").expect("bad status: unable to make regex.");
+  let row_names_edited: Vec<String> = row_names.iter().map(|name| {hashnames_hashmap.get(name).cloned().ok_or_else(|| anyhow!("row_name not found"))}).collect::<Result<Vec<String>>>()?;
+
+/*
+  let re = Regex::new(r"[ )(=_/-]").context("bad status: unable to make regex.")?;
   let mut row_names_edited = row_names.iter().map(|s| re.replace_all(&s, "."));
+*/
+
+
   file_name = format!("{}.hashumis_hashes.txt", *key);
   path = Path::new(&file_name);
-  file = File::create(path).expect(&format!("unable to open file {}", file_name));
+  file = File::create(path).with_context(|| format!("unable to open file {}", file_name))?;
   writer = BufWriter::new(file);
-  let _ = writer.write_all(row_names_edited.join("\n").as_bytes()).expect(&format!("error while writing file {}", file_name));
+  let _ = writer.write_all(row_names_edited.join("\n").as_bytes()).with_context(|| format!("error while writing file {}", file_name))?;
   let _ = writer.flush();
   std::mem::drop(writer);
 
@@ -328,9 +336,9 @@ fn write_matrix(key: &String, row_names: Vec<String>, col_names: Vec<String>, sm
   */
   file_name = format!("{}.hashumis_cells.txt", *key);
   path = Path::new(&file_name);
-  file = File::create(path).expect(&format!("unable to open file {}", file_name));
+  file = File::create(path).with_context(|| format!("unable to open file {}", file_name))?;
   writer = BufWriter::new(file);
-  let _ = writer.write_all(col_names.join("\n").as_bytes()).expect(&format!("error while writing file {}", file_name));
+  let _ = writer.write_all(col_names.join("\n").as_bytes()).with_context(|| format!("error while writing file {}", file_name))?;
   let _ = writer.flush();
   std::mem::drop(writer);
 
@@ -338,10 +346,10 @@ fn write_matrix(key: &String, row_names: Vec<String>, col_names: Vec<String>, sm
 }
 
 
-fn write_hash_combined(hashdict: &HashMap<String, HashMap<String, HashMap<String, u64>>>, hash_lookup: &HashMap<String, String>,sample_name: &String, key: &String) -> Result<(), std::io::Error> {
+fn write_hash_combined(hashdict: &HashMap<String, HashMap<String, HashMap<String, u64>>>, hash_lookup: &HashMap<String, String>,sample_name: &String, key: &String) -> Result<()> {
   let file_name = format!("{}_hash_combined", *key);
   let path = Path::new(&file_name);
-  let file = File::create(path).expect(&format!("unable to open file {}", file_name));
+  let file = File::create(path).with_context(|| format!("unable to open file {}", file_name))?;
   let mut writer = BufWriter::new(file);
 
   for hash_seq in hashdict.keys() {
@@ -360,7 +368,7 @@ fn write_hash_combined(hashdict: &HashMap<String, HashMap<String, HashMap<String
 }
 
 
-fn make_per_cell_statistics(cells: &HashSet<String>, hashdict: &HashMap<String, HashMap<String, HashMap<String, u64>>>) -> Result<HashMap<String, Vec<u64>>, std::io::Error> {
+fn make_per_cell_statistics(cells: &HashSet<String>, hashdict: &HashMap<String, HashMap<String, HashMap<String, u64>>>) -> Result<HashMap<String, Vec<u64>>> {
 
   /*
   ** Check hashdict cell count.
@@ -375,7 +383,7 @@ fn make_per_cell_statistics(cells: &HashSet<String>, hashdict: &HashMap<String, 
   }
 
   if(cells.len() != cell_name_set.len()) {
-    panic!("Error: inconsistent cell counts.");
+    bail!("Error: inconsistent cell counts.");
   }
 
   /*
@@ -404,7 +412,7 @@ fn make_per_cell_statistics(cells: &HashSet<String>, hashdict: &HashMap<String, 
 }
 
 
-fn write_per_cell_statistics(cell_counter: &HashMap<String, Vec<u64>>, sample_name: &String, key: &String) -> Result<(), std::io::Error> {
+fn write_per_cell_statistics(cell_counter: &HashMap<String, Vec<u64>>, sample_name: &String, key: &String) -> Result<()> {
   let mut file_name: String;
   let mut path: &Path;
   let mut file: File;
@@ -415,10 +423,10 @@ fn write_per_cell_statistics(cell_counter: &HashMap<String, Vec<u64>>, sample_na
   */
   file_name = format!("{}_hash_reads_per_cell.txt", key);
   path = Path::new(&file_name);
-  file = File::create(path).expect(&format!("unable to open file {}", file_name));
+  file = File::create(path).with_context(|| format!("unable to open file {}", file_name))?;
   writer = BufWriter::new(file);
   for cell_name in cell_counter.keys() {
-    writeln!(writer, "{}\t{}\t{}", sample_name, cell_name, cell_counter[cell_name][0]).expect("bad status: writeln!");
+    writeln!(writer, "{}\t{}\t{}", sample_name, cell_name, cell_counter[cell_name][0]).context("bad status: writeln!")?;
   }
   let _ = writer.flush();
   std::mem::drop(writer);
@@ -428,10 +436,10 @@ fn write_per_cell_statistics(cell_counter: &HashMap<String, Vec<u64>>, sample_na
   */
   file_name = format!("{}_hash_umis_per_cell.txt", key);
   path = Path::new(&file_name);
-  file = File::create(path).expect(&format!("unable to open file {}", file_name));
+  file = File::create(path).with_context(|| format!("unable to open file {}", file_name))?;
   writer = BufWriter::new(file);
   for cell_name in cell_counter.keys() {
-    writeln!(writer, "{}\t{}\t{}", sample_name, cell_name, cell_counter[cell_name][1]).expect("bad status: writeln!");
+    writeln!(writer, "{}\t{}\t{}", sample_name, cell_name, cell_counter[cell_name][1]).context("bad status: writeln!")?;
   }
   let _ = writer.flush();
   std::mem::drop(writer);
@@ -441,12 +449,12 @@ fn write_per_cell_statistics(cell_counter: &HashMap<String, Vec<u64>>, sample_na
   */
   file_name = format!("{}_hash_dup_per_cell.txt", key);
   path = Path::new(&file_name);
-  file = File::create(path).expect(&format!("unable to open file {}", file_name));
+  file = File::create(path).with_context(|| format!("unable to open file {}", file_name))?;
   writer = BufWriter::new(file);
-  let re = Regex::new(r"[.]?[0]+$").expect("bad status: unable to make regex.");
+  let re = Regex::new(r"[.]?[0]+$").context("bad status: unable to make regex.")?;
   for cell_name in cell_counter.keys() {
     if(cell_counter[cell_name][1] == cell_counter[cell_name][0]) {
-      writeln!(writer, "{}\t{}\t{}\t{}\t0", sample_name, cell_name, cell_counter[cell_name][1], cell_counter[cell_name][0]).expect("bad status: writeln!");
+      writeln!(writer, "{}\t{}\t{}\t{}\t0", sample_name, cell_name, cell_counter[cell_name][1], cell_counter[cell_name][0]).context("bad status: writeln!")?;
     }
     else {
       /*
@@ -455,7 +463,7 @@ fn write_per_cell_statistics(cell_counter: &HashMap<String, Vec<u64>>, sample_na
       let dup_rate: f64 = 100.0 as f64 * (1.0 as f64 - cell_counter[cell_name][1] as f64 / cell_counter[cell_name][0] as f64);
       let dup_rate_string = format!("{:.4}", dup_rate);
       let dup_rate_string_trimmed = re.replace_all(&dup_rate_string, "");
-      writeln!(writer, "{}\t{}\t{}\t{}\t{}", sample_name, cell_name, cell_counter[cell_name][1], cell_counter[cell_name][0], dup_rate_string_trimmed).expect("bad status: writeln!");
+      writeln!(writer, "{}\t{}\t{}\t{}\t{}", sample_name, cell_name, cell_counter[cell_name][1], cell_counter[cell_name][0], dup_rate_string_trimmed).context("bad status: writeln!")?;
     }
   }
   let _ = writer.flush();
@@ -465,7 +473,7 @@ fn write_per_cell_statistics(cell_counter: &HashMap<String, Vec<u64>>, sample_na
 }
 
 
-fn make_hash_assignment_table(cells: &HashSet<String>, hashdict: &HashMap<String, HashMap<String, HashMap<String, u64>>>) -> Result<HashMap<String, HashMap<String, u64>>, Box<dyn std::error::Error>> {
+fn make_hash_assignment_table(cells: &HashSet<String>, hashdict: &HashMap<String, HashMap<String, HashMap<String, u64>>>) -> Result<HashMap<String, HashMap<String, u64>>> {
 
   /*
   ** Check hashdict cell count.
@@ -480,7 +488,7 @@ fn make_hash_assignment_table(cells: &HashSet<String>, hashdict: &HashMap<String
   }
 
   if(cells.len() != cell_name_set.len()) {
-    panic!("Error: inconsistent cell counts.");
+    bail!("Error: inconsistent cell counts.");
   }
 
   /*
@@ -503,7 +511,7 @@ fn make_hash_assignment_table(cells: &HashSet<String>, hashdict: &HashMap<String
     for cell_name in hashdict[hash_seq].keys() {
       let hash_map = hash_counter.entry(cell_name.to_string()).or_insert_with(|| HashMap::new());
       let counter = hash_map.entry(hash_seq.to_string()).or_insert(0);
-      *counter += u64::try_from(hashdict[hash_seq][cell_name].len()).expect("bad status: unable to convert usize to u64.");
+      *counter += u64::try_from(hashdict[hash_seq][cell_name].len()).context("bad status: unable to convert usize to u64.")?;
     }
   }
 
@@ -511,19 +519,19 @@ fn make_hash_assignment_table(cells: &HashSet<String>, hashdict: &HashMap<String
 }
 
 
-fn write_hash_assignment_table(hash_lookup: &HashMap<String, String>, hash_counter: &HashMap<String, HashMap<String, u64>>, sample_name: &String, key: &String) -> Result<(), std::io::Error> {
+fn write_hash_assignment_table(hash_lookup: &HashMap<String, String>, hash_counter: &HashMap<String, HashMap<String, u64>>, sample_name: &String, key: &String) -> Result<()> {
 
   /*
   ** Write hash assignment table.
   */
   let file_name = format!("{}_hash_assigned_table.txt", key);
   let path = Path::new(&file_name);
-  let file = File::create(path).expect(&format!("unable to open file {}", file_name));
+  let file = File::create(path).with_context(|| format!("unable to open file {}", file_name))?;
   let mut writer = BufWriter::new(file);
   for cell_name in hash_counter.keys() {
     for hash_seq in hash_counter[cell_name].keys() {
       let hash_name = &hash_lookup[hash_seq];
-      let _ = writeln!(writer, "{}\t{}\t{}\t{}", sample_name, cell_name, hash_name, hash_counter[cell_name][hash_seq]).expect("bad status: write hash assignment table.");
+      let _ = writeln!(writer, "{}\t{}\t{}\t{}", sample_name, cell_name, hash_name, hash_counter[cell_name][hash_seq]).context("bad status: write hash assignment table.")?;
     }
   }
   let _ = writer.flush();
@@ -534,6 +542,18 @@ fn write_hash_assignment_table(hash_lookup: &HashMap<String, String>, hash_count
 
 
 #[allow(dead_code)]
+fn dump_nested_maps(map: &HashMap<String, HashMap<String, HashMap<String, usize>>>) {
+  for (key1, map2) in map {
+    for (key2, map3) in map2 {
+      for key3 in map3.keys() {
+          println!("table: key1: {}  key2: {}  key3: {}", key1, key2, key3);
+      }
+    }
+  }
+}
+
+
+/*
 fn dump_nested_maps(map: &mut HashMap<String, HashMap<String, HashMap<String, usize>>>) {
   for key1 in map.keys() {
     for key2 in map.get(key1).unwrap().keys() {
@@ -543,6 +563,7 @@ fn dump_nested_maps(map: &mut HashMap<String, HashMap<String, HashMap<String, us
     }
   }
 }
+*/
 
 
 /// Find RNA-seq hash reads in a bam file and write counts as a Matrix Market file.
@@ -557,29 +578,38 @@ fn dump_nested_maps(map: &mut HashMap<String, HashMap<String, HashMap<String, us
 ///
 /// Nothing.
 ///
-fn main() {
+fn main() -> Result<()> {
   /*
   ** Process command line options.
   */
-  let cl_options = set_cl_options().unwrap();
+  let cl_options = set_cl_options()?;
   let cl_arg = cl_options.get_matches();
 
   /*
   ** Gather command like argument values for convenience.
   */
-  let sample_name: String = cl_arg.get_one::<String>("sample_name").unwrap().to_string();
-  let hash_sheet: String = cl_arg.get_one::<String>("hash_sheet").unwrap().to_string();
-  let bam_filenames: Vec<_> = cl_arg.get_many::<String>("bam").unwrap().collect();
-  let hash_edit_distance: usize = *cl_arg.get_one::<usize>("hash_edit_distance").unwrap();
-  let key: String = cl_arg.get_one::<String>("key").unwrap().to_string();
-  let num_threads: usize = cl_arg.get_one::<usize>("number_bam_threads").unwrap().clone();
+  let sample_name: String = cl_arg.get_one::<String>("sample_name").ok_or_else(|| anyhow!("Error: no sample_name argument"))?.to_string();
+  let hash_sheet: String = cl_arg.get_one::<String>("hash_sheet").ok_or_else(|| anyhow!("Error: no hash_sheet argument"))?.to_string();
+  let bam_filenames: Vec<_> = cl_arg.get_many::<String>("bam").ok_or_else(|| anyhow!("Error: no bam argument"))?.collect();
+  let hash_edit_distance: usize = *cl_arg.get_one::<usize>("hash_edit_distance").ok_or_else(|| anyhow!("Error: no no hash_edit_distance argument"))?;
+  let key: String = cl_arg.get_one::<String>("key").ok_or_else(|| anyhow!("Error: no key argument"))?.to_string();
+  let num_threads: usize = cl_arg.get_one::<usize>("number_bam_threads").ok_or_else(|| anyhow!("Error: no number_bam_threads argument"))?.clone();
 
   /*
   ** Set up hash whitelist map.
   */
-  let hash_lookup = barcode_utils::read_barcode_file(&hash_sheet).unwrap();
+  let barcode_df: DataFrame = barcode_utils::read_hashseq_file(&hash_sheet)?;
+  let hash_lookup: HashMap<String, String> = barcode_utils::make_hashseq_hashmap(&barcode_df)?;
+  let hashnames_hashmap: HashMap<String, String> = barcode_utils::make_hashnames_hashmap(&barcode_df)?;
   let barcodes: Vec<String> = hash_lookup.keys().cloned().collect();
-  let hash_whitelist: Vec<HashMap<String, String>> = barcode_utils::construct_mismatch_to_whitelist_map(barcodes, hash_edit_distance, true).unwrap();
+  let hash_whitelist: Vec<HashMap<String, String>> = barcode_utils::construct_mismatch_to_whitelist_map(barcodes, hash_edit_distance, true)?;
+
+  /*
+  ** Write hashname to hashseq map TSV file.
+  */
+  let hashseq_map_filename: String = format!("{}_hash_hashseq_map.tsv", sample_name.clone());
+  barcode_utils::write_hashseq_map_file(&barcode_df, &hashseq_map_filename).with_context(|| format!("unable to write hashseq_map_file '{}'", hashseq_map_filename))?;
+
 
   /*
   ** Initialize counters...
@@ -621,9 +651,9 @@ fn main() {
   ** process the bam file(s).
   */
   for bam_filename in bam_filenames {
-    let mut bam_reader = rust_htslib::bam::Reader::from_path(&bam_filename).expect("Error: unable to open BAM file");
-    bam_reader.set_threads(num_threads).expect("Error: unable to set number of threads for BAM file reading");
-    let _ = process_bam_file(hash_edit_distance, &hash_whitelist, &mut cells, &mut read_counts, &mut hash_counts, &mut hashdict, &mut bam_reader, &mut num_hash, &hash_lookup).expect("Error: bad status: process_bam_file.");
+    let mut bam_reader = rust_htslib::bam::Reader::from_path(&bam_filename).context("Error: unable to open BAM file")?;
+    bam_reader.set_threads(num_threads).context("Error: unable to set number of threads for BAM file reading")?;
+    let _ = process_bam_file(hash_edit_distance, &hash_whitelist, &mut cells, &mut read_counts, &mut hash_counts, &mut hashdict, &mut bam_reader, &mut num_hash, &hash_lookup).context("Error: bad status: process_bam_file.")?;
   }
 
   // dump_nested_maps(&mut hashdict);
@@ -631,52 +661,52 @@ fn main() {
   /*
   ** Make a sparse, CSC, matrix from hashdict.
   */
-  let (row_names, col_names, smat) = make_sparse_matrix(&cells, &hash_lookup, &hashdict).unwrap();
+  let (row_names, col_names, smat) = make_sparse_matrix(&cells, &hash_lookup, &hashdict)?;
 
   /*
   ** Write matrix.
   ** Note: row_names and col_names were moved and dropped internally.
   */
-  let _ = write_matrix(&key, row_names, col_names, &smat).expect("Error: bad status: write_matrix");
+  let _ = write_matrix(&key, row_names, col_names, &smat, &hashnames_hashmap).context("Error: bad status: write_matrix")?;
   drop(smat);
 
   /*
   ** Write hash combined file.
-  let _ = write_hash_combined(&hashdict, &hash_lookup, &sample_name, &key).expect("bad status: write_hash_combined");
+  let _ = write_hash_combined(&hashdict, &hash_lookup, &sample_name, &key).context("bad status: write_hash_combined")?;
   */
 
   /*
   ** Make per-cell statistics.
   */
-  let cell_counter: HashMap<String, Vec<u64>> = make_per_cell_statistics(&cells, &hashdict).expect("bad status: make_per_cell_statistics");
+  let cell_counter: HashMap<String, Vec<u64>> = make_per_cell_statistics(&cells, &hashdict).context("bad status: make_per_cell_statistics")?;
 
   /*
   ** Write per-cell statistics.
   */
-  let _ = write_per_cell_statistics(&cell_counter, &sample_name, &key).expect("bad status: write_per_cell_statistics");
+  let _ = write_per_cell_statistics(&cell_counter, &sample_name, &key).context("bad status: write_per_cell_statistics")?;
   drop(cell_counter);
 
   /*
   ** Make hash assignment table.
   */
-  let hash_counter: HashMap<String, HashMap<String, u64>> = make_hash_assignment_table(&cells, &hashdict).expect("bad status: make_hash_assignment_table.");
+  let hash_counter: HashMap<String, HashMap<String, u64>> = make_hash_assignment_table(&cells, &hashdict).context("bad status: make_hash_assignment_table.")?;
 
   /*
   ** Write hash assignment table.
   */
-  let _ = write_hash_assignment_table(&hash_lookup, &hash_counter, &sample_name, &key).expect("bad status: write_hash_assignment_table.");
+  let _ = write_hash_assignment_table(&hash_lookup, &hash_counter, &sample_name, &key).context("bad status: write_hash_assignment_table.")?;
 
   /*
   ** Write log file.
   */
   let file_name = format!("{}_hash.log", key);
   let path = Path::new(&file_name);
-  let file = File::create(path).expect(&format!("unable to open file {}", file_name));
+  let file = File::create(path).with_context(|| format!("unable to open file {}", file_name))?;
   let mut writer = BufWriter::new(file);
   for i_dist in (0..hash_edit_distance+1) {
-    writeln!(writer, "Hash UMIs detected with {} correction: {}", i_dist, hash_counts[i_dist]).expect("error writing log file");
+    writeln!(writer, "Hash UMIs detected with {} correction: {}", i_dist, hash_counts[i_dist]).context("error writing log file")?;
   }
-  writeln!(writer, "Read_counts: {} {} {:.4}", read_counts[0], read_counts[1], read_counts[1] as f64 / read_counts[0] as f64).expect("error writing log file");
+  writeln!(writer, "Read_counts: {} {} {:.4}", read_counts[0], read_counts[1], read_counts[1] as f64 / read_counts[0] as f64).context("error writing log file")?;
   let _ = writer.flush();
 
   /*

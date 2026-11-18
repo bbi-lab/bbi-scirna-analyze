@@ -13,6 +13,7 @@ process process_hashes {
   errorStrategy 'retry'
   maxRetries 2
 
+  publishDir path: { "${params.output_dir }/analyze_out/${sample_name}" }, pattern: "*_hash_hashseq_map.tsv", mode: 'copy'
   publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
@@ -26,6 +27,7 @@ process process_hashes {
   tuple val(sample_name), path("*_hash_dup_per_cell.txt"), emit: 'hash_dup_per_cell'
   tuple val(sample_name), path("*_hash_reads_per_cell.txt"), emit: 'hash_reads_per_cell'
   tuple val(sample_name), path("*_hash_assigned_table.txt"), emit: 'hash_assigned_table'
+  tuple val(sample_name), path("*_hash_hashseq_map.tsv"), emit: 'hash_hashseq_map'
   tuple val(sample_name), path("*_hash.log"), emit: 'hash_log'
   path("version.json"), emit: 'version'
 
@@ -227,8 +229,7 @@ process assign_hash_raw {
   publishDir path: { "${params.raw_log_dir}/${task.process}/${task.index}" }, mode: 'copy', pattern: 'version.json'
 
   input:
-  tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(counts_per_cell), path(mobs), path(umi_counts)
-  path(sample_maps)
+  tuple val(sample_name), path(hashumis_mtx), path(hashumis_cells_txt), path(hashumis_hashes_txt), path(hash_hashseq_map), path(counts_per_cell), path(mobs), path(umi_counts)
 
   output:
   path("*hash_table.raw.csv"), emit: hash_table
@@ -257,11 +258,10 @@ process assign_hash_raw {
     tmp_dir/${mobs} \
     ${counts_per_cell} \
     ${params.hash_umi_cutoff} \
-    ${params.hash_ratio}"
+    ${params.hash_ratio} \
+    ${hash_hashseq_map}"
      ]
   ], task.process, "${task.index}", "${task.container}", "${nextflow.version}", "${params.version}", sample_name)}
-
-  get_sample_hash_filename.py -s ${sample_name} -i ${sample_maps} -o hash_map_file.tsv
 
   mkdir tmp_dir
   mv ${mobs} tmp_dir
@@ -276,7 +276,7 @@ process assign_hash_raw {
     ${counts_per_cell} \
     ${params.hash_umi_cutoff} \
     ${params.hash_ratio} \
-    hash_map_file.tsv
+    ${hash_hashseq_map}
 
   write_col_data.R ${sample_name}_hash_cds.raw.mobs ${sample_name}_hash_cds.raw.col_data.tsv
 
