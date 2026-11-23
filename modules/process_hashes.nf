@@ -148,7 +148,9 @@ process cat_hashes {
   #
   # Calculate hash read rate.
   #
-  grep '^Read_counts' ${sample_name}_hash.log | awk 'BEGIN{sum_reads=0; sum_hashes=0}{sum_reads+=\$2; sum_hashes+=\$3}END{printf(\"Total reads: %d\\nHash reads: %d\\nHash rate: %.4f\\n\", sum_reads, sum_hashes, sum_hashes/sum_reads);}' > ${sample_name}_hash_read_rate.txt
+  awk 'BEGIN{sum_reads=0; sum_hashes=0}/^Read_counts/{sum_reads+=\$2; sum_hashes+=\$3}END{rate=(sum_reads > 0) ? sum_hashes/sum_reads : 0; printf(\"Total reads: %d\\nHash reads: %d\\nHash rate: %.4f\\n\", sum_reads, sum_hashes, rate);}' ${sample_name}_hash.log > ${sample_name}_hash_read_rate.txt
+
+  #grep '^Read_counts' ${sample_name}_hash.log | awk 'BEGIN{sum_reads=0; sum_hashes=0}{sum_reads+=\$2; sum_hashes+=\$3}END{printf(\"Total reads: %d\\nHash reads: %d\\nHash rate: %.4f\\n\", sum_reads, sum_hashes, sum_hashes/sum_reads);}' > ${sample_name}_hash_read_rate.txt
 
   """
 }

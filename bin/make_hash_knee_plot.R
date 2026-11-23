@@ -13,16 +13,33 @@ parser$add_argument('sample_name', help='Sample name')
 parser$add_argument('--version', action = 'version', version = paste('make_hash_knee_plot', '0.1.0'))
 args = parser$parse_args()
 
-df = read.table(
-    args$hash_umi,
-    col.names = c("sample", "barcode", "n.umi"),
-    colClasses = c("factor", "character", "integer"))
 
-# df = data.frame(args$hash_umi)
-# colnames(df) <- c("sample", "barcode", "n.umi")
-# colClasses(df) <- c("factor", "character", "integer")
+#
+# The file is empty when the sample has no hash UMIs, and read.table()
+# stops on an empty file, so use an empty data frame in that case.
+#
+if (file.size(args$hash_umi) == 0) {
+    df = data.frame(sample = factor(), barcode = character(), n.umi = integer())
+} else {
+    df = read.table(
+        args$hash_umi,
+        col.names = c("sample", "barcode", "n.umi"),
+        colClasses = c("factor", "character", "integer"))
+}
 
 df = df %>% group_by(sample) %>% mutate(n.umi.rank = min_rank(-n.umi)) %>% ungroup()
+
+
+# df = read.table(
+#      args$hash_umi,
+#      col.names = c("sample", "barcode", "n.umi"),
+#      colClasses = c("factor", "character", "integer"))
+# 
+# # df = data.frame(args$hash_umi)
+# # colnames(df) <- c("sample", "barcode", "n.umi")
+# # colClasses(df) <- c("factor", "character", "integer")
+# 
+# df = df %>% group_by(sample) %>% mutate(n.umi.rank = min_rank(-n.umi)) %>% ungroup()
 
 
 if (dim(df)[1] != 0) {   

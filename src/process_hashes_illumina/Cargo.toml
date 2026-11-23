@@ -1,6 +1,6 @@
 [package]
 name = "process_hashes_illumina"
-version = "0.5.4"
+version = "0.5.6"
 edition = "2021"
 
 [dependencies]

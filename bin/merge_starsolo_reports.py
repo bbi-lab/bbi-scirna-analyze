@@ -108,22 +108,42 @@ def read_features_file(filename):
   return(features_dict)
 
 
-# from https://stackoverflow.com/questions/46647744/checking-to-see-if-a-string-is-an-integer-or-float: Rafe
-re_int = re.compile(r"(^[1-9]+\d*$|^0$)")
-re_float = re.compile(r"(^\d+\.\d+$|^\.\d+$)")
+def parse_value(text):
+  try:
+    return(int(text))
+  except ValueError:
+    pass
+  try:
+    return(float(text))    # also handles 4.2e-05, nan, -nan, inf
+  except ValueError:
+    return(text)
+
 
 def read_summary_file(filename):
   with open(filename, 'r', newline='') as ifh:
     summary_dict = dict()
     csv_reader = csv.reader(ifh, dialect='excel')
     for row in csv_reader:
-      if(re_int.match(row[1])):
-        summary_dict[row[0]] = int(row[1])
-      elif(re_float.match(row[1])):
-        summary_dict[row[0]] = float(row[1])
-      else:
-        summary_dict[row[0]] = row[1]
+      summary_dict[row[0]] = parse_value(row[1])
   return(summary_dict)
+
+
+# # from https://stackoverflow.com/questions/46647744/checking-to-see-if-a-string-is-an-integer-or-float: Rafe
+# re_int = re.compile(r"(^[1-9]+\d*$|^0$)")
+# re_float = re.compile(r"(^\d+\.\d+$|^\.\d+$)")
+# 
+# def read_summary_file(filename):
+#   with open(filename, 'r', newline='') as ifh:
+#     summary_dict = dict()
+#     csv_reader = csv.reader(ifh, dialect='excel')
+#     for row in csv_reader:
+#       if(re_int.match(row[1])):
+#         summary_dict[row[0]] = int(row[1])
+#       elif(re_float.match(row[1])):
+#         summary_dict[row[0]] = float(row[1])
+#       else:
+#         summary_dict[row[0]] = row[1]
+#   return(summary_dict)
 
 
 # Features.stats
@@ -164,11 +184,17 @@ def read_summary_file(filename):
 
 
 def float_test(obj):
-  if(isinstance(obj, str)):
+  if(not isinstance(obj, (int, float))):
     return(False)
-  elif(math.isnan(obj)):
-    return(False)
-  return(True)
+  return(math.isfinite(obj))
+
+
+# def float_test(obj):
+#   if(isinstance(obj, str)):
+#     return(False)
+#   elif(math.isnan(obj)):
+#     return(False)
+#   return(True)
 
 
 def make_stats_bundle(starsolo_path, features, summary):
@@ -199,7 +225,10 @@ def make_stats_bundle(starsolo_path, features, summary):
     elif(key == 'Unique Reads in Cells Mapped to GeneFull_Ex50pAS'):
       counts_dict[key] = int(summary[key])
     elif(key == 'Fraction of Unique Reads in Cells'):
-      counts_dict[key] = int(float(summary[key]) * counts_dict['Reads Mapped to GeneFull_Ex50pAS: Unique GeneFull_Ex50pAS']) if float_test(summary[key]) else summary[key]
+      unique_reads = counts_dict.get('Reads Mapped to GeneFull_Ex50pAS: Unique GeneFull_Ex50pAS')
+      counts_dict[key] = int(float(summary[key]) * unique_reads) if(float_test(summary[key]) and float_test(unique_reads)) else summary[key]
+
+#      counts_dict[key] = int(float(summary[key]) * counts_dict['Reads Mapped to GeneFull_Ex50pAS: Unique GeneFull_Ex50pAS']) if float_test(summary[key]) else summary[key]
     elif(key == 'Mean Reads per Cell'):
       continue
     elif(key == 'Median Reads per Cell'):
@@ -260,6 +289,12 @@ def merge_stats_bundle_dicts(stats_bundle_dict):
   return(stats_bundles_merged)
 
 
+def format_ratio(numerator, denominator):
+  if(denominator == 0):
+    return('NA')
+  return('%.3f' % (float(numerator) / float(denominator)))
+
+
 def write_report(stats_bundle_merged, samplename):
   #
   # Report Features.stats.
@@ -283,29 +318,52 @@ def write_report(stats_bundle_merged, samplename):
   #
   # Report summary.csv values.
   #
-  num_read = 0
-  for key in stats_bundle_merged.keys():
-    if(key == 'Number of Reads'):
-      num_read = stats_bundle_merged[key]
+  num_read = stats_bundle_merged.get('Number of Reads', 0)
+  # num_read = 0
+  if(num_read == 0):
+    print('Warning: merge_starsolo_reports.py: no reads in any input for sample \'%s\'.' % (samplename), file=sys.stderr)
 
   filename = '%s_Summary.txt' % (samplename)
   with open(filename, 'w') as ofh:
     print(file=ofh)
     sep = '\t'
     key = 'Number of Reads'
-    print('%s%s%d' % (key, sep, int(stats_bundle_merged[key])), file=ofh)
+    print('%s%s%d' % (key, sep, int(num_read)), file=ofh)
     key = 'Reads With Valid Barcodes'
-    print('%s%s%.3f' % (key, sep, float(stats_bundle_merged[key]) / float(num_read)), file=ofh)
+    print('%s%s%s' % (key, sep, format_ratio(stats_bundle_merged.get(key, 0), num_read)), file=ofh)
     key = 'Sequencing Saturation'
-    print('%s%s%.3f' % (key, sep, 1.0 - float(stats_bundle_merged['yesUMIs']) / float(stats_bundle_merged['yessubWLmatch_UniqueFeature'])), file=ofh)
-    key = 'Reads Mapped to Genome: Unique+Multiple'
-    print('%s%s%.3f' % (key, sep, float(stats_bundle_merged[key]) / float(num_read)), file=ofh)
-    key = 'Reads Mapped to Genome: Unique'
-    print('%s%s%.3f' % (key, sep, float(stats_bundle_merged[key]) / float(num_read)), file=ofh)
-    key = 'Reads Mapped to GeneFull_Ex50pAS: Unique+Multiple GeneFull_Ex50pAS'
-    print('%s%s%.3f' % (key, sep, float(stats_bundle_merged[key]) / float(num_read)), file=ofh)
-    key = 'Reads Mapped to GeneFull_Ex50pAS: Unique GeneFull_Ex50pAS'
-    print('%s%s%.3f' % (key, sep, float(stats_bundle_merged[key]) / float(num_read)), file=ofh)
+    unique_feature = stats_bundle_merged.get('yessubWLmatch_UniqueFeature', 0)
+    saturation = '%.3f' % (1.0 - float(stats_bundle_merged.get('yesUMIs', 0)) / float(unique_feature)) if(unique_feature > 0) else 'NA'
+    print('%s%s%s' % (key, sep, saturation), file=ofh)
+    for key in ['Reads Mapped to Genome: Unique+Multiple',
+                'Reads Mapped to Genome: Unique',
+                'Reads Mapped to GeneFull_Ex50pAS: Unique+Multiple GeneFull_Ex50pAS',
+                'Reads Mapped to GeneFull_Ex50pAS: Unique GeneFull_Ex50pAS']:
+      print('%s%s%s' % (key, sep, format_ratio(stats_bundle_merged.get(key, 0), num_read)), file=ofh)
+
+
+#   for key in stats_bundle_merged.keys():
+#     if(key == 'Number of Reads'):
+#       num_read = stats_bundle_merged[key]
+# 
+#   filename = '%s_Summary.txt' % (samplename)
+#   with open(filename, 'w') as ofh:
+#     print(file=ofh)
+#     sep = '\t'
+#     key = 'Number of Reads'
+#     print('%s%s%d' % (key, sep, int(stats_bundle_merged[key])), file=ofh)
+#     key = 'Reads With Valid Barcodes'
+#     print('%s%s%.3f' % (key, sep, float(stats_bundle_merged[key]) / float(num_read)), file=ofh)
+#     key = 'Sequencing Saturation'
+#     print('%s%s%.3f' % (key, sep, 1.0 - float(stats_bundle_merged['yesUMIs']) / float(stats_bundle_merged['yessubWLmatch_UniqueFeature'])), file=ofh)
+#     key = 'Reads Mapped to Genome: Unique+Multiple'
+#     print('%s%s%.3f' % (key, sep, float(stats_bundle_merged[key]) / float(num_read)), file=ofh)
+#     key = 'Reads Mapped to Genome: Unique'
+#     print('%s%s%.3f' % (key, sep, float(stats_bundle_merged[key]) / float(num_read)), file=ofh)
+#     key = 'Reads Mapped to GeneFull_Ex50pAS: Unique+Multiple GeneFull_Ex50pAS'
+#     print('%s%s%.3f' % (key, sep, float(stats_bundle_merged[key]) / float(num_read)), file=ofh)
+#     key = 'Reads Mapped to GeneFull_Ex50pAS: Unique GeneFull_Ex50pAS'
+#     print('%s%s%.3f' % (key, sep, float(stats_bundle_merged[key]) / float(num_read)), file=ofh)
 
 #
 # The following are calculated using the filtered data.

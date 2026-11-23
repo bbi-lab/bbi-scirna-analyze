@@ -12,10 +12,10 @@ echo "Make sample_maps.json"
 ../bin/make_sample_map_json.py -s ${samplesheet_json} -g ../bin/genomes_data.json
 
 echo "Make merge_demux.json file using a dummy BAM file path called '.'."
-../bin/make_merge_demux_json.py -i ${samplesheet_json} -p .
+../bin/make_merge_demux_json.py -i ${samplesheet_json} -p dummy
 
 echo "Make merge_align.json file."
-../bin/make_merge_align_json.py -i ${samplesheet_json}
+../bin/make_merge_align_json.py -i ${samplesheet_json} -p Illumina
 
 echo "Make star_align.json file."
-../bin/make_star_align_json.py -i ${samplesheet_json}
+../bin/make_star_align_json.py -i ${samplesheet_json} -p Illumina

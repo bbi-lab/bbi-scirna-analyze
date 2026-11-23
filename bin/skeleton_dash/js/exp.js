@@ -282,7 +282,7 @@ function CodeChunk(props) {
     React.createElement(
       "code",
       null,
-      '\n' + props.text + '\n\n'
+      '\n' + (props.text || 'No log data available for this sample.') + '\n\n'
     )
   );
 }
@@ -496,6 +496,13 @@ function SamplePill(props) {
 
 var tableData = Object.values(run_data['sample_stats']);
 
+function compareRates(x, y, direction) {
+  var fx = parseFloat(x);
+  var fy = parseFloat(y);
+  if (isNaN(fx) || isNaN(fy)) return isNaN(fx) - isNaN(fy);
+  return direction * (fx - fy);
+}
+
 var sortTypes = {
   reads_up: {
     class: 'sort-up',
@@ -628,26 +635,26 @@ var sortTypes = {
   hash_read_rate_up: {
     class: 'sort-up',
     fn: function fn(a, b) {
-      return b.Hash_Read_Rate - a.Hash_Read_Rate;
+      return compareRates(a.Hash_Read_Rate, b.Hash_Read_Rate, -1);
     }
   },
   hash_read_rate_down: {
     class: 'sort-down',
     fn: function fn(a, b) {
-      return a.Hash_Read_Rate - b.Hash_Read_Rate;
+      return compareRates(a.Hash_Read_Rate, b.Hash_Read_Rate, 1);
     }
   },
 
   hash_match_rate_up: {
     class: 'sort-up',
     fn: function fn(a, b) {
-      return b.Hash_Match_Rate - a.Hash_Match_Rate;
+      return compareRates(a.Hash_Match_Rate, b.Hash_Match_Rate, -1);
     }
   },
   hash_match_rate_down: {
     class: 'sort-down',
     fn: function fn(a, b) {
-      return a.Hash_Match_Rate - b.Hash_Match_Rate;
+      return compareRates(a.Hash_Match_Rate, b.Hash_Match_Rate, 1);
     }
   },
 
@@ -761,6 +768,24 @@ var Table = function (_React$Component) {
       var nextSort = void 0;
 
       if (currentSort === 'cfdr_p01_down') nextSort = 'cfdr_p01_up';else if (currentSort === 'cfdr_p01_up') nextSort = 'cfdr_p01_down';else nextSort = 'cfdr_p01_up';
+      _this.setState({
+        currentSort: nextSort
+      });
+    }, _this.onSorthash_read_rate = function () {
+      var currentSort = _this.state.currentSort;
+
+      var nextSort = void 0;
+
+      if (currentSort === 'hash_read_rate_down') nextSort = 'hash_read_rate_up';else if (currentSort === 'hash_read_rate_up') nextSort = 'hash_read_rate_down';else nextSort = 'hash_read_rate_up';
+      _this.setState({
+        currentSort: nextSort
+      });
+    }, _this.onSorthash_match_rate = function () {
+      var currentSort = _this.state.currentSort;
+
+      var nextSort = void 0;
+
+      if (currentSort === 'hash_match_rate_down') nextSort = 'hash_match_rate_up';else if (currentSort === 'hash_match_rate_up') nextSort = 'hash_match_rate_down';else nextSort = 'hash_match_rate_up';
       _this.setState({
         currentSort: nextSort
       });

@@ -126,6 +126,26 @@ fn main() {
   let mito_set = make_mito_set().unwrap();
 
   /*
+  ** Flag each feature as mitochondrial or not. Features missing from
+  ** the annotations file, for example when the annotations and the
+  ** STAR index come from different genome versions, are counted as
+  ** non-mitochondrial and reported.
+  */
+  let mut missing_features: Vec<&String> = Vec::new();
+  let feature_mito_flags: Vec<bool> = feature_names.iter().map(|gene_name| {
+    match gene_chr_map.get(gene_name) {
+      Some(gene_chr) => mito_set.contains(gene_chr),
+      None => { missing_features.push(gene_name); false }
+    }
+  }).collect();
+
+  if(!missing_features.is_empty()) {
+    eprintln!("Warning: mito_umis: {} of {} features are not in the annotations file '{}' and are counted as non-mitochondrial; for example: {}",
+              missing_features.len(), feature_names.len(), annotation_path,
+              missing_features.iter().take(5).map(|s| s.as_str()).collect::<Vec<&str>>().join(", "));
+  }
+
+  /*
   ** Make umi counts.
   */
   let mut nonmito_umi_counter: Vec<f64> = vec![0.0; num_col];
@@ -139,9 +159,15 @@ fn main() {
     let irow = irows[ielem];
     let icol = icols[ielem];
     let fval = fvals[ielem];
+
+    let mito_flag = feature_mito_flags[irow];
+
+/*
     let gene_name = &feature_names[irow];
     let gene_chr  = &gene_chr_map[gene_name];
     let mito_flag = mito_set.contains(gene_chr);
+*/
+
     if(!mito_flag) {
       nonmito_umi_counter[icol] += fval;
     }

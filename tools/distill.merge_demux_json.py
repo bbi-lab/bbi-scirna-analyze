@@ -22,7 +22,7 @@ import re
 import os.path
 
 
-pobj = re.compile(r'L([0-9])+')
+pobj = re.compile(r'L([0-9]+)')
 
 
 #

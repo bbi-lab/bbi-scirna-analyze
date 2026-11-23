@@ -40,9 +40,6 @@ process trim_bams {
   #
   # Skip empty BAM files.
   #
-  # Using head sets the pipefail error: 141 so
-  # remove the shell test for pipefail.
-  #
   nread=`samtools head -h 0 -n 10 ${bam_in} | wc -l`
   if [ "\${nread}" == "0" ]
   then
@@ -59,16 +56,7 @@ process trim_bams {
 
   mv ${root_file}.merged_trimmed.bam ${out_file}
   mv ${root_file}.merged.bam_trimming_report.txt ${root_file}.trimming_report.txt
-
-  nread=`samtools head -h 0 -n 10 ${out_file} | awk '{print\$1}'`
-  if [ "\${nread}" == "0" ]
-  then
-    cp ${bam_in} ${out_file}
-    touch ${root_file}.trimming_report.txt
-    exit 0
-  fi
   """
-
 }
 
 

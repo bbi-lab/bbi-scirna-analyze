@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
+import os
 import re
 import argparse
 import json
@@ -205,12 +206,15 @@ def make_sample_stats_dict(sample_name_list, cellread_statistics_dict, umi_cell_
     if(hash_read_rate_dict.get(sample_name)):
       if(sequencing_platform == 'Ultima'):
         if(hash_read_rate_dict.get(sample_name)):
-          hash_read_rate  = float(hash_read_rate_dict[sample_name]['hash_reads']) / (float(hash_read_rate_dict[sample_name]['total_reads']) + float(starsolo_summary_dict[sample_name]['number_of_reads']))
+          denominator = float(hash_read_rate_dict[sample_name]['total_reads']) + float(starsolo_summary_dict[sample_name]['number_of_reads'])
+          hash_read_rate  = float(hash_read_rate_dict[sample_name]['hash_reads']) / denominator if(denominator > 0) else 0.0
+
+#          hash_read_rate  = float(hash_read_rate_dict[sample_name]['hash_reads']) / (float(hash_read_rate_dict[sample_name]['total_reads']) + float(starsolo_summary_dict[sample_name]['number_of_reads']))
           hash_match_rate = float(hash_read_rate_dict[sample_name]['hash_rate'])
       elif(sequencing_platform == 'Illumina'):
         hash_read_rate = hash_read_rate_dict[sample_name]['hash_rate']
       else:
-        print('Error: unrecognized sequencing_platform name \'s\'' % (sequencing_platform), file=sys.stderr)
+        print('Error: unrecognized sequencing_platform name \'%s\'' % (sequencing_platform), file=sys.stderr)
         sys.exit(1)
 
     if(median_umis > 0):
@@ -257,10 +261,21 @@ def make_run_data_dict(processing_directory, sample_name_list, sample_stats_dict
   barn_collision = None
   if(barnyard_sample_name != None):
     filename = '%s_barnyard_collision.txt' % (barnyard_sample_name)
-    with open(filename, 'r') as fp:
-      text_line = fp.readline()
-      if(len(text_line) > 0):
-        barn_collision = text_line
+    if(os.path.isfile(filename)):
+      with open(filename, 'r') as fp:
+        text_line = fp.readline().rstrip('\n')
+        if(len(text_line) > 0):
+          barn_collision = text_line.split('\t')[-1]
+    else:
+      print('Warning: make_exp_dash_data_js.py: missing file \'%s\'; omitting the Barnyard tab.' % (filename), file=sys.stderr)
+      barnyard_sample_name = None
+
+#  if(barnyard_sample_name != None):
+#    filename = '%s_barnyard_collision.txt' % (barnyard_sample_name)
+#    with open(filename, 'r') as fp:
+#      text_line = fp.readline()
+#      if(len(text_line) > 0):
+#        barn_collision = text_line
 
   #
   # Set up run_data_dict, which becomes the data.js file.

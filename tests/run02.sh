@@ -6,19 +6,19 @@ out_dir='test_jsons/'
 
 mkdir -p  ${out_dir}
 
-$HOME/git/bbi-scirna-analyze/bin/make_merge_demux_json.py -i ${samplesheet_json} -p '.'
+$HOME/git/bbi-scirna-analyze/bin/make_merge_demux_json.py -i ${samplesheet_json} -p dummy
 mv merge_demux.json ${out_dir}merge_demux${1}.json
 
-$HOME/git/bbi-scirna-analyze/bin/make_process_hashes_json.py -i ${samplesheet_json}
+$HOME/git/bbi-scirna-analyze/bin/make_process_hashes_json.py -i ${samplesheet_json} -p Illumina
 mv process_hashes.json ${out_dir}process_hashes${1}.json
 
 $HOME/git/bbi-scirna-analyze/bin/make_trim_bam_json.py -i ${samplesheet_json}
 mv trim_bam.json ${out_dir}trim_bam${1}.json
 
-$HOME/git/bbi-scirna-analyze/bin/make_star_align_json.py -i ${samplesheet_json}
+$HOME/git/bbi-scirna-analyze/bin/make_star_align_json.py -i ${samplesheet_json} -p Illumina
 mv star_align.json ${out_dir}star_align${1}.json
 
-$HOME/git/bbi-scirna-analyze/bin/make_merge_align_json.py -i ${samplesheet_json}
+$HOME/git/bbi-scirna-analyze/bin/make_merge_align_json.py -i ${samplesheet_json} -p Illumina
 mv merge_align.json ${out_dir}merge_align${1}.json
 
 $HOME/git/bbi-scirna-analyze/bin/make_umi_counts_json.py -i ${samplesheet_json}

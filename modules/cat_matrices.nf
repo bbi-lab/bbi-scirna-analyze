@@ -111,7 +111,7 @@ process cat_matrices_filtered {
   tuple val(sample_name), val(out_file), path('file')
 
   output:
-  tuple val(sample_name), path("*.cells.tsv"), path("*.features.tsv"), path("*.matrix.mtx"), path("*.cells.barcode_to_wells.tsv"), emit: filtered_matrix
+  tuple val(sample_name), path("*.cells.tsv"), path("*.features.tsv"), path("*.matrix.mtx"), emit: filtered_matrix
 
   script:
   """
@@ -140,8 +140,6 @@ process cat_matrices_filtered {
   then
     cat_sparse_matrix.py -i \$in_file_list -m 'matrix.mtx' -f 'features.tsv' -c 'barcodes.tsv' -o ${out_file}
   fi
-
-  barcode_to_well.py -i ${out_file}.cells.tsv -o ${out_file}.cells.barcode_to_wells.tsv
   """
 }
 

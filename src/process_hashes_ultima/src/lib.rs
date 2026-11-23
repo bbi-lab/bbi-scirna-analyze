@@ -71,6 +71,9 @@ pub mod barcode_utils {
       let mut rdr = ReaderBuilder::new()
           .delimiter(b'\t')
           .has_headers(false)
+          .trim(Trim::Fields)
+          .comment(Some(b'#'))
+          .quoting(false)
           .from_reader(file);
 
       // Pre-compile the regex for character replacement.
@@ -86,6 +89,11 @@ pub mod barcode_utils {
       // Iterate through the records and deserialize using Serde.
       for result in rdr.deserialize::<TsvRow>() {
           let record = result.with_context(|| "Failed to deserialize TSV row")?;
+
+          // Check for empty cells.
+          if(record.hash_name.is_empty() || record.oligo_sequence.is_empty()) {
+              bail!("empty hash name or oligo sequence in file '{}'", filename);
+          }
   
           // 1. Store original hash name
           hash_names.push(record.hash_name.clone());

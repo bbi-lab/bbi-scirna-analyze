@@ -70,6 +70,18 @@ fn set_cl_options() -> Result<clap::Command> {
 }
 
 
+/*
+** Flush a BufWriter and sync its file to disk so that write errors,
+** such as a full disk or exceeded NFS quota, are reported rather
+** than lost.
+*/
+fn finish_writer(writer: BufWriter<File>, file_name: &str) -> Result<()> {
+  let file = writer.into_inner().map_err(|e| e.into_error()).with_context(|| format!("error while flushing file {}", file_name))?;
+  file.sync_all().with_context(|| format!("error while closing file {}", file_name))?;
+  Ok(())
+}
+
+
 fn process_bam_file(hash_edit_distance: usize,
                     hash_whitelist: &Vec<HashMap<String, String>>,
                     cells: &mut HashSet<String>,
@@ -139,6 +151,9 @@ fn process_bam_file(hash_edit_distance: usize,
     */
     header_toks = header.split("|").collect();
     len_header_toks = header_toks.len();
+    if(len_header_toks < 4) {
+      bail!("unexpected read name format: '{}'", header);
+    }
     cell_barc = header_toks[2..len_header_toks-1].join("_");
     umi = header_toks[len_header_toks-1].to_string();
 
@@ -158,7 +173,7 @@ fn process_bam_file(hash_edit_distance: usize,
     ** Count hash reads.
     */
     let mut umi_new: usize = 0;
-    let _result = update_nested_maps(hashval, cell_barc, umi, hashdict, &mut umi_new);
+    update_nested_maps(hashval, cell_barc, umi, hashdict, &mut umi_new)?;
     if(umi_new != 0) {
       hash_counts[i_edit_distance] += 1;
     }
@@ -185,7 +200,7 @@ fn update_nested_maps(hash_key1: &String, hash_key2: String, hash_key3: String, 
   /*
   ** map1 key is hash barcode (hash_key1).
   */
-  let map2 = map1.get_mut(hash_key1).context("hash barcode not in hash_sheet file.")?;
+  let map2 = map1.get_mut(hash_key1).with_context(|| format!("hash barcode '{}' not in hash_sheet file.", hash_key1))?;
 
   /*
   ** map2 key is cell barcode (hash_key2).
@@ -310,7 +325,7 @@ fn write_matrix(key: &String, row_names: Vec<String>, col_names: Vec<String>, sm
   */
   file_name = format!("{}.hashumis.mtx", *key);
   path = Path::new(&file_name);
-  let _result = sprs::io::write_matrix_market(path, smat).with_context(|| format!("error while writing file {}", file_name))?;
+  sprs::io::write_matrix_market(path, smat).with_context(|| format!("error while writing file {}", file_name))?;
 
   /*
   ** Write row name file.
@@ -327,9 +342,9 @@ fn write_matrix(key: &String, row_names: Vec<String>, col_names: Vec<String>, sm
   path = Path::new(&file_name);
   file = File::create(path).with_context(|| format!("unable to open file {}", file_name))?;
   writer = BufWriter::new(file);
-  let _ = writer.write_all(row_names_edited.join("\n").as_bytes()).with_context(|| format!("error while writing file {}", file_name))?;
-  let _ = writer.flush();
-  std::mem::drop(writer);
+  writer.write_all(row_names_edited.join("\n").as_bytes()).with_context(|| format!("error while writing file {}", file_name))?;
+  // let _ = writer.flush();
+  finish_writer(writer, &file_name)?;
 
   /*
   ** Write column name file.
@@ -338,9 +353,9 @@ fn write_matrix(key: &String, row_names: Vec<String>, col_names: Vec<String>, sm
   path = Path::new(&file_name);
   file = File::create(path).with_context(|| format!("unable to open file {}", file_name))?;
   writer = BufWriter::new(file);
-  let _ = writer.write_all(col_names.join("\n").as_bytes()).with_context(|| format!("error while writing file {}", file_name))?;
-  let _ = writer.flush();
-  std::mem::drop(writer);
+  writer.write_all(col_names.join("\n").as_bytes()).with_context(|| format!("error while writing file {}", file_name))?;
+  // let _ = writer.flush();
+  finish_writer(writer, &file_name)?;
 
   Ok(())
 }
@@ -356,13 +371,14 @@ fn write_hash_combined(hashdict: &HashMap<String, HashMap<String, HashMap<String
     for cell_name in hashdict[hash_seq].keys() {
       for umi_seq in hashdict[hash_seq][cell_name].keys() {
 //        let _ = writeln!(writer, "{}\t{}\t{}\t{}", *sample_name, cell_name, umi_seq, hash_lookup[hash_seq]);
-        let _ = writeln!(writer, "{}\t{}\t{}\t{}\t{}", *sample_name, cell_name, umi_seq, hash_lookup[hash_seq], hashdict[hash_seq][cell_name][umi_seq]);
+//        let _ = writeln!(writer, "{}\t{}\t{}\t{}\t{}", *sample_name, cell_name, umi_seq, hash_lookup[hash_seq], hashdict[hash_seq][cell_name][umi_seq]);
+        writeln!(writer, "{}\t{}\t{}\t{}\t{}", *sample_name, cell_name, umi_seq, hash_lookup[hash_seq], hashdict[hash_seq][cell_name][umi_seq]).with_context(|| format!("error while writing file {}", file_name))?;
       }
     }
   }
 
-  let _ = writer.flush();
-  std::mem::drop(writer);
+  // let _ = writer.flush();
+  finish_writer(writer, &file_name)?;
 
   Ok(())
 }
@@ -428,8 +444,8 @@ fn write_per_cell_statistics(cell_counter: &HashMap<String, Vec<u64>>, sample_na
   for cell_name in cell_counter.keys() {
     writeln!(writer, "{}\t{}\t{}", sample_name, cell_name, cell_counter[cell_name][0]).context("bad status: writeln!")?;
   }
-  let _ = writer.flush();
-  std::mem::drop(writer);
+  // let _ = writer.flush();
+  finish_writer(writer, &file_name)?;
 
   /*
   ** Write UMIs per cell file.
@@ -441,8 +457,8 @@ fn write_per_cell_statistics(cell_counter: &HashMap<String, Vec<u64>>, sample_na
   for cell_name in cell_counter.keys() {
     writeln!(writer, "{}\t{}\t{}", sample_name, cell_name, cell_counter[cell_name][1]).context("bad status: writeln!")?;
   }
-  let _ = writer.flush();
-  std::mem::drop(writer);
+  // let _ = writer.flush();
+  finish_writer(writer, &file_name)?;
 
   /*
   ** Write duplicates per cell file.
@@ -466,8 +482,8 @@ fn write_per_cell_statistics(cell_counter: &HashMap<String, Vec<u64>>, sample_na
       writeln!(writer, "{}\t{}\t{}\t{}\t{}", sample_name, cell_name, cell_counter[cell_name][1], cell_counter[cell_name][0], dup_rate_string_trimmed).context("bad status: writeln!")?;
     }
   }
-  let _ = writer.flush();
-  std::mem::drop(writer);
+  // let _ = writer.flush();
+  finish_writer(writer, &file_name)?;
 
   Ok(())
 }
@@ -531,11 +547,11 @@ fn write_hash_assignment_table(hash_lookup: &HashMap<String, String>, hash_count
   for cell_name in hash_counter.keys() {
     for hash_seq in hash_counter[cell_name].keys() {
       let hash_name = &hash_lookup[hash_seq];
-      let _ = writeln!(writer, "{}\t{}\t{}\t{}", sample_name, cell_name, hash_name, hash_counter[cell_name][hash_seq]).context("bad status: write hash assignment table.")?;
+      writeln!(writer, "{}\t{}\t{}\t{}", sample_name, cell_name, hash_name, hash_counter[cell_name][hash_seq]).context("bad status: write hash assignment table.")?;
     }
   }
-  let _ = writer.flush();
-  std::mem::drop(writer);
+  // let _ = writer.flush();
+  finish_writer(writer, &file_name)?;
 
   Ok(())
 }
@@ -653,7 +669,7 @@ fn main() -> Result<()> {
   for bam_filename in bam_filenames {
     let mut bam_reader = rust_htslib::bam::Reader::from_path(&bam_filename).context("Error: unable to open BAM file")?;
     bam_reader.set_threads(num_threads).context("Error: unable to set number of threads for BAM file reading")?;
-    let _ = process_bam_file(hash_edit_distance, &hash_whitelist, &mut cells, &mut read_counts, &mut hash_counts, &mut hashdict, &mut bam_reader, &mut num_hash, &hash_lookup).context("Error: bad status: process_bam_file.")?;
+    process_bam_file(hash_edit_distance, &hash_whitelist, &mut cells, &mut read_counts, &mut hash_counts, &mut hashdict, &mut bam_reader, &mut num_hash, &hash_lookup).context("Error: bad status: process_bam_file.")?;
   }
 
   // dump_nested_maps(&mut hashdict);
@@ -667,12 +683,12 @@ fn main() -> Result<()> {
   ** Write matrix.
   ** Note: row_names and col_names were moved and dropped internally.
   */
-  let _ = write_matrix(&key, row_names, col_names, &smat, &hashnames_hashmap).context("Error: bad status: write_matrix")?;
+  write_matrix(&key, row_names, col_names, &smat, &hashnames_hashmap).context("Error: bad status: write_matrix")?;
   drop(smat);
 
   /*
   ** Write hash combined file.
-  let _ = write_hash_combined(&hashdict, &hash_lookup, &sample_name, &key).context("bad status: write_hash_combined")?;
+  write_hash_combined(&hashdict, &hash_lookup, &sample_name, &key).context("bad status: write_hash_combined")?;
   */
 
   /*
@@ -683,7 +699,7 @@ fn main() -> Result<()> {
   /*
   ** Write per-cell statistics.
   */
-  let _ = write_per_cell_statistics(&cell_counter, &sample_name, &key).context("bad status: write_per_cell_statistics")?;
+  write_per_cell_statistics(&cell_counter, &sample_name, &key).context("bad status: write_per_cell_statistics")?;
   drop(cell_counter);
 
   /*
@@ -694,7 +710,7 @@ fn main() -> Result<()> {
   /*
   ** Write hash assignment table.
   */
-  let _ = write_hash_assignment_table(&hash_lookup, &hash_counter, &sample_name, &key).context("bad status: write_hash_assignment_table.")?;
+  write_hash_assignment_table(&hash_lookup, &hash_counter, &sample_name, &key).context("bad status: write_hash_assignment_table.")?;
 
   /*
   ** Write log file.
@@ -707,7 +723,8 @@ fn main() -> Result<()> {
     writeln!(writer, "Hash UMIs detected with {} correction: {}", i_dist, hash_counts[i_dist]).context("error writing log file")?;
   }
   writeln!(writer, "Read_counts: {} {} {:.4}", read_counts[0], read_counts[1], read_counts[1] as f64 / read_counts[0] as f64).context("error writing log file")?;
-  let _ = writer.flush();
+  // let _ = writer.flush();
+  finish_writer(writer, &file_name)?;
 
   /*
   ** Let OS free memory.
